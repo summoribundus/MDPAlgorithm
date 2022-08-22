@@ -1,8 +1,6 @@
 package com.example.pathfinding;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 
 public class Car {
     private LinkedBlockingQueue<Point> queue;

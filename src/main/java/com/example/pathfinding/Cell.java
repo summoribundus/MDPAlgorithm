@@ -33,17 +33,17 @@ public class Cell extends StackPane {
         assert imgAssetsUrl != null;
     }
 
-    public void highlight() {
-        getStyleClass().remove("cell-highlight");
+    public void carPassHighlight() {
+        clearHighlight();
         getStyleClass().add("cell-highlight");
     }
 
-    public void unhighlight() {
+    public void unCarPassHighlight() {
         getStyleClass().remove("cell-highlight");
     }
 
     public void carHighlight() {
-        getStyleClass().remove("cell-car-highlight");
+        clearHighlight();
         getStyleClass().add("cell-car-highlight");
     }
 
@@ -52,12 +52,18 @@ public class Cell extends StackPane {
     }
 
     public void carStartHighlight() {
-        getStyleClass().remove("cell-hover-highlight");
+        clearHighlight();
         getStyleClass().add("cell-hover-highlight");
     }
 
     public void unCarStartHighlight() {
         getStyleClass().remove("cell-hover-highlight");
+    }
+
+    public void clearHighlight() {
+        unCarHighlight();
+        unCarPassHighlight();
+        unCarStartHighlight();
     }
 
     public void setImage(String imgPath) {

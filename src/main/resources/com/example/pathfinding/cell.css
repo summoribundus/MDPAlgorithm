@@ -9,5 +9,5 @@
     -fx-background-color:derive(green,0.9);
 }
 .cell-car-highlight {
-    -fx-background-color:derive(gold, 0.9);
+    -fx-background-color:derive(orangered, 0.9);
 }

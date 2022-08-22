@@ -15,8 +15,10 @@ public class ImageRecognizePane extends Pane {
     public ImageRecognizePane(double startX, double startY, double width, double height) {
         title = new Text("Image Recognized");
         title.setLayoutX(startX);
-        title.setLayoutY(startY);
-        imgDisplay = new Cell(startX, startY + 40, width, height);
+        title.setLayoutY(startY + 10);
+        title.setStyle("-fx-font: 24 arial;");
+        imgDisplay = new Cell(startX, startY + 30, width, height);
+        getChildren().addAll(title, imgDisplay);
     }
 
     public void recognize(int imgIdx) {
