@@ -1,18 +1,13 @@
 package com.example.pathfinding;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class SimulatorApplication extends Application {
     private static final int nColumnGrid = 20;
     private static final int nRowGridGrid = 20;
     private static final int cWidth = 40;
