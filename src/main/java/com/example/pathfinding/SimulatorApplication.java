@@ -20,10 +20,6 @@ public class SimulatorApplication extends Application {
             Grid grid = new Grid( SimulatorConstant.nRowGridGrid, SimulatorConstant.nColumnGrid,
                     SimulatorConstant.cellWidth, SimulatorConstant.cellHeight, SimulatorConstant.marginX,
                     SimulatorConstant.marginY);
-            grid.setUpObstacles(SimulatorMock.getObstacles());
-            grid.setUpCarStartArea();
-            grid.setUpCarStart(SimulatorMock.getCarWithPath());
-            grid.setUpGridRefresh();
 
             double startX = SimulatorConstant.marginX + SimulatorConstant.nColumnGrid * SimulatorConstant.cellWidth +
                     SimulatorConstant.gridIRPGap;
@@ -31,7 +27,11 @@ public class SimulatorApplication extends Application {
             ImageRecognizePane irp = new ImageRecognizePane(startX, startY, SimulatorConstant.IRPWidth,
                     SimulatorConstant.IRPHeight);
 
-            root.getChildren().addAll(grid, irp);
+            startY +=  SimulatorConstant.IRPHeight + 60;
+            GridControlPane gControlP = new GridControlPane(startX, startY, SimulatorConstant.GControlPWidth,
+                    SimulatorConstant.GControlPHeight, SimulatorConstant.GControlPGap, grid);
+
+            root.getChildren().addAll(grid, irp, gControlP);
 
             double width = startX + SimulatorConstant.IRPWidth + SimulatorConstant.marginX;
             double height = 2 * SimulatorConstant.marginY + SimulatorConstant.nRowGridGrid * SimulatorConstant.cellHeight;

@@ -18,6 +18,8 @@ public class Grid extends Pane {
     private Image[] arrowImg;
     private LinkedBlockingQueue<Point> path;
     private Point curPoint;
+    private Obstacle[] obstacles;
+    private Timeline timeline;
     private static final int[] dr = {0, -1, 0, 1};
     private static final int[] dc = {-1, 0, 1, 0};
 
@@ -37,6 +39,7 @@ public class Grid extends Pane {
             }
         }
         setUpArrowImage();
+        setUpCarStartArea();
     }
 
     private void setUpArrowImage() {
@@ -55,6 +58,17 @@ public class Grid extends Pane {
             int imgDir = obstacle.getDir(), nr = obstacle.getR() + dr[imgDir], nc = obstacle.getC() + dc[imgDir];
             if (inRange(nr, nc)) cells[nr][nc].setImage(arrowImg[imgDir]);
         }
+        this.obstacles = obstacles;
+    }
+
+    public void clearObstaclesAndPath() {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                cells[i][j].unSetImage();
+                cells[i][j].clearHighlight();
+            }
+        }
+       setUpCarStartArea();
     }
 
     public void setUpCarStartArea() {
@@ -84,9 +98,13 @@ public class Grid extends Pane {
                 }
         );
 
-        Timeline timeline = new Timeline(keyFrame);
+        timeline = new Timeline(keyFrame);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+
+    public void clearGridRefresh() {
+        timeline.stop();
     }
 
     private boolean inRange(int r, int c) {

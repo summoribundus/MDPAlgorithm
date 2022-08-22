@@ -11,4 +11,9 @@ public class SimulatorConstant {
     public static final int gridIRPGap = 40;
     public static final int IRPWidth = 200;
     public static final int IRPHeight = 200;
+
+
+    public static final int GControlPGap = 10;
+    public static final int GControlPWidth = 60;
+    public static final int GControlPHeight = 30;
 }
