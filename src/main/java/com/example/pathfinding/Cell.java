@@ -2,10 +2,6 @@ package com.example.pathfinding;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.StackPane;
 
 import java.net.URL;
@@ -82,54 +78,4 @@ public class Cell extends StackPane {
     public void unSetImage() {
         im.setImage(null);
     }
-
-//    public void setImageDraggedEnableHandler() {
-//        setOnDragDetected(mouseEvent -> {
-//            if (im.getImage() == null) {
-//                mouseEvent.consume();
-//                return;
-//            }
-//            Dragboard db = im.startDragAndDrop(TransferMode.COPY);
-//            ClipboardContent cb = new ClipboardContent();
-//            cb.putImage(im.getImage());
-//            db.setContent(cb);
-//            mouseEvent.consume();
-//        });
-//    }
-//
-//    public void setImageDraggedEventHandler() {
-//        setOnDragOver(dragEvent -> {
-//            if (dragEvent.getGestureSource() != this &&
-//                    dragEvent.getDragboard().hasImage()) {
-//                dragEvent.acceptTransferModes(TransferMode.COPY);
-//            }
-//            dragEvent.consume();
-//        });
-//
-//        setOnDragEntered(dragEvent -> {
-//            if (dragEvent.getGestureSource() != this
-//                    && dragEvent.getDragboard().hasImage()){
-//                hoverHighlight();
-//            }
-//            dragEvent.consume();
-//        });
-//
-//        setOnDragExited(dragEvent -> {
-//            unHoverHighlight();
-//            dragEvent.consume();
-//        });
-//
-//        setOnDragDropped(dragEvent -> {
-//            boolean success = false;
-//            Dragboard db = dragEvent.getDragboard();
-//
-//            if (db.hasImage()) {
-//                this.im.setImage(db.getImage());
-//                success = true;
-//            }
-//
-//            dragEvent.setDropCompleted(success);
-//            dragEvent.consume();
-//        });
-//    }
 }
