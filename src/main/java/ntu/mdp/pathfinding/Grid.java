@@ -1,4 +1,4 @@
-package com.example.pathfinding;
+package ntu.mdp.pathfinding;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;

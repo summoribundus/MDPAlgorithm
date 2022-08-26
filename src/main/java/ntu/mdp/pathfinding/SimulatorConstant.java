@@ -1,4 +1,4 @@
-package com.example.pathfinding;
+package ntu.mdp.pathfinding;
 
 public class SimulatorConstant {
     public static final int nColumnGrid = 20;

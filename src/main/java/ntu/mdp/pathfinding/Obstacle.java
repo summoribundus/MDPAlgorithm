@@ -1,4 +1,4 @@
-package com.example.pathfinding;
+package ntu.mdp.pathfinding;
 
 public class Obstacle {
     private int r, c;

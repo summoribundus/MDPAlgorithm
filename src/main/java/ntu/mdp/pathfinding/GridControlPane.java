@@ -1,4 +1,4 @@
-package com.example.pathfinding;
+package ntu.mdp.pathfinding;
 
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;

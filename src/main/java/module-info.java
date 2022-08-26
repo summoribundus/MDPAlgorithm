@@ -4,6 +4,6 @@ module com.example.pathfinding {
 
     requires org.kordamp.bootstrapfx.core;
 
-    opens com.example.pathfinding to javafx.fxml;
-    exports com.example.pathfinding;
+    opens ntu.mdp.pathfinding to javafx.fxml;
+    exports ntu.mdp.pathfinding;
 }

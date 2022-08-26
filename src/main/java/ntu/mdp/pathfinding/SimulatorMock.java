@@ -1,6 +1,4 @@
-package com.example.pathfinding;
-
-import java.util.List;
+package ntu.mdp.pathfinding;
 
 public class SimulatorMock {
     public static Obstacle[] getObstacles() {

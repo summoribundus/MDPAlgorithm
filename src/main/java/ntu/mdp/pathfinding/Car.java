@@ -1,4 +1,4 @@
-package com.example.pathfinding;
+package ntu.mdp.pathfinding;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
