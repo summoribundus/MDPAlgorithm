@@ -11,11 +11,8 @@ public class ShortestPathAlgo {
     private Obstacle[] obstacles;
     private int carR, carC;
     private ShortestPathBF shortestPathBF;
-    private List<int[]> lastPathGrids;
-
-    private List<CarMove> moveSteps;
-
-    private int R, m, n;
+    private int[][] dReverses = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
+    private int R = 25, m, n;
 
     public ShortestPathAlgo(int m, int n, Obstacle[] obstacles, int r, int c) {
         this.obstacles = obstacles;
@@ -23,36 +20,28 @@ public class ShortestPathAlgo {
         this.n = n;
         this.carR = r;
         this.carC = c;
-        System.out.println("Arena set up");
         this.arena = new Arena(m, n, obstacles);
-        System.out.println("BF create");
         this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
-        System.out.println("Init done");
     }
 
-    public List<CarMove> findShortestValidPath() {
+    public Obstacle[] findShortestValidPath() {
         shortestPathBF.findPath();
 
-        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
+//        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
         while (shortestPathBF.hasNextPath()) {
-            lastPathGrids = new ArrayList<>();
-            moveSteps = new ArrayList<>();
             int[] path = shortestPathBF.getNextPath();
             boolean pathValid = true;
             Obstacle car = idxMapping.get(path[0]);
-            int carR = car.getR(), carC = car.getC(), theta = 90, reverseEnd = carR;
+            int carR = car.getR(), carC = car.getC(), theta = 90;
             for (int i = 1; i < path.length-1; i++) {
                 Obstacle ob = idxMapping.get(path[i]);
                 TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getR(), ob.getC(), ob.getDir(), carR, carC, theta);
                 TrajectoryResult trajectoryResult= trajectoryCalculation.trajectoryResult();
                 if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC())) { pathValid = false; break; }
-                moveSteps.add(trajectoryResult.getCarMove());
-
                 carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = trajectoryResult.getCarMove().getTurnTheta2();
-                reverseEnd = Math.min(carR + R, m);
-                moveSteps.add(new CarMove(-1, -1, -(reverseEnd - carR)));
-                addReversePoints(carR, reverseEnd, carC);
-                carC = reverseEnd;
+                carR += dReverses[ob.getDir()][0] * R; carC += dReverses[ob.getDir()][1] * R;
+                if (!(0 >= carR && carR < m && 0 >= carC && carC < n)) { pathValid = false; break; }
+
             }
             if (pathValid) return moveSteps;
         }
@@ -68,15 +57,12 @@ public class ShortestPathAlgo {
 
         List<int[]> points = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, isClockwise1);
         if (!validatePoint(points)) return false;
-        lastPathGrids.addAll(points);
 
         points = TrajectoryToArenaGrid.findGirdLinePath(r1, c1, r2, c2);
         if (!validatePoint(points)) return false;
-        lastPathGrids.addAll(points);
 
         points = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, isClockwise2);
         if(!validatePoint(points)) return false;
-        lastPathGrids.addAll(points);
 
         return true;
     }
@@ -86,17 +72,5 @@ public class ShortestPathAlgo {
             if (arena.checkWithCorrespondingBlock(p[0], p[1])) return false;
         }
         return true;
-    }
-
-    private void addReversePoints(int start, int end, int c) {
-        for (int i = start + 1; i <= end; i++) lastPathGrids.add(new int[]{i, c});
-    }
-
-    public List<int[]> getLastPathGrids() {
-        return lastPathGrids;
-    }
-
-    public List<CarMove> getMoveSteps() {
-        return moveSteps;
     }
 }
