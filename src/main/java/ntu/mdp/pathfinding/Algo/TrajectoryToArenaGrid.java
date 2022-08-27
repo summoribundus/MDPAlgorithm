@@ -11,9 +11,6 @@ public class TrajectoryToArenaGrid {
 
     private static int R;
 
-    private List<int[]> fridGridPathFromTrajectory(TrajectoryResult result) {
-    }
-
     public static List<int[]> findGirdLinePath(int r1, int c1, int r2, int c2) {
         List<int[]> pointsPassed = new ArrayList<>();
         double a = (double) (r2 - r1) / (c2 - c1), b = r1 - c1 * a;

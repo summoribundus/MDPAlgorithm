@@ -4,16 +4,37 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ntu.mdp.pathfinding.Algo.ShortestPathAlgo;
 import ntu.mdp.pathfinding.GUI.Grid;
 import ntu.mdp.pathfinding.GUI.GridControlPane;
 import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.io.IOException;
+import java.util.List;
+
+
+class ShortestPathRunner implements Runnable {
+
+    @Override
+    public void run() {
+        Car car = InputData.getCar();
+        ShortestPathAlgo algo = new ShortestPathAlgo(40, 40, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        algo.findShortestValidPath();
+        List<int[]> points = algo.getLastPathGrids();
+        for (int[] p : points) {
+            car.goTo(p[0], p[1]);
+        }
+    }
+}
 
 public class SimulatorApplication extends Application {
 
-    private Obstacle[] obstacles;
+    @Override
+    public void init() throws IOException {
+        Thread thread = new Thread(new ShortestPathRunner());
+        thread.start();
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -50,6 +71,6 @@ public class SimulatorApplication extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+       launch();
     }
 }
