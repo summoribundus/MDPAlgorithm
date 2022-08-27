@@ -40,7 +40,7 @@ public class ShortestPathAlgo {
             int carR = car.getR(), carC = car.getC(), theta = 90, reverseEnd = carR;
             for (int i = 1; i < path.length-1; i++) {
                 Obstacle ob = idxMapping.get(path[i]);
-                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob, carR, carC, theta);
+                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getR(), ob.getC(), ob.getDir(), carR, carC, theta);
                 TrajectoryResult trajectoryResult= trajectoryCalculation.trajectoryResult();
                 if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC())) { pathValid = false; break; }
                 moveSteps.add(trajectoryResult.getCarMove());

@@ -1,7 +1,5 @@
 package ntu.mdp.pathfinding.Algo;
 
-import ntu.mdp.pathfinding.Obstacle;
-
 import java.util.HashMap;
 
 /***
@@ -9,288 +7,400 @@ import java.util.HashMap;
  */
 public class TrajectoryCalculation {
 
-
-    // use enlarged virtual obstacles, robot as a point, the
-
     // the constant r, HARDCODED now
-    final double r = 3.14;
-    // the error interval epsilon, HARDCODED now
-    final double epsilon = 0.1;
+    final int r = 23;
     // opposite direction mapping
-    final HashMap<Integer, Integer> oppositeDir = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
+    final HashMap<Integer, Integer> oppositeDirMap = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
 
     // the real coordinates of the obstacle
-    private double target_x;
-    private double target_y;
-    private double target_theta;
-
-    // the center coordinates of the obstacle
-    private double obs_circle_x;
-    private double obs_circle_y;
+    private int targetR;
+    private int targetC;
+    private int targetTheta;
+    private int obstacleDir;
 
     // the real coordinates of the robot
-    private double robot_x;
-    private double robot_y;
-    private double robot_theta;
+    private int robotR;
+    private int robotC;
+    private int robotTheta;
 
-    // the center coordinates of the robot
-    private double robot_circle_x;
-    private double robot_circle_y;
 
-    public TrajectoryCalculation(Obstacle obs, int robot_x, int robot_y, double robot_theta){
-//        this.target_x = obs.getTargetedX();
-//        this.target_y = obs.getTargetedY();
-        this.target_theta = oppositeDir.get(obs.getDir()) * Math.PI / 2; // represent the data in PI.
-        this.robot_x = robot_x;
-        this.robot_y = robot_y;
-        this.robot_theta = robot_theta;
+    public TrajectoryCalculation(int obsR, int obsC, int obsDir, int robotR, int robotC, int robotTheta){
+        this.targetR = obsR;
+        this.targetC = obsC;
+        this.obstacleDir = obsDir; // of value [0, 1, 2, 3]
+        this.targetTheta = (int)(oppositeDirMap.get(obsDir) * Math.PI / 2); // represent the data in PI.
+        this.robotR = robotR;
+        this.robotC = robotC;
+        this.robotTheta = robotTheta;
     }
 
     // to calculate the position of the circle
-    public double[] calculateRobotStartingCenterOfCircle(double robot_x, double robot_y, double robot_theta, int robot_dir){
+    public int[] calculateRobotStartingCenterOfCircle(int robotR, int robotC, int robot_theta, int targetC){
         // dir denotes left or right turning. 0 -> left turn, 1 -> right turn
         // turn left, to find circle point, clockwise. turn right, counterclockwise.
-        double circlePoint_x = 0.0;
-        double circlePoint_y = 0.0;
+        double circlePointR = 0;
+        double circlePointC = 0;
 
         // the unit vector v1 in direction of the robot.
-        double v1_x = Math.cos(robot_theta);
-        double v1_y = Math.sin(robot_theta);
+        double v1R = Math.cos(robot_theta);
+        double v1C = Math.sin(robot_theta);
 
         // find v1 counterclockwise/clockwise rotate to v2 according to the directions
-        double v2_x = 0.0;
-        double v2_y = 0.0;
-        if (robot_dir == 0) //turning left, counterclockwise
+        double v2R = 0;
+        double v2C = 0;
+        if (targetC > robotR) //turning left, counterclockwise
         {
-            v2_x = -v1_y;
-            v2_y = v1_x;
+            v2R = -v1C;
+            v2C = v1R;
         } else {
-            v2_x = v1_y;
-            v2_y = -v1_x;
+            v2R = v1C;
+            v2C = -v1R;
         }
 
         // find the turning circle point.
-        circlePoint_x = robot_x + v2_x * r;
-        circlePoint_y = robot_y + v2_y * r;
+        circlePointR = robotR + v2R * r;
+        circlePointC = robotC + v2C * r;
 
-        return new double[]{circlePoint_x, circlePoint_y};
+        return new int[]{(int)circlePointR, (int)circlePointC};
+    }
+
+    // calculate the obstacle circle center
+    public int[] calculateObstacleCircleCenter(int targetX, int targetY, int robotX, int robotY, int obstacleDir){
+        // turning right
+        if (targetX > robotX) {
+            if (obstacleDir == 1 || obstacleDir == 3)
+                return new int[]{targetX - r, targetY};
+            else if (targetY > robotY) // upper right
+                return new int[]{targetX, targetY - r};
+            else
+                return new int[]{targetX, targetY + r};
+        }
+        // turning left
+        else {
+            if (obstacleDir == 1 || obstacleDir == 3)
+                return new int[]{targetX + r, targetY};
+            else if (targetY > robotY) // upper left
+                return new int[]{targetX, targetY - r};
+            else
+                return new int[]{targetX, targetY + r};
+        }
     }
 
 
 
     // function to calculate euclidean distance of 2 functions
-    public double EuclideanDistance(int x1, int y1, int x2, int y2){
-        double delta_x = Math.abs(x1-x2);
-        double delta_y = Math.abs(y1-y2);
-        return Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_y, 2));
+    public int calculateEuclideanDistance(int r1, int c1, int r2, int c2){
+        int deltaR = Math.abs(r1-r2);
+        int deltaC = Math.abs(c1-c2);
+        return (int)Math.sqrt(Math.pow(deltaR, 2) + Math.pow(deltaC, 2));
     }
 
-    // arc length computation
-    public double ArcCalculation(double start_x, double start_y, double dest_x, double dest_y, int direc){
-        // direc = 0 for turn left, direct = 1 for turn right
-        // tan_x and tan_y are the coordinates for the starting point on the arc,
-        // while dest_x and dest_y are the coordinates for the destination point on the arc
-        double alpha = Math.atan2(dest_y, dest_x) - Math.atan2(start_y, start_x);
-        if (alpha < 0 && direc == 0)
+    // arc angle computation
+    public double calculateArcAngle(int startR, int startC, int destR, int destC, int dir) {
+        double alpha = Math.atan2(destC, destR) - Math.atan2(startC, startR);
+        if (alpha < 0 && dir == 0)
             alpha = alpha + 2*Math.PI;
-        else if (alpha > 0 && direc == 1)
+        else if (alpha > 0 && dir == 1)
             alpha = alpha - 2*Math.PI;
 
-        return Math.abs(alpha * r);
+        return Math.abs(alpha);
+    }
+
+
+    // arc length computation
+    public int calculateArcLength(int startR, int startC, int destR, int destC, int dir){
+        // dir = 0 for turn left, direct = 1 for turn right
+        // tan_x and tan_y are the coordinates for the starting point on the arc,
+        // while destR and destC are the coordinates for the destination point on the arc
+        double alpha = calculateArcAngle(startR, startC, destR, destC, dir);
+
+        return (int)Math.abs(alpha * r);
 
     }
 
     // choose the path according to the relative position of
-    public void chooseCSCPath(int robot_x, int robot_y,
-                           int obs_x, int obs_y,
-                           int robot_circle_x, int robot_circle_y, double robot_theta,
-                           int obs_circle_x, int obs_circle_y, double obs_theta) {
+    public TrajectoryResult trajectoryResult() {
+
+        int[] centerOfCircle = calculateRobotStartingCenterOfCircle(robotR, robotC, robotTheta, targetR); //calculate the center of the robot turning trajectory
+        int robotCircleR = centerOfCircle[0];
+        int robotCircleC =centerOfCircle[1];
+
+        int[] obstacleCircle = calculateObstacleCircleCenter(targetR, targetC, robotR, robotC, obstacleDir);
+        int obsCircleR = obstacleCircle[0];
+        int obsCircleC = obstacleCircle[1];
 
         // 1. obstacle is at the right of the robot
-        if (obs_x > robot_x) {
+        if (targetR > robotR) {
+
+            // 1(a) if obstacle is in the upper right corner of the robot.
+            if (targetC > robotC) {
+                if (obstacleDir == 0 || obstacleDir == 1)
+                    // rsr
+                    return calculateRSR(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
+                else
+                    // rsl
+                    return calculateRSL(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
+            }
+            // 1(b) if obstacle is in the lower right corner of the robot.
+            else {
+                if (obstacleDir == 1 || obstacleDir == 2)
+                    // rsr
+                    return calculateRSR(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
+                else
+                    // rsl
+                    return calculateRSL(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
+            }
 
         }
+        // 2. obstacle is at the left of the robot
+        else {
 
+            // 2(a) if obstacle is at the upper left of the robot
+            if (targetC > robotC){
+                //lsl
+                if (obstacleDir == 1 || obstacleDir == 2)
+                    return calculateLSL(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
+                    //lsr
+                else
+                    return calculateLSR(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
 
+            }
+            // 2(b) if obstacle is at the lower left of the robot
+            else {
+                //lsl
+                if (obstacleDir == 0 || obstacleDir == 1)
+                    return calculateLSL(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
+                    //lsr
+                else
+                    return calculateLSR(robotR, robotC, targetR, targetC, robotCircleR,
+                            robotCircleC, obsCircleR, obsCircleC);
 
-        // 1. obstacle is at the upper right of the robot
-        // facing up/left
-        if (obs_x > robot_x && obs_y > robot_x &&
-                (checkEqualWithinEpsilon(obs_theta, Math.PI/2) || checkEqualWithinEpsilon(obs_theta, Math.PI)))
-            rsrORlsl(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-        // facing down/right
-        else if (obs_x > robot_x && obs_y > robot_x &&
-                (checkEqualWithinEpsilon(obs_theta, 0) || checkEqualWithinEpsilon(obs_theta, -Math.PI/2)))
-            rslORlsr(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-
-        // 2. obstacle is at the upper left of the robot
-        // facing up/right
-        if (obs_x < robot_x && obs_y > robot_y &&
-                ((checkEqualWithinEpsilon(obs_theta, Math.PI/2) || checkEqualWithinEpsilon(obs_theta, 0))))
-            rsrORlsl(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-        // facing down/left
-        else if (obs_x < robot_x && obs_y > robot_y &&
-                ((checkEqualWithinEpsilon(obs_theta, -Math.PI/2) || checkEqualWithinEpsilon(obs_theta, Math.PI))))
-            rslORlsr(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-
-        // 3. obstacle is at the lower right of the robot
-        // facing up/right
-        if (obs_x > robot_x && obs_y < robot_y &&
-                ((checkEqualWithinEpsilon(obs_theta, Math.PI/2) || checkEqualWithinEpsilon(obs_theta, 0))))
-            rsrORlsl(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-        // facing down/left
-        else if (obs_x > robot_x && obs_y < robot_y &&
-                ((checkEqualWithinEpsilon(obs_theta, -Math.PI/2) || checkEqualWithinEpsilon(obs_theta, Math.PI))))
-            rslORlsr(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-
-        // 4. obstacle is at the lower left of the robot
-        // facing up/left
-        if (
-                obs_x < robot_x && obs_y < robot_y &&
-                        ((checkEqualWithinEpsilon(obs_theta, Math.PI/2) || checkEqualWithinEpsilon(obs_theta, Math.PI)))
-        )
-            rsrORlsl(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-        // facing down/right
-        else if (
-                obs_x < robot_x && obs_y < robot_y &&
-                        ((checkEqualWithinEpsilon(obs_theta, -Math.PI/2) || checkEqualWithinEpsilon(obs_theta, 0)))
-        )
-            rslORlsr(robot_x, robot_y, obs_x, obs_y, robot_circle_x, robot_circle_y, robot_theta, obs_circle_x, obs_circle_y, obs_theta);
-
-
+            }
+        }
     }
 
-    public boolean checkEqualWithinEpsilon(double num1, double num2) {
-        double upperbound = num2 + epsilon;
-        double lowerbound = num2 - epsilon;
-        if ( num1 <= upperbound && num2 >= lowerbound)
-            return true;
-        return false;
-    }
+    // calculate rsr type path.
+    public TrajectoryResult calculateRSR(int robotR, int robotC,
+                                         int targetR, int targetC,
+                                         int robotCircleR, int robotCircleC,
+                                         int obsCircleR, int obsCircleC){
 
-
-    // the rsr type length
-    public void rsrORlsl(int robot_x, int robot_y,
-                            int target_x, int target_y,
-                            int robot_circle_x, int robot_circle_y, double robot_theta,
-                            int obs_circle_x, int obs_circle_y, double obs_theta) {
-        double l = EuclideanDistance(obs_circle_x, obs_circle_y, robot_circle_x, robot_circle_y);
+        int l = calculateEuclideanDistance(obsCircleR, obsCircleC, robotCircleR, robotCircleC);
         // calculate v1 which points from center p1 to center p2
-        double v1_x = obs_circle_x - robot_circle_x;
-        double v1_y = obs_circle_y - robot_circle_y;
+        double v1R = obsCircleR - robotCircleR;
+        double v1C = obsCircleC - robotCircleC;
         // v2 is rotated by pi/2
-        double v2_x = -v1_y;
-        double v2_y = v1_x;
+        double v2R = -v1C;
+        double v2C = v1R;
 
         // get the intermidiate pt1 position
-        double pt1_x = robot_circle_x + v2_x * r/l;
-        double pt1_y = robot_circle_y + v2_y * r/l;
-        double pt1_theta = Math.atan2(pt1_y, pt1_x);
+        int pt1R = robotCircleR + (int)(v2R * r/l);
+        int pt1C = robotCircleC + (int)(v2C * r/l);
 
         // get the intermidiate pt2 position
-        double pt2_x = pt1_x + v1_x;
-        double pt2_y = pt1_y + v1_y;
-        double pt2_theta = Math.atan2(pt2_y, pt2_x);
+        int pt2R = pt1R + (int)v1R;
+        int pt2C = pt1C + (int)v1C;
 
         // calculate the 2 arcs
-        double p1p_x = robot_x - robot_circle_x;
-        double p1p_y = robot_y - robot_circle_y;
-        double p1pt1_x = pt1_x - robot_circle_x;
-        double p1pt1_y = pt1_y - robot_circle_y;
+        int p1pR = robotR - robotCircleR;
+        int p1pC = robotC - robotCircleC;
+        int p1pt1R = pt1R - robotCircleR;
+        int p1pt1C = pt1C - robotCircleC;
 
-        double arc1 = ArcCalculation(p1p_x, p1p_y, p1pt1_x, p1pt1_y, 1);
+        int alpha1 = (int)calculateArcAngle(p1pR, p1pC, p1pt1R, p1pt1C, 1);
+        int arc1 = calculateArcLength(p1pR, p1pC, p1pt1R, p1pt1C, 1);
 
-        double p2pt2_x = pt2_x - obs_circle_x;
-        double p2pt2_y = pt2_y - obs_circle_y;
-//        double p2p_x = obs_x - obs_circle_x;
-        double p2p_y = target_y - obs_circle_y;
+        int p2pt2R = pt2R - obsCircleR;
+        int p2pt2C = pt2C - obsCircleC;
+        int p2pR = targetR - obsCircleR;
+        int p2pC = targetC - obsCircleC;
 
-//        double arc2 = ArcCalculation(p2pt2_x, p2pt2_y, p2p_x, p2p_y, 1);
+        int alpha2 = (int)calculateArcAngle(p2pt2R, p2pt2C, p2pR, p2pC, 1);
+        int arc2 = calculateArcLength(p2pt2R, p2pt2C, p2pR, p2pC, 1);
 
-//        double totalLength = arc1 + arc2 + l;
+        int totalLength = arc1 + arc2 + l;
 
+        TrajectoryResult res = new TrajectoryResult(new int[]{pt1R, pt1C}, new int[]{pt2R, pt2C}, new int[]{robotCircleR, robotCircleC},
+                new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 1, 1);
 
+        return res;
     }
 
-    public void rslORlsr(int robot_x, int robot_y,
-                    int target_x, int target_y,
-                    int robot_circle_x, int robot_circle_y, double robot_theta,
-                    int obs_circle_x, int obs_circle_y, double obs_theta) {
+    // calculate lsl type path.
+    public TrajectoryResult calculateLSL(int robotR, int robotC,
+                                         int targetR, int targetC,
+                                         int robotCircleR, int robotCircleC,
+                                         int obsCircleR, int obsCircleC){
 
-        double d = EuclideanDistance(robot_circle_x, robot_circle_y, obs_circle_x, obs_circle_y);
-        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
+        int l = calculateEuclideanDistance(obsCircleR, obsCircleC, robotCircleR, robotCircleC);
+        // calculate v1 which points from center p1 to center p2
+        double v1R = obsCircleR - robotCircleR;
+        double v1C = obsCircleC - robotCircleC;
+        // v2 is rotated by pi/2
+        double v2R = -v1C;
+        double v2C = v1R;
 
-        double theta = Math.acos(2*r/d); // return a value from 0 to pi
+        // get the intermidiate pt1 position
+        int pt1R = robotCircleR + (int)(v2R * r/l);
+        int pt1C = robotCircleC + (int)(v2C * r/l);
+
+        // get the intermidiate pt2 position
+        int pt2R = pt1R + (int)v1R;
+        int pt2C = pt1C + (int)v1C;
+
+        // calculate the 2 arcs
+        int p1pR = robotR - robotCircleR;
+        int p1pC = robotC - robotCircleC;
+        int p1pt1R = pt1R - robotCircleR;
+        int p1pt1C = pt1C - robotCircleC;
+
+        int alpha1 = (int)calculateArcAngle(p1pR, p1pC, p1pt1R, p1pt1C, 0);
+        int arc1 = calculateArcLength(p1pR, p1pC, p1pt1R, p1pt1C, 0);
+
+        int p2pt2R = pt2R - obsCircleR;
+        int p2pt2C = pt2C - obsCircleC;
+        int p2pR = targetR - obsCircleR;
+        int p2pC = targetC - obsCircleC;
+
+        int alpha2 = (int)calculateArcAngle(p2pt2R, p2pt2C, p2pR, p2pC, 0);
+        int arc2 = calculateArcLength(p2pt2R, p2pt2C, p2pR, p2pC, 0);
+
+        int totalLength = arc1 + arc2 + l;
+
+        TrajectoryResult res = new TrajectoryResult(new int[]{pt1R, pt1C}, new int[]{pt2R, pt2C}, new int[]{robotCircleR,
+                robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 0, 0);
+
+        return res;
+    }
+
+
+    // calculate lsr type path.
+    public TrajectoryResult calculateLSR(int robotR, int robotC,
+                                         int targetR, int targetC,
+                                         int robotCircleR, int robotCircleC,
+                                         int obsCircleR, int obsCircleC) {
+
+        int d = calculateEuclideanDistance(robotCircleR, robotCircleC, obsCircleR, obsCircleC);
+        int l = (int)Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
+
+        int theta = (int)Math.acos(2*r/d); // return a value from 0 to pi
 
         // the vector from p1 to p2
-        double v1x = obs_circle_x - robot_circle_x;
-        double v1y = obs_circle_y - robot_circle_y;
+        double v1R = obsCircleR - robotCircleR;
+        double v1C = obsCircleC - robotCircleC;
 
         // rotation of v1 by angle theta
-            // if rsl check if turning right
-        double v2x;
-        double v2y;
-        if (target_x > robot_x) {
-            v2x = v1x * Math.cos(theta) - v1y * Math.sin(theta);
-            v2y = v1x * Math.sin(theta) + v1y * Math.cos(theta);
-        }
-            // if lsr
-        else {
-            v2x = v1x * Math.cos(theta) + v1y * Math.sin(theta);
-            v2y = - v1x * Math.sin(theta) + v1y * Math.cos(theta);
-        }
+        // if rsl check if turning right
+        double v2R;
+        double v2C;
+        v2R = (v1R * Math.cos(theta) + v1C * Math.sin(theta));
+        v2C = (- v1R * Math.sin(theta) + v1C * Math.cos(theta));
 
         // point pt1
-        double pt1_x = obs_circle_x + r/d * v2x;
-        double pt1_y = obs_circle_y + r/d * v2y;
-        double pt1_theta = Math.atan2(pt1_y, pt1_x);
+        double pt1R = obsCircleR + (r/d) * v2R;
+        double pt1C = obsCircleC + (r/d) * v2C;
 
 
         // reversing the direction of v2 to get v3.
-        double v3x = -v2x;
-        double v3y = -v2y;
+        double v3R = -v2R;
+        double v3C = -v2C;
 
         // point pt2
-        double pt2_x = obs_circle_x + r/d * v3x;
-        double pt2_y = obs_circle_y + r/d * v3y;
-        double pt2_theta = Math.atan2(pt2_y, pt2_x);
+        double pt2R = obsCircleR + r/d * v3R;
+        double pt2C = obsCircleC + r/d * v3C;
 
         // calculate the 2 arcs
-        double p1p_x = robot_x - robot_circle_x;
-        double p1p_y = robot_y - robot_circle_y;
-        double p1pt1_x = pt1_x - robot_circle_x;
-        double p1pt1_y = pt1_y - robot_circle_y;
+        int p1pR = robotR - robotCircleR;
+        int p1pC = robotC - robotCircleC;
+        int p1pt1R = (int)pt1R - robotCircleR;
+        int p1pt1C = (int)pt1C - robotCircleC;
 
-        double arc1 = ArcCalculation(p1p_x, p1p_y, p1pt1_x, p1pt1_y, 1);
+        int alpha1 = (int)calculateArcAngle(p1pR, p1pC, p1pt1R, p1pt1C, 0);
+        int arc1 = calculateArcLength(p1pR, p1pC, p1pt1R, p1pt1C, 0);
 
-        double p2pt2_x = pt2_x - obs_circle_x;
-        double p2pt2_y = pt2_y - obs_circle_y;
-        double p2p_x = target_x - obs_circle_x;
-        double p2p_y = target_y - obs_circle_y;
+        int p2pt2R = (int)pt2R - obsCircleR;
+        int p2pt2C = (int)pt2C - obsCircleC;
+        int p2pR = targetR - obsCircleR;
+        int p2pC = targetC - obsCircleC;
 
-        double arc2 = ArcCalculation(p2pt2_x, p2pt2_y, p2p_x, p2p_y, 1);
+        int alpha2 = (int)calculateArcAngle(p2pt2R, p2pt2C, p2pR, p2pC, 1);
+        int arc2 = calculateArcLength(p2pt2R, p2pt2C, p2pR, p2pC, 1);
 
-        double totalLength = arc1 + arc2 + l;
+        int totalLength = arc1 + arc2 + l;
+
+        TrajectoryResult res = new TrajectoryResult(new int[]{(int)pt1R, (int)pt1C}, new int[]{(int)pt2R, (int)pt2C}, new int[]{robotCircleR, robotCircleC},
+                new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 0, 1);
+
+        return res;
+
     }
 
-    // check if the robot is facing the obstacle, if facing, then correct, if not, need to reverse and/or rotate.
-    public boolean checkIfRobotFacingObstacle(double robotTheta, double obsTheta) {
-        // condition 1 - facing the obs' side that is pasted with sticker
-        if ((double) Math.round(robotTheta * 10) / 10
-                + (double) Math.round(obsTheta * 10) / 10
-                == (double) Math.round(Math.PI * 10) / 10)
-            // what is the error interval / limits of accuracy that we allow?
-            // say, 1 decimal places
-            return true;
+    // calculate rsl type path.
+    public TrajectoryResult calculateRSL(int robotR, int robotC,
+                                         int targetR, int targetC,
+                                         int robotCircleR, int robotCircleC,
+                                         int obsCircleR, int obsCircleC) {
 
-        // condition 2 - the distance between the VIRTUAL obstacle and the robot > 0???
+        int d = calculateEuclideanDistance(robotCircleR, robotCircleC, obsCircleR, obsCircleC);
+        int l = (int)Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
+
+        int theta = (int)Math.acos(2*r/d); // return a value from 0 to pi
+
+        // the vector from p1 to p2
+        double v1R = obsCircleR - robotCircleR;
+        double v1C = obsCircleC - robotCircleC;
+
+        // rotation of v1 by angle theta
+        // if rsl check if turning right
+        double v2R;
+        double v2C;
+        v2R = (v1R * Math.cos(theta) - v1C * Math.sin(theta));
+        v2C = (v1R * Math.sin(theta) + v1C * Math.cos(theta));
+
+        // point pt1
+        double pt1R = obsCircleR + (r/d) * v2R;
+        double pt1C = obsCircleC + (r/d) * v2C;
 
 
-        return false;
+        // reversing the direction of v2 to get v3.
+        double v3R = -v2R;
+        double v3C = -v2C;
+
+        // point pt2
+        double pt2R = obsCircleR + r/d * v3R;
+        double pt2C = obsCircleC + r/d * v3C;
+
+        // calculate the 2 arcs
+        int p1pR = robotR - robotCircleR;
+        int p1pC = robotC - robotCircleC;
+        int p1pt1R = (int)pt1R - robotCircleR;
+        int p1pt1C = (int)pt1C - robotCircleC;
+
+        int alpha1 = (int)calculateArcAngle(p1pR, p1pC, p1pt1R, p1pt1C, 1);
+        int arc1 = calculateArcLength(p1pR, p1pC, p1pt1R, p1pt1C, 1);
+
+        int p2pt2R = (int)pt2R - obsCircleR;
+        int p2pt2C = (int)pt2C - obsCircleC;
+        int p2pR = targetR - obsCircleR;
+        int p2pC = targetC - obsCircleC;
+
+        int alpha2 = (int)calculateArcAngle(p2pt2R, p2pt2C, p2pR, p2pC, 0);
+        int arc2 = calculateArcLength(p2pt2R, p2pt2C, p2pR, p2pC, 0);
+
+        int totalLength = arc1 + arc2 + l;
+
+        TrajectoryResult res = new TrajectoryResult(new int[]{(int)pt1R, (int)pt1C}, new int[]{(int)pt2R, (int)pt2C},
+                new int[]{robotCircleR, robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 1, 0);
+
+        return res;
+
     }
 
-    public TrajectoryResult trajectoryResult() {
-        // pt1x, pt1y theta1, circle1, r, pt2x, pt2y, theta2, circle2
-        return new TrajectoryResult(new int[]{1, 1}, new int[]{1, 1}, new int[]{1, 1}, new int[]{1, 1}, 90, 90, 1);
-    }
 }
