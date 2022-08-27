@@ -2,6 +2,8 @@ package ntu.mdp.pathfinding.Algo;
 
 import ntu.mdp.pathfinding.Obstacle;
 
+import java.util.Arrays;
+
 public class Arena {
     private Node[][] arena;
     private int m, n;
@@ -11,8 +13,14 @@ public class Arena {
         this.n = n;
         arena = new Node[m][n];
 
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                arena[i][j] = new Node();
+
+        System.out.println("Node init done");
         for (Obstacle ob : obstacles) {
             int r = ob.getR(), c = ob.getC();
+            System.out.println("r: " + r + " " + "c: " + c);
             arena[r][c].setRealBlock(true);
             arena[r+1][c].setRealBlock(true);
             arena[r][c+1].setRealBlock(true);
@@ -22,17 +30,21 @@ public class Arena {
     }
 
     private void setUpVirtualBlock(int r, int c) {
+        System.out.println("Start set up vir");
         walkForVirtualBlock(r, c, -1, -1);
         walkForVirtualBlock(r+1, c, 1, -1);
         walkForVirtualBlock(r, c+1, -1, 1);
         walkForVirtualBlock(r+1, c+1,  1, 1);
+        System.out.println("Setting up done");
     }
 
     private void walkForVirtualBlock(int r, int c, int rStep, int cStep) {
-        for (int i = 0; i < 4; i += rStep)
-            for (int j = 0; j < 4; j += cStep) {
-                if (inRange(r+i, c+i))
-                    arena[r+i][c+i].setVirtualBlock(true);
+        int nr, nc;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++) {
+                nr = i * rStep; nc = j * cStep;
+                if (inRange(nr, nc))
+                    arena[nr][nc].setVirtualBlock(true);
             }
     }
 

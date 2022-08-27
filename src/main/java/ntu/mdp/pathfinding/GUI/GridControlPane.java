@@ -2,6 +2,7 @@ package ntu.mdp.pathfinding.GUI;
 
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
+import ntu.mdp.pathfinding.InputData;
 
 public class GridControlPane extends Pane {
     private Button setUp, start, clear;
@@ -33,8 +34,8 @@ public class GridControlPane extends Pane {
 
     private void setOnMoveClickedEvent() {
         setUp.setOnMouseClicked(mouseEvent -> {
-            grid.setUpObstacles(SimulatorMock.getObstacles());
-            grid.setUpCarStart(SimulatorMock.getCarWithPath());
+            grid.setUpObstacles(InputData.getObstacles());
+            grid.setUpCarStart(InputData.getCar());
             mouseEvent.consume();
         });
 

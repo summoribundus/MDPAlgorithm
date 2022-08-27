@@ -29,8 +29,10 @@ public class Grid extends Pane {
     private static final int[][] dVirtualBlockSquare = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
     private static final int[][] dArrowImageSquare = {{0, -1, 1, -1}, {-1, 0, -1, 1}, {0, 2, 1, 2}, {2, 0, 2, 1}};
 
+    private URL imageBaseFolder;
 
-    public Grid(int _m, int _n, double width, double height, double marginX, double marginY) {
+
+    public Grid(int _m, int _n, double width, double height, double marginX, double marginY, URL url) {
         m = _m; n = _n;
         cWidth = width; cHeight = height;
         cells = new Cell[m][n];
@@ -39,23 +41,21 @@ public class Grid extends Pane {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 double x = j * cWidth + marginX, y = i * cHeight + marginY;
-                Cell cell =  new Cell(x, y, cWidth, cHeight);
+                Cell cell =  new Cell(x, y, cWidth, cHeight, url);
                 getChildren().add(cell);
                 cells[i][j] = cell;
             }
         }
+        imageBaseFolder = url;
         setUpArrowImage();
         setUpCarStartArea();
     }
 
     private void setUpArrowImage() {
-        URL url = getClass().getResource("assets");
-        assert url != null;
-
-        arrowImg[0] = new Image(url.toExternalForm() + "Left.png", cWidth, cHeight, false, false);
-        arrowImg[1] = new Image(url.toExternalForm() + "Up.png", cWidth, cHeight, false, false);
-        arrowImg[2] = new Image(url.toExternalForm() + "Right.png", cWidth, cHeight, false, false);
-        arrowImg[3] = new Image(url.toExternalForm() + "Down.png", cWidth, cHeight, false, false);
+        arrowImg[0] = new Image(imageBaseFolder.toExternalForm() + "Left.png", cWidth, cHeight, false, false);
+        arrowImg[1] = new Image(imageBaseFolder.toExternalForm() + "Up.png", cWidth, cHeight, false, false);
+        arrowImg[2] = new Image(imageBaseFolder.toExternalForm() + "Right.png", cWidth, cHeight, false, false);
+        arrowImg[3] = new Image(imageBaseFolder.toExternalForm() + "Down.png", cWidth, cHeight, false, false);
     }
 
     public void setUpObstacles(Obstacle[] obstacles) {
@@ -75,8 +75,8 @@ public class Grid extends Pane {
     }
 
     private void setUpVirtualObstacles(int r, int c, int idx) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
                 int nr = r + i * dVirtualBlockSquare[idx][0], nc = c + j * dVirtualBlockSquare[idx][1];
                 if (inRange(nr, nc) && !cells[nr][nc].isImageSet()) cells[nr][nc].virtualBoarderHighlight();
             }
@@ -94,8 +94,8 @@ public class Grid extends Pane {
     }
 
     public void setUpCarStartArea() {
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
                 cells[i][j].carStartHighlight();
     }
 

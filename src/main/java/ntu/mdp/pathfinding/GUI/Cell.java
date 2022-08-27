@@ -12,10 +12,9 @@ public class Cell extends StackPane {
     private double width, height;
     private URL imgAssetsUrl;
 
-    private static final String imgAssetsFolder = "assets";
     private static final String imgCroppedFormat = "%d-%d.png";
     private static final String imgFormat = "%d.png";
-    public Cell(double x, double y, double _width, double _height) {
+    public Cell(double x, double y, double _width, double _height, URL imgAssetsUrl) {
         width = _width; height = _height;
         setLayoutX(x);
         setLayoutY(y);
@@ -30,8 +29,7 @@ public class Cell extends StackPane {
         setOpacity(0.9);
         getChildren().add(im);
 
-        imgAssetsUrl = getClass().getResource(imgAssetsFolder);
-        assert imgAssetsUrl != null;
+        this.imgAssetsUrl = imgAssetsUrl;
     }
 
     public void carPassHighlight() {

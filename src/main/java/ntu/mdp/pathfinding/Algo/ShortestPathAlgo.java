@@ -23,8 +23,11 @@ public class ShortestPathAlgo {
         this.n = n;
         this.carR = r;
         this.carC = c;
+        System.out.println("Arena set up");
         this.arena = new Arena(m, n, obstacles);
+        System.out.println("BF create");
         this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
+        System.out.println("Init done");
     }
 
     public List<CarMove> findShortestValidPath() {
