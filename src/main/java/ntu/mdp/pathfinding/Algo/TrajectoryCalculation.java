@@ -15,7 +15,6 @@ public class TrajectoryCalculation {
     // the real coordinates of the obstacle
     private int targetR;
     private int targetC;
-    private int targetTheta;
     private int obstacleDir;
 
     // the real coordinates of the robot
@@ -28,7 +27,6 @@ public class TrajectoryCalculation {
         this.targetR = obsR;
         this.targetC = obsC;
         this.obstacleDir = obsDir; // of value [0, 1, 2, 3]
-        this.targetTheta = (int)(oppositeDirMap.get(obsDir) * Math.PI / 2); // represent the data in PI.
         this.robotR = robotR;
         this.robotC = robotC;
         this.robotTheta = robotTheta;
