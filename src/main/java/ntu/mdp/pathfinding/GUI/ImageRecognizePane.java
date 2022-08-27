@@ -6,16 +6,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.net.URL;
+
 public class ImageRecognizePane extends Pane {
     private Text title;
     private Cell imgDisplay;
 
-    public ImageRecognizePane(double startX, double startY, double width, double height) {
+    public ImageRecognizePane(double startX, double startY, double width, double height, URL imgURL) {
         title = new Text("Image Recognized");
         title.setLayoutX(startX);
         title.setLayoutY(startY + 10);
         title.setStyle("-fx-font: 24 arial;");
-        imgDisplay = new Cell(startX, startY + 30, width, height);
+        imgDisplay = new Cell(startX, startY + 30, width, height, imgURL);
         getChildren().addAll(title, imgDisplay);
     }
 

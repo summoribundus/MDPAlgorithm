@@ -37,4 +37,12 @@ public class TrajectoryResult {
     public CarMove getCarMove() {
         return carMove;
     }
+
+    public boolean isClockwiseTurn1() {
+        return isClockwiseTurn1;
+    }
+
+    public boolean isClockwiseTurn2() {
+        return isClockwiseTurn2;
+    }
 }

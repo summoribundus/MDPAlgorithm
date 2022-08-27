@@ -6,11 +6,11 @@ import ntu.mdp.pathfinding.Obstacle;
 public class SimulatorMock {
     public static Obstacle[] getObstacles() {
         return new Obstacle[]{
-                new Obstacle(10, 12, 2, 3),
-                new Obstacle(4, 26, 0, 8),
-                new Obstacle(18, 8, 1, 13),
-                new Obstacle(26, 36, 3, 19),
-                new Obstacle(32, 14, 2, 22),
+                new Obstacle(10, 12, 2, 3, false),
+                new Obstacle(4, 26, 0, 8, false),
+                new Obstacle(18, 8, 1, 13, false),
+                new Obstacle(26, 36, 3, 19, false),
+                new Obstacle(32, 14, 2, 22, false),
         };
     }
 

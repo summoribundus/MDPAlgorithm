@@ -1,5 +1,6 @@
 package ntu.mdp.pathfinding.Algo;
 
+import ntu.mdp.pathfinding.InputData;
 import ntu.mdp.pathfinding.Obstacle;
 
 import java.util.*;
@@ -73,7 +74,7 @@ public class ShortestPathBF {
     }
 
     public static void main(String[] args) {
-        ShortestPathBF shortestPathBF = new ShortestPathBF(ShortestPathMock.getObstacles(), 0, 0);
+        ShortestPathBF shortestPathBF = new ShortestPathBF(InputData.getObstacles(), 0, 0);
         shortestPathBF.findPath();
         int[] path = shortestPathBF.getNextPath();
         for (int i = 1; i < path.length; i++) {
