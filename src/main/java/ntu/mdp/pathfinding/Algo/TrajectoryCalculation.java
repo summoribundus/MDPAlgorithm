@@ -1,9 +1,5 @@
 package ntu.mdp.pathfinding.Algo;
 
-import ntu.mdp.pathfinding.Obstacle;
-
-import java.util.HashMap;
-
 import java.util.HashMap;
 
 /***
@@ -14,7 +10,7 @@ public class TrajectoryCalculation {
     // the constant r, HARDCODED now
     final int r = 23;
     // opposite direction mapping
-    final HashMap<Integer, Integer> oppositeDir = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
+    final HashMap<Integer, Integer> oppositeDirMap = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
 
     // the real coordinates of the obstacle
     private int targetR;
@@ -28,11 +24,11 @@ public class TrajectoryCalculation {
     private int robotTheta;
 
 
-    public TrajectoryCalculation(Obstacle obs, int robotR, int robotC, int robotTheta){
-        this.targetR = obs.getTargetedR();
-        this.targetC = obs.getTargetedC();
-        this.obstacleDir = obs.getDir(); // of value [0, 1, 2, 3]
-        this.targetTheta = (int)(oppositeDir.get(obs.getDir()) * Math.PI / 2); // represent the data in PI.
+    public TrajectoryCalculation(int obsR, int obsC, int obsDir, int robotR, int robotC, int robotTheta){
+        this.targetR = obsR;
+        this.targetC = obsC;
+        this.obstacleDir = obsDir; // of value [0, 1, 2, 3]
+        this.targetTheta = (int)(oppositeDirMap.get(obsDir) * Math.PI / 2); // represent the data in PI.
         this.robotR = robotR;
         this.robotC = robotC;
         this.robotTheta = robotTheta;
