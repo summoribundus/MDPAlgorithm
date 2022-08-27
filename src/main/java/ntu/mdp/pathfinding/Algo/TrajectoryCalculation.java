@@ -11,9 +11,6 @@ import java.util.HashMap;
  */
 public class TrajectoryCalculation {
 
-
-    // use enlarged virtual obstacles, robot as a point, the
-
     // the constant r, HARDCODED now
     final int r = 23;
     // opposite direction mapping
@@ -110,7 +107,7 @@ public class TrajectoryCalculation {
         else if (alpha > 0 && dir == 1)
             alpha = alpha - 2*Math.PI;
 
-        return alpha;
+        return Math.abs(alpha);
     }
 
 
