@@ -11,3 +11,6 @@
 .cell-car-highlight {
     -fx-background-color:derive(orangered, 0.9);
 }
+.cell-virtualBoarder-highlight {
+    -fx-background-color:derive(olive, 0.9);
+}

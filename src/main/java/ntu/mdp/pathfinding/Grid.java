@@ -22,6 +22,9 @@ public class Grid extends Pane {
     private Timeline timeline;
     private static final int[] dr = {0, -1, 0, 1};
     private static final int[] dc = {-1, 0, 1, 0};
+    private static final int[][] dImageSquare = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+    private static final int[][] dVirtualBlockSquare = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+    private static final int[][] dArrowImageSquare = {{0, -1, 1, -1}, {-1, 0, -1, 1}, {0, 2, 1, 2}, {2, 0, 2, 1}};
 
 
     public Grid(int _m, int _n, double width, double height, double marginX, double marginY) {
@@ -54,11 +57,27 @@ public class Grid extends Pane {
 
     public void setUpObstacles(Obstacle[] obstacles) {
         for (Obstacle obstacle : obstacles) {
-            cells[obstacle.getR()][obstacle.getC()].setImage(obstacle.getImgIdx());
-            int imgDir = obstacle.getDir(), nr = obstacle.getR() + dr[imgDir], nc = obstacle.getC() + dc[imgDir];
-            if (inRange(nr, nc)) cells[nr][nc].setImage(arrowImg[imgDir]);
+            int r = obstacle.getR(), c = obstacle.getC(), imgIdx = obstacle.getImgIdx();
+            for (int i = 0; i < 4; i++) {
+                int nr = r+dImageSquare[i][0], nc = c+dImageSquare[i][1];
+                cells[nr][nc].setImage(imgIdx, i);
+                setUpVirtualObstacles(nr, nc, i);
+            }
+            for (int i = 0; i < 4; i += 2) {
+                int imgDir = obstacle.getDir(), nr = r + dArrowImageSquare[imgDir][i], nc = c + dArrowImageSquare[imgDir][i+1];
+                if (inRange(nr, nc)) cells[nr][nc].setImage(arrowImg[imgDir]);
+            }
         }
         this.obstacles = obstacles;
+    }
+
+    private void setUpVirtualObstacles(int r, int c, int idx) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                int nr = r + i * dVirtualBlockSquare[idx][0], nc = c + j * dVirtualBlockSquare[idx][1];
+                if (inRange(nr, nc) && !cells[nr][nc].isImageSet()) cells[nr][nc].virtualBoarderHighlight();
+            }
+        }
     }
 
     public void clearObstaclesAndPath() {
@@ -72,8 +91,8 @@ public class Grid extends Pane {
     }
 
     public void setUpCarStartArea() {
-        for (int i = 0; i < 2; i++)
-            for (int j = 0; j < 2; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
                 cells[i][j].carStartHighlight();
     }
 
@@ -104,7 +123,10 @@ public class Grid extends Pane {
     }
 
     public void clearGridRefresh() {
-        timeline.stop();
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
     }
 
     private boolean inRange(int r, int c) {

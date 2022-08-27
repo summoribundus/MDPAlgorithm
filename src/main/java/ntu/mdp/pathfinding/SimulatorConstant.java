@@ -1,10 +1,10 @@
 package ntu.mdp.pathfinding;
 
 public class SimulatorConstant {
-    public static final int nColumnGrid = 20;
-    public static final int nRowGridGrid = 20;
-    public static final int cellWidth = 40;
-    public static final int cellHeight = 40;
+    public static final int nColumnGrid = 40;
+    public static final int nRowGridGrid = 40;
+    public static final int cellWidth = 20;
+    public static final int cellHeight = 20;
     public static final int marginX = 20;
     public static final int marginY = 20;
 

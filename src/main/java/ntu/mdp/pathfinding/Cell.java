@@ -13,6 +13,7 @@ public class Cell extends StackPane {
     private URL imgAssetsUrl;
 
     private static final String imgAssetsFolder = "assets";
+    private static final String imgCroppedFormat = "%d-%d.png";
     private static final String imgFormat = "%d.png";
     public Cell(double x, double y, double _width, double _height) {
         width = _width; height = _height;
@@ -60,10 +61,20 @@ public class Cell extends StackPane {
         getStyleClass().remove("cell-hover-highlight");
     }
 
+    public void virtualBoarderHighlight() {
+        clearHighlight();
+        getStyleClass().add("cell-virtualBoarder-highlight");
+    }
+
+    public void unVirtualBoarderHighlight() {
+        getStyleClass().remove("cell-virtualBoarder-highlight");
+    }
+
     public void clearHighlight() {
         unCarHighlight();
         unCarPassHighlight();
         unCarStartHighlight();
+        unVirtualBoarderHighlight();
     }
 
     public void setImage(String imgPath) {
@@ -71,10 +82,14 @@ public class Cell extends StackPane {
         setImage(image);
     }
 
+    public void setImage(int idx, int part) {
+        String imgPath = imgAssetsUrl.toExternalForm() + imgCroppedFormat.formatted(idx, part);
+        setImage(imgPath);
+    }
+
     public void setImage(int idx) {
         String imgPath = imgAssetsUrl.toExternalForm() + imgFormat.formatted(idx);
-        Image image = new Image(imgPath, width, height, false, false);
-        setImage(image);
+        setImage(imgPath);
     }
 
     public void setImage(Image image) {
@@ -83,5 +98,9 @@ public class Cell extends StackPane {
 
     public void unSetImage() {
         im.setImage(null);
+    }
+
+    public boolean isImageSet() {
+        return im.getImage() != null;
     }
 }

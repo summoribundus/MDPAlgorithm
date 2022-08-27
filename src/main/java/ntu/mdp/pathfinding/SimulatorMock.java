@@ -3,11 +3,11 @@ package ntu.mdp.pathfinding;
 public class SimulatorMock {
     public static Obstacle[] getObstacles() {
         return new Obstacle[]{
-                new Obstacle(5, 6, 2, 3),
-                new Obstacle(2, 13, 0, 8),
-                new Obstacle(9, 4, 1, 13),
-                new Obstacle(13, 18, 3, 19),
-                new Obstacle(16, 7, 2, 22),
+                new Obstacle(10, 12, 2, 3),
+                new Obstacle(4, 26, 0, 8),
+                new Obstacle(18, 8, 1, 13),
+                new Obstacle(26, 36, 3, 19),
+                new Obstacle(32, 14, 2, 22),
         };
     }
 
