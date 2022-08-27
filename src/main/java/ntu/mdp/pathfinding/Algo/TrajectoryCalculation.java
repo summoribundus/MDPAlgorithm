@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class TrajectoryCalculation {
 
     // the constant r, HARDCODED now
-    final int r = 23;
+    final int r = 25;
     // opposite direction mapping
     final HashMap<Integer, Integer> oppositeDirMap = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
 
@@ -65,7 +65,7 @@ public class TrajectoryCalculation {
     // calculate the obstacle circle center
     public int[] calculateObstacleCircleCenter(int targetX, int targetY, int robotX, int robotY, int obstacleDir){
         // turning right
-        if (targetX > robotX) {
+        if (targetX >= robotX) {
             if (obstacleDir == 1 || obstacleDir == 3)
                 return new int[]{targetX - r, targetY};
             else if (targetY > robotY) // upper right
@@ -128,10 +128,10 @@ public class TrajectoryCalculation {
         int obsCircleC = obstacleCircle[1];
 
         // 1. obstacle is at the right of the robot
-        if (targetR > robotR) {
+        if (targetR >= robotR) {
 
             // 1(a) if obstacle is in the upper right corner of the robot.
-            if (targetC > robotC) {
+            if (targetC >= robotC) {
                 if (obstacleDir == 0 || obstacleDir == 1)
                     // rsr
                     return calculateRSR(robotR, robotC, targetR, targetC, robotCircleR,
@@ -158,7 +158,7 @@ public class TrajectoryCalculation {
         else {
 
             // 2(a) if obstacle is at the upper left of the robot
-            if (targetC > robotC){
+            if (targetC >= robotC){
                 //lsl
                 if (obstacleDir == 1 || obstacleDir == 2)
                     return calculateLSL(robotR, robotC, targetR, targetC, robotCircleR,

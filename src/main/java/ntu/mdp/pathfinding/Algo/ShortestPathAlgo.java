@@ -25,26 +25,28 @@ public class ShortestPathAlgo {
     }
 
     public Obstacle[] findShortestValidPath() {
-        shortestPathBF.findPath();
-
+//        shortestPathBF.findPath();
+//
 //        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
-        while (shortestPathBF.hasNextPath()) {
-            int[] path = shortestPathBF.getNextPath();
-            boolean pathValid = true;
-            Obstacle car = idxMapping.get(path[0]);
-            int carR = car.getR(), carC = car.getC(), theta = 90;
-            for (int i = 1; i < path.length-1; i++) {
-                Obstacle ob = idxMapping.get(path[i]);
-                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getR(), ob.getC(), ob.getDir(), carR, carC, theta);
-                TrajectoryResult trajectoryResult= trajectoryCalculation.trajectoryResult();
-                if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC())) { pathValid = false; break; }
-                carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = trajectoryResult.getCarMove().getTurnTheta2();
-                carR += dReverses[ob.getDir()][0] * R; carC += dReverses[ob.getDir()][1] * R;
-                if (!(0 >= carR && carR < m && 0 >= carC && carC < n)) { pathValid = false; break; }
-
-            }
-            if (pathValid) return moveSteps;
-        }
+//        while (shortestPathBF.hasNextPath()) {
+//            int[] path = shortestPathBF.getNextPath();
+//            boolean pathValid = true;
+//            Obstacle car = idxMapping.get(path[0]);
+//            int carR = car.getR(), carC = car.getC(), theta = 90;
+//            for (int i = 1; i < path.length-1; i++) {
+//                Obstacle ob = idxMapping.get(path[i]);
+//                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getR(), ob.getC(), ob.getDir(), carR, carC, theta);
+//                TrajectoryResult trajectoryResult= trajectoryCalculation.trajectoryResult();
+//                if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC())) { pathValid = false; break; }
+//                carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = trajectoryResult.getCarMove().getTurnTheta2();
+//                carR += dReverses[ob.getDir()][0] * R; carC += dReverses[ob.getDir()][1] * R;
+//                if (!(0 >= carR && carR < m && 0 >= carC && carC < n)) { pathValid = false; break; }
+//                for (int j = 0; j < R; j++) {
+//                    if (dReverses[ob.getDir() == 0])
+//                }
+//            }
+//            if (pathValid) return moveSteps;
+//        }
         return null;
     }
 
