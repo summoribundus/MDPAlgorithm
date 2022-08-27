@@ -236,7 +236,8 @@ public class TrajectoryCalculation {
 
         int totalLength = arc1 + arc2 + l;
 
-        TrajectoryResult res = trajectoryResult(new int[]{pt1R, pt1C}, new int[]{pt2R, pt2C}, new int[]{robotCircleR, robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength);
+        TrajectoryResult res = trajectoryResult(new int[]{pt1R, pt1C}, new int[]{pt2R, pt2C}, new int[]{robotCircleR, robotCircleC},
+                new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 1, 1);
 
         return res;
     }
@@ -282,7 +283,8 @@ public class TrajectoryCalculation {
 
         int totalLength = arc1 + arc2 + l;
 
-        TrajectoryResult res = trajectoryResult(new int[]{pt1R, pt1C}, new int[]{pt2R, pt2C}, new int[]{robotCircleR, robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength);
+        TrajectoryResult res = trajectoryResult(new int[]{pt1R, pt1C}, new int[]{pt2R, pt2C}, new int[]{robotCircleR,
+                robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 0, 0);
 
         return res;
     }
@@ -342,7 +344,8 @@ public class TrajectoryCalculation {
 
         int totalLength = arc1 + arc2 + l;
 
-        TrajectoryResult res = trajectoryResult(new int[]{(int)pt1R, (int)pt1C}, new int[]{(int)pt2R, (int)pt2C}, new int[]{robotCircleR, robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength);
+        TrajectoryResult res = trajectoryResult(new int[]{(int)pt1R, (int)pt1C}, new int[]{(int)pt2R, (int)pt2C}, new int[]{robotCircleR, robotCircleC},
+                new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 0, 1);
 
         return res;
 
@@ -402,16 +405,17 @@ public class TrajectoryCalculation {
 
         int totalLength = arc1 + arc2 + l;
 
-        TrajectoryResult res = trajectoryResult(new int[]{(int)pt1R, (int)pt1C}, new int[]{(int)pt2R, (int)pt2C}, new int[]{robotCircleR, robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength);
+        TrajectoryResult res = trajectoryResult(new int[]{(int)pt1R, (int)pt1C}, new int[]{(int)pt2R, (int)pt2C},
+                new int[]{robotCircleR, robotCircleC}, new int[]{obsCircleR, obsCircleC}, alpha1, alpha2, totalLength, 1, 0);
 
         return res;
 
     }
 
 
-    public TrajectoryResult trajectoryResult(int[] pt1, int[] pt2, int[] circle1, int[] circle2, int theta1, int theta2, int length) {
+    public TrajectoryResult trajectoryResult(int[] pt1, int[] pt2, int[] circle1, int[] circle2, int theta1, int theta2, int length, int dir1, int dir2) {
         // pt1x, pt1y theta1, circle1, r, pt2x, pt2y, theta2, circle2
-        return new TrajectoryResult(pt1, pt2, circle1, circle2, theta1, theta2, length);
+        return new TrajectoryResult(pt1, pt2, circle1, circle2, theta1, theta2, length, dir1, dir2);
     }
 
 }
