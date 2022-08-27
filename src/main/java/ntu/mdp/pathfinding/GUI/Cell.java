@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.GUI;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

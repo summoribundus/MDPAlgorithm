@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.GUI;
 
 public class SimulatorConstant {
     public static final int nColumnGrid = 40;

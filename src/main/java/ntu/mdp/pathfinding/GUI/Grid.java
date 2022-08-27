@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.GUI;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -6,6 +6,9 @@ import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import ntu.mdp.pathfinding.Car;
+import ntu.mdp.pathfinding.Obstacle;
+import ntu.mdp.pathfinding.Point;
 
 import java.net.URL;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -72,8 +75,8 @@ public class Grid extends Pane {
     }
 
     private void setUpVirtualObstacles(int r, int c, int idx) {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 int nr = r + i * dVirtualBlockSquare[idx][0], nc = c + j * dVirtualBlockSquare[idx][1];
                 if (inRange(nr, nc) && !cells[nr][nc].isImageSet()) cells[nr][nc].virtualBoarderHighlight();
             }

@@ -4,6 +4,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ntu.mdp.pathfinding.GUI.Grid;
+import ntu.mdp.pathfinding.GUI.GridControlPane;
+import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
+import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.io.IOException;
 

@@ -1,4 +1,7 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.GUI;
+
+import ntu.mdp.pathfinding.Car;
+import ntu.mdp.pathfinding.Obstacle;
 
 public class SimulatorMock {
     public static Obstacle[] getObstacles() {

@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.GUI;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
