@@ -12,7 +12,6 @@ import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -22,11 +21,11 @@ class ShortestPathRunner implements Runnable {
     public void run() {
         Car car = InputData.getCar();
         ShortestPathAlgo algo = new ShortestPathAlgo(40, 40, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
-        algo.findShortestValidPath();
+//        algo.findShortestValidPath();
+        algo.fakeShortestValidPathForTesting();
         System.out.println("Finished.");
         List<int[]> points = algo.getPathGrids();
         for (int[] p : points) {
-            System.out.println(Arrays.toString(p));
             car.goTo(p[0], p[1]);
         }
     }

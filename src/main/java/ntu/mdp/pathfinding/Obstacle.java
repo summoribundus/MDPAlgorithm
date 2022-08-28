@@ -7,7 +7,7 @@ public class Obstacle {
 
     private int imgIdx;
 
-    public static int[][] imgDirToTargetMapping = new int[][]{{0, -5}, {-5, 0}, {0, 6}, {6, 5}};
+    public static int[][] imgDirToTargetMapping = new int[][]{{0, -5}, {-5, 0}, {0, 6}, {6, 0}};
 
     // 10 based r and c
     public Obstacle(int r, int c, int dir, int imgIdx, boolean isFakeObstacle) {
@@ -17,6 +17,7 @@ public class Obstacle {
         this.imgIdx = imgIdx;
         this.targetedR = !isFakeObstacle ? r + imgDirToTargetMapping[dir][0] : r;
         this.targetedC = !isFakeObstacle ? c + imgDirToTargetMapping[dir][1] : c;
+        System.out.println(this.targetedR + " " + this.targetedC);
     }
 
     public int getR() {

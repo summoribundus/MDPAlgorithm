@@ -13,7 +13,7 @@ public class ShortestPathAlgo {
     private int carR, carC;
     private ShortestPathBF shortestPathBF;
     private int[][] dReverses = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
-    private int R = 25, m, n;
+    private int R = 5, m, n;
 
     private List<CarMove> carMoves;
     private List<int[]> pathGrids;
@@ -26,6 +26,28 @@ public class ShortestPathAlgo {
         this.carC = c;
         this.arena = new Arena(m, n, obstacles);
         this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
+    }
+
+    public List<CarMove> fakeShortestValidPathForTesting() {
+        shortestPathBF.findPath();
+        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
+        int[] path = shortestPathBF.getNextPath();
+        pathGrids = new ArrayList<>();
+        int startR = idxMapping.get(path[0]).getR(), startC = idxMapping.get(path[0]).getC(), rStep, cStep;
+        for (int i = 1; i < path.length; i++) {
+            Obstacle ob = idxMapping.get(path[i]);
+            rStep = ob.getTargetedR() > startR ? 1 : -1;
+            cStep = ob.getTargetedC() > startC ? 1 : -1;
+            for (int r = startR; r != ob.getTargetedR(); r += rStep) {
+                pathGrids.add(new int[]{r, startC});
+            }
+            for (int c = startC; c != ob.getTargetedC(); c += cStep) {
+                pathGrids.add(new int[]{ob.getTargetedR(), c});
+            }
+            pathGrids.add(new int[]{ob.getTargetedR(), ob.getTargetedC()});
+            startR = ob.getTargetedR(); startC = ob.getTargetedC();
+        }
+        return new ArrayList<>();
     }
 
     public List<CarMove> findShortestValidPath() {
