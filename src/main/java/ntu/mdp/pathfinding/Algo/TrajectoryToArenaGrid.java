@@ -9,22 +9,34 @@ public class TrajectoryToArenaGrid {
     private static int[] quadrantSameYSide = {0, 4, 3, 2, 1};
     private static int[] quadrantSameXSide = {0, 2, 1, 4, 3};
     private static int[][][] dEdgeLooping = {{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}, {{1, 0}, {0, -1}, {-1, 0}, {0, 1}}};
-    private static int[][] dirToEdge = //
 
     private static int R = 5;
 
-    public static void main(String[] args){
-        findGridCirclePath(8, 2, 16, 9, 12, 5, false);
+    public static List<int[]> findReversePath(int r1, int c1, int r2, int c2, int[] dReverse) {
+        List<int[]> pointsPassed = new ArrayList<>();
+        if (dReverse[0] == 0) {
+            for (int i = c1; i != c2; i += dReverse[1]) {
+                pointsPassed.add(new int[]{r1, i});
+            }
+        } else {
+            for (int i = r1; i != r2; i += dReverse[0]) {
+                pointsPassed.add(new int[]{i, c1});
+            }
+        }
+        pointsPassed.add(new int[]{r2, c2});
+        return pointsPassed;
     }
 
     public static List<int[]> findGirdLinePath(int r1, int c1, int r2, int c2) {
         List<int[]> pointsPassed = new ArrayList<>();
         double a = (double) (r2 - r1) / (c2 - c1), b = r1 - c1 * a;
-        for (int i = c1; i <= c2; i++) {
+        int step = c1 < c2 ? 1 : -1;
+        for (int i = c1; i != c2; i += step) {
             double y = a * i + b;
             int j = (int) Math.ceil(y);
-            pointsPassed.add(new int[]{i, j});
+            pointsPassed.add(new int[]{j, i});
         }
+        pointsPassed.add(new int[]{r2, c2});
         return pointsPassed;
     }
 
@@ -38,7 +50,7 @@ public class TrajectoryToArenaGrid {
             recTanC1 = Math.min(c1, c2); recTanC2 = Math.max(c1, c2);
         } else if (checkReverseQuadrant(quadrant1, quadrant2)) {
             boolean CClockwiseTurn = (quadrant1 == 2 || quadrant1 == 4) ? ((quadrant2 == 2) != isClockWise) : ((quadrant1 == 1) == isClockWise);
-            boolean RClockwiseTurn = (quadrant1 == 2 || quadrant1 == 4) ? ((quadrant2 == 2) != isClockWise) : ((quadrant2 == 1) != isClockWise);
+            boolean RClockwiseTurn = (quadrant1 == 2 || quadrant1 == 4) ? ((quadrant2 == 2) != isClockWise) : ((quadrant2 == 1) == isClockWise);
             recTanR1 = RClockwiseTurn ? circleR - R : Math.min(r1, r2);
             recTanR2 = RClockwiseTurn ? Math.max(r1, r2) : circleR + R;
             recTanC1 = CClockwiseTurn ? Math.min(c1, c2) : circleC - R;
@@ -58,25 +70,15 @@ public class TrajectoryToArenaGrid {
         int edge1 = getEdgeOfPoints(recTanR1, recTanR2, recTanC1, recTanC2, r1, c1);
         int edge2 = getEdgeOfPoints(recTanR1, recTanR2, recTanC1, recTanC2, r2, c2);
         int turn = isClockWise ? 0 : 1;
-        System.out.println(Arrays.toString(endingPoint[turn]));
         endingPoint[turn][edge2] = (edge2 == 0 || edge2 == 2) ? r2 : c2;
-        System.out.println(recTanR1 + " " + recTanR2 + "  " + recTanC1 + " " +  recTanC2);
-        System.out.println(edge1 + " " + edge2);
-        System.out.println(Arrays.toString(endingPoint[turn]));
-        List<int[]> result = circleRecTanEdgeLooping(endingPoint[turn], r1, c1, edge1, edge2, turn);
-        for (int[] p : result) {
-            System.out.println(Arrays.toString(p));
-        }
-        return result;
+        return circleRecTanEdgeLooping(endingPoint[turn], r1, c1, edge1, edge2, turn);
     }
 
     private static List<int[]> circleRecTanEdgeLooping(int[] endP, int r1, int c1, int edge1, int edge2, int turn) {
         List<int[]> pointsPassed = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            int walkingEdge = (edge1 + i) % 4;
-            System.out.println("curEdge: " + walkingEdge);
+            int walkingEdge = turn == 0 ? (edge1 + i) % 4 : (edge1 - i + 4) % 4;
             int[] currentDir = dEdgeLooping[turn][walkingEdge];
-            System.out.println(Arrays.toString(currentDir));
             if (currentDir[0] == 0) {
                 while (c1 != endP[walkingEdge]) {
                     System.out.println(c1);
@@ -89,7 +91,6 @@ public class TrajectoryToArenaGrid {
                     r1 += currentDir[0];
                 }
             }
-            System.out.println(r1 + " " + c1);
             if (walkingEdge == edge2) break;
         }
         return pointsPassed;
@@ -123,4 +124,11 @@ public class TrajectoryToArenaGrid {
         return quadrantSameYSide[quadrant1] == quadrant2;
     }
 
+    public static void main(String[] args){
+//        findGridCirclePath(8, 8, 15, 1, 12, 5, false);
+        List<int[]> points = findGirdLinePath(14, 13, 9, 21);
+        for (int[] p : points) {
+            System.out.println(Arrays.toString(p));
+        }
+    }
 }

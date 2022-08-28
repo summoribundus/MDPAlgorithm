@@ -24,11 +24,11 @@ class ShortestPathRunner implements Runnable {
         ShortestPathAlgo algo = new ShortestPathAlgo(40, 40, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
         algo.findShortestValidPath();
         System.out.println("Finished.");
-//        List<int[]> points = algo.getLastPathGrids();
-//        for (int[] p : points) {
-//            System.out.println(Arrays.toString(p));
-//            car.goTo(p[0], p[1]);
-//        }
+        List<int[]> points = algo.getPathGrids();
+        for (int[] p : points) {
+            System.out.println(Arrays.toString(p));
+            car.goTo(p[0], p[1]);
+        }
     }
 }
 
