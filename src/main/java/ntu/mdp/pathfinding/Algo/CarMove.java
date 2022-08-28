@@ -21,4 +21,13 @@ public class CarMove {
     public int getTurnTheta2() {
         return turnTheta2;
     }
+
+    @Override
+    public String toString() {
+        return "CarMove{" +
+                "turnTheta1=" + turnTheta1 +
+                ", turnTheta2=" + turnTheta2 +
+                ", moveLength=" + moveLength +
+                '}';
+    }
 }
