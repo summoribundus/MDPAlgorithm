@@ -13,91 +13,91 @@ public class TrajectoryCalculation {
     final HashMap<Integer, Integer> oppositeDirMap = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
 
     // the real coordinates of the obstacle
-    private int targetR;
     private int targetC;
+    private int targetR;
     private int targetTheta;
     private int obstacleDir;
 
     // the real coordinates of the robot
-    private int robotR;
     private int robotC;
+    private int robotR;
     private int robotTheta;
 
 
-    public TrajectoryCalculation(int obsR, int obsC, int obsDir, int robotR, int robotC, int robotTheta){
-        this.targetR = obsR;
+    public TrajectoryCalculation(int obsC, int obsR, int obsDir, int robotC, int robotR, int robotTheta){
         this.targetC = obsC;
+        this.targetR = obsR;
         this.obstacleDir = obsDir; // of value [0, 1, 2, 3]
         this.targetTheta = (int)(oppositeDirMap.get(obsDir) * Math.PI / 2); // represent the data in PI.
-        this.robotR = robotR;
         this.robotC = robotC;
+        this.robotR = robotR;
         this.robotTheta = robotTheta;
     }
 
     // to calculate the position of the circle
-    public int[] calculateRobotStartingCenterOfCircle(int robotR, int robotC, int robot_theta, int targetC){
+    public int[] calculateRobotStartingCenterOfCircle(int robotC, int robotR, int robot_theta, int targetC){
         // dir denotes left or right turning. 0 -> left turn, 1 -> right turn
         // turn left, to find circle point, clockwise. turn right, counterclockwise.
-        double circlePointR = 0;
         double circlePointC = 0;
+        double circlePointR = 0;
 
         // the unit vector v1 in direction of the robot.
-        double v1R = Math.cos(robot_theta);
-        double v1C = Math.sin(robot_theta);
+        double v1C = Math.cos(robot_theta);
+        double v1R = Math.sin(robot_theta);
 
         // find v1 counterclockwise/clockwise rotate to v2 according to the directions
-        double v2R = 0;
         double v2C = 0;
-        if (targetC > robotR) //turning left, counterclockwise
+        double v2R = 0;
+        if (targetC > robotC) //turning left, counterclockwise
         {
-            v2R = -v1C;
-            v2C = v1R;
-        } else {
-            v2R = v1C;
             v2C = -v1R;
+            v2R = v1C;
+        } else {
+            v2C = v1R;
+            v2R = -v1C;
         }
 
         // find the turning circle point.
-        circlePointR = robotR + v2R * r;
         circlePointC = robotC + v2C * r;
+        circlePointR = robotR + v2R * r;
 
-        return new int[]{(int)circlePointR, (int)circlePointC};
+        return new int[]{(int)circlePointC, (int)circlePointR};
     }
 
     // calculate the obstacle circle center
-    public int[] calculateObstacleCircleCenter(int targetX, int targetY, int robotX, int robotY, int obstacleDir){
+    public int[] calculateObstacleCircleCenter(int targetC, int targetR, int robotC, int robotR, int obstacleDir){
         // turning right
-        if (targetX > robotX) {
+        if (targetC > robotC) {
             if (obstacleDir == 1 || obstacleDir == 3)
-                return new int[]{targetX - r, targetY};
-            else if (targetY > robotY) // upper right
-                return new int[]{targetX, targetY - r};
+                return new int[]{targetC - r, targetR};
+            else if (targetR > robotR) // upper right
+                return new int[]{targetC, targetR - r};
             else
-                return new int[]{targetX, targetY + r};
+                return new int[]{targetC, targetR + r};
         }
         // turning left
         else {
             if (obstacleDir == 1 || obstacleDir == 3)
-                return new int[]{targetX + r, targetY};
-            else if (targetY > robotY) // upper left
-                return new int[]{targetX, targetY - r};
+                return new int[]{targetC + r, targetR};
+            else if (targetR > robotR) // upper left
+                return new int[]{targetC, targetR - r};
             else
-                return new int[]{targetX, targetY + r};
+                return new int[]{targetC, targetR + r};
         }
     }
 
 
 
     // function to calculate euclidean distance of 2 functions
-    public int calculateEuclideanDistance(int r1, int c1, int r2, int c2){
-        int deltaR = Math.abs(r1-r2);
+    public int calculateEuclideanDistance(int c1, int r1, int c2, int r2){
         int deltaC = Math.abs(c1-c2);
-        return (int)Math.sqrt(Math.pow(deltaR, 2) + Math.pow(deltaC, 2));
+        int deltaR = Math.abs(r1-r2);
+        return (int)Math.sqrt(Math.pow(deltaC, 2) + Math.pow(deltaR, 2));
     }
 
     // arc angle computation
-    public double calculateArcAngle(int startR, int startC, int destR, int destC, int dir) {
-        double alpha = Math.atan2(destC, destR) - Math.atan2(startC, startR);
+    public double calculateArcAngle(int startC, int startR, int destC, int destR, int dir) {
+        double alpha = Math.atan2(destR, destC) - Math.atan2(startR, startC);
         if (alpha < 0 && dir == 0)
             alpha = alpha + 2*Math.PI;
         else if (alpha > 0 && dir == 1)
@@ -108,11 +108,11 @@ public class TrajectoryCalculation {
 
 
     // arc length computation
-    public int calculateArcLength(int startR, int startC, int destR, int destC, int dir){
+    public int calculateArcLength(int startC, int startR, int destC, int destR, int dir){
         // dir = 0 for turn left, direct = 1 for turn right
         // tan_x and tan_y are the coordinates for the starting point on the arc,
-        // while destR and destC are the coordinates for the destination point on the arc
-        double alpha = calculateArcAngle(startR, startC, destR, destC, dir);
+        // while destC and destR are the coordinates for the destination point on the arc
+        double alpha = calculateArcAngle(startC, startR, destC, destR, dir);
 
         return (int)Math.abs(alpha * r);
 
@@ -121,37 +121,37 @@ public class TrajectoryCalculation {
     // choose the path according to the relative position of
     public TrajectoryResult trajectoryResult() {
 
-        int[] centerOfCircle = calculateRobotStartingCenterOfCircle(robotR, robotC, robotTheta, targetR); //calculate the center of the robot turning trajectory
+        int[] centerOfCircle = calculateRobotStartingCenterOfCircle(robotC, robotR, robotTheta, targetC); //calculate the center of the robot turning trajectory
         int robotCircleR = centerOfCircle[0];
         int robotCircleC =centerOfCircle[1];
 
-        int[] obstacleCircle = calculateObstacleCircleCenter(targetR, targetC, robotR, robotC, obstacleDir);
+        int[] obstacleCircle = calculateObstacleCircleCenter(targetC, targetR, robotC, robotR, obstacleDir);
         int obsCircleR = obstacleCircle[0];
         int obsCircleC = obstacleCircle[1];
 
         // 1. obstacle is at the right of the robot
-        if (targetR > robotR) {
+        if (targetC > robotC) {
 
             // 1(a) if obstacle is in the upper right corner of the robot.
-            if (targetC > robotC) {
+            if (targetR > robotR) {
                 if (obstacleDir == 0 || obstacleDir == 1)
                     // rsr
-                    return calculateRSR(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateRSR(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
                 else
                     // rsl
-                    return calculateRSL(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateRSL(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
             }
             // 1(b) if obstacle is in the lower right corner of the robot.
             else {
                 if (obstacleDir == 1 || obstacleDir == 2)
                     // rsr
-                    return calculateRSR(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateRSR(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
                 else
                     // rsl
-                    return calculateRSL(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateRSL(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
             }
 
@@ -160,14 +160,14 @@ public class TrajectoryCalculation {
         else {
 
             // 2(a) if obstacle is at the upper left of the robot
-            if (targetC > robotC){
+            if (targetR > robotR){
                 //lsl
                 if (obstacleDir == 1 || obstacleDir == 2)
-                    return calculateLSL(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateLSL(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
                     //lsr
                 else
-                    return calculateLSR(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateLSR(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
 
             }
@@ -175,11 +175,11 @@ public class TrajectoryCalculation {
             else {
                 //lsl
                 if (obstacleDir == 0 || obstacleDir == 1)
-                    return calculateLSL(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateLSL(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
                     //lsr
                 else
-                    return calculateLSR(robotR, robotC, targetR, targetC, robotCircleR,
+                    return calculateLSR(robotC, robotR, targetC, targetR, robotCircleR,
                             robotCircleC, obsCircleR, obsCircleC);
 
             }
