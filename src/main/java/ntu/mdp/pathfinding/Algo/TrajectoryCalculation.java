@@ -507,10 +507,10 @@ public class TrajectoryCalculation {
 
     // public int boundary check
     private boolean borderClash(double circle1C, double circle1R, double circle2C, double circle2R){
-        if ((circle1R - r < 0 && circle1C - r < 0 && circle1C + r < 39 && circle1R + r < 39)
-         && (circle2R - r < 0 && circle2C - r < 0 && circle2C + r < 39 && circle2R + r < 39))
-            return false; // no clash
-        else return true;
+        if ((circle1R - r > 0 && circle1C - r > 0 && circle1C + r < 39 && circle1R + r < 39)
+         && (circle2R - r > 0 && circle2C - r > 0 && circle2C + r < 39 && circle2R + r < 39))
+            return true; // no clash
+        else return false;
     }
 
 }
