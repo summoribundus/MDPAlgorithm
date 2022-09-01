@@ -1,21 +1,53 @@
 package ntu.mdp.pathfinding.Algo;
 
 public class TrajectoryResult {
-    private int[] pt1, pt2, circle1, circle2;
 
-    private boolean isClockwiseTurn1;
-    private boolean isClockwiseTurn2;
+    private Curve startCurve;
+    private Line straightLine;
+    private Curve intermediateCurve;
+    private Curve endCurve;
+
+    private int[] pt1, pt2;
+
+    private int[] circle1, circle2;
+
+    private boolean isAllCurve;
+
     private CarMove carMove;
 
-    public TrajectoryResult(int[] pt1, int[] pt2, int[] circle1, int[] circle2,
-                            int theta1, int theta2, int length, int dir1, int dir2) {
-        this.pt1 = pt1;
-        this.pt2 = pt2;
-        this.circle1 = circle1;
-        this.circle2 = circle2;
-        this.carMove = new CarMove(theta1, theta2, length);
-        isClockwiseTurn1 = dir1 == 1;
-        isClockwiseTurn2 = dir2 == 1;
+    private int totalLength;
+
+    public TrajectoryResult(Curve c1, Curve c2, Curve c3) {
+        this.startCurve = c1;
+        this.intermediateCurve = c2;
+        this.straightLine = null;
+        this.endCurve = c3;
+        this.isAllCurve = true;
+
+        this.pt1 = c2.getStartPt();
+        this.pt2 = c2.getEndPt();
+
+        this.circle1 = c1.getCenter();
+        this.circle2 = c3.getCenter();
+
+        this.totalLength = c1.getArcLen() + c2.getArcLen() + c3.getArcLen();
+    }
+
+
+    public TrajectoryResult(Curve c1, Line l2, Curve c3){
+        this.startCurve = c1;
+        this.straightLine = l2;
+        this.intermediateCurve = null;
+        this.endCurve = c3;
+        this.isAllCurve = false;
+
+        this.pt1 = l2.getStartPt();
+        this.pt2 = l2.getEndPt();
+
+        this.circle1 = c1.getCenter();
+        this.circle2 = c3.getCenter();
+
+        this.totalLength = c1.getArcLen() + l2.getLength() + c3.getArcLen();
     }
 
     public int[] getPt1() {
@@ -38,11 +70,21 @@ public class TrajectoryResult {
         return carMove;
     }
 
-    public boolean isClockwiseTurn1() {
-        return isClockwiseTurn1;
+    public boolean isAllCurve() {
+        return isAllCurve;
     }
 
-    public boolean isClockwiseTurn2() {
-        return isClockwiseTurn2;
+    public boolean isClockwiseTurnStart() {
+        return startCurve.isClockwiseTurn();
     }
+
+    public boolean isClockwiseTurnIntermediate() {
+        if (!isAllCurve)
+            return false;
+        return intermediateCurve.isClockwiseTurn();
+    }
+
+    public boolean isClockwiseTurnEnd() {return endCurve.isClockwiseTurn();}
+
+    public int getTotalLength() {return totalLength;}
 }
