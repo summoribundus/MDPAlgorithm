@@ -7,8 +7,6 @@ import java.util.HashMap;
  * this is the trajectory calculation from one obstacle to another - for simulation
  */
 public class TrajectoryCalculation {
-    // opposite direction mapping
-    final HashMap<Integer, Integer> oppositeDirMap = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
     // relative Obstacle direction mapping
     final int[] relativeObsDir0 = new int[] {3, 0, 1, 2};
     final int[] relativeObsDir90 = new int[] {0, 1, 2, 3};
@@ -510,8 +508,8 @@ public class TrajectoryCalculation {
 
     // public int boundary check
     private boolean borderClash(double circle1C, double circle1R, double circle2C, double circle2R){
-        if ((circle1R >= 0 && circle1C >= 0 && circle1C <= 39 && circle1R <= 39)
-         && (circle2R >= 0 && circle2C >= 0 && circle2C <= 39 && circle2R <= 39))
+        if ((circle1R >= 0 && circle1C >= 0 && circle1C < AlgoConstant.GridN && circle1R <= AlgoConstant.GridM)
+         && (circle2R >= 0 && circle2C >= 0 && circle2C <= AlgoConstant.GridN && circle2R <= AlgoConstant.GridM))
             return true;// no clash
         else return false;
     }
