@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import ntu.mdp.pathfinding.Algo.ShortestPathAlgo;
+import ntu.mdp.pathfinding.Algo.ShortestPathTrajectory;
 import ntu.mdp.pathfinding.GUI.Grid;
 import ntu.mdp.pathfinding.GUI.GridControlPane;
 import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
@@ -21,7 +21,7 @@ class ShortestPathRunner implements Runnable {
     @Override
     public void run() {
         Car car = InputData.getCar();
-        ShortestPathAlgo algo = new ShortestPathAlgo(40, 40, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        ShortestPathTrajectory algo = new ShortestPathTrajectory(40, 40, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
         algo.findShortestValidPath();
         System.out.println("Path checking done");
 //        algo.fakeShortestValidPathForTesting();

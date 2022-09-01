@@ -1,13 +1,12 @@
 package ntu.mdp.pathfinding.Algo;
 
-import ntu.mdp.pathfinding.Car;
 import ntu.mdp.pathfinding.Obstacle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ShortestPathAlgo {
+public class ShortestPathTrajectory {
     private final Arena arena;
     private final ShortestPathBF shortestPathBF;
     private final static int[][] dReverses = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
@@ -15,7 +14,7 @@ public class ShortestPathAlgo {
     private List<CarMove> carMoves;
     private List<int[]> pathGrids;
 
-    public ShortestPathAlgo(int m, int n, Obstacle[] obstacles, int r, int c) {
+    public ShortestPathTrajectory(int m, int n, Obstacle[] obstacles, int r, int c) {
         this.arena = new Arena(m, n, obstacles);
         this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
     }
