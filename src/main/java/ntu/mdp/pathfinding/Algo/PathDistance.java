@@ -5,33 +5,19 @@ import ntu.mdp.pathfinding.Obstacle;
 import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
 
-class PathDistanceResult implements Comparable<PathDistanceResult> {
-    private int[] path;
-    private int cost;
-    public PathDistanceResult(int[] path, int cost) {
-        this.path = path;
-        this.cost = cost;
-    }
+record PathDistanceResult(int[] path, int cost) implements Comparable<PathDistanceResult> {
 
     @Override
     public int compareTo(PathDistanceResult o) {
         return Integer.compare(this.cost, o.cost);
     }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public int[] getPath() {
-        return path;
-    }
 }
 
 public class PathDistance implements Runnable {
-    private int[] paths;
-    private Map<Integer, Obstacle> map;
-    private int n;
-    private PriorityBlockingQueue<PathDistanceResult> pq;
+    private final int[] paths;
+    private final Map<Integer, Obstacle> map;
+    private final int n;
+    private final PriorityBlockingQueue<PathDistanceResult> pq;
     public PathDistance(int[] paths, Map<Integer, Obstacle> map, PriorityBlockingQueue<PathDistanceResult> pq) {
         this.n = paths.length;
         this.map = map;

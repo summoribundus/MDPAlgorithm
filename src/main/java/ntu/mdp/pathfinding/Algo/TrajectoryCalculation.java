@@ -7,9 +7,6 @@ import java.util.HashMap;
  * this is the trajectory calculation from one obstacle to another - for simulation
  */
 public class TrajectoryCalculation {
-
-    // the constant r, HARDCODED now
-    final int r = 5;
     // opposite direction mapping
     final HashMap<Integer, Integer> oppositeDirMap = new HashMap<Integer, Integer>() {{put(0, 2); put(1, 3); put(2, 0); put(3, 1);}};
     // relative Obstacle direction mapping
@@ -20,62 +17,56 @@ public class TrajectoryCalculation {
 
 
     // the real coordinates of the obstacle
-    private int targetC;
-    private int targetR;
-    private int targetTheta;
-    private int obstacleDir;
+    private final int targetC;
+    private final int targetR;
+    private final int obstacleDir;
 
     // the real coordinates of the robot
-    private int robotC;
-    private int robotR;
-    private double robotTheta;
-    private double robotThetaRadius;
+    private final int robotC;
+    private final int robotR;
+    private final double robotTheta;
 
 
-    public static void main (String[] args) {
-        TrajectoryCalculation traj = new TrajectoryCalculation(18, 10, 2, 0, 0, 270);
-        TrajectoryResult res = traj.trajectoryResult();
-        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
-        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
-        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
-        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
-        System.out.println("carMove: " + res.getCarMove());
-        System.out.println("isClockwiseTurn1: " + res.isClockwiseTurn1());
-        System.out.println("isClockwiseTurn2: " + res.isClockwiseTurn2());
-    }
-
+//    public static void main (String[] args) {
+//        TrajectoryCalculation traj = new TrajectoryCalculation(8, 23, 2, 31, 6, 270);
+//        TrajectoryResult res = traj.trajectoryResult();
+//        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
+//        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
+//        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
+//        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
+//        System.out.println("carMove: " + res.getCarMove());
+//        System.out.println("isClockwiseTurn1: " + res.isClockwiseTurn1());
+//        System.out.println("isClockwiseTurn2: " + res.isClockwiseTurn2());
+//    }
 
     public TrajectoryCalculation(int obsC, int obsR, int obsDir, int robotC, int robotR, int robotTheta){
         this.targetC = obsC;
         this.targetR = obsR;
         this.obstacleDir = obsDir; // of value [0, 1, 2, 3]
-        this.targetTheta = (int)(oppositeDirMap.get(obsDir) * Math.PI / 2); // represent the data in PI.
         this.robotC = robotC;
         this.robotR = robotR;
         this.robotTheta = robotTheta;
-        this.robotThetaRadius = Math.toRadians(robotTheta);
     }
-
 
     // calculate the obstacle circle center
     private int[] calculateObstacleCircleCenter(int targetC, int targetR, int robotC, int robotR, int obstacleDir){
         // turning right
         if (targetC > robotC) {
             if (obstacleDir == 1 || obstacleDir == 3)
-                return new int[]{targetC - r, targetR};
+                return new int[]{targetC - AlgoConstant.R, targetR};
             else if (targetR > robotR) // lower right
-                return new int[]{targetC, targetR - r};
+                return new int[]{targetC, targetR - AlgoConstant.R};
             else
-                return new int[]{targetC, targetR + r};
+                return new int[]{targetC, targetR + AlgoConstant.R};
         }
         // turning left
         else {
             if (obstacleDir == 1 || obstacleDir == 3)
-                return new int[]{targetC + r, targetR};
+                return new int[]{targetC + AlgoConstant.R, targetR};
             else if (targetR > robotR) // lower left
-                return new int[]{targetC, targetR - r};
+                return new int[]{targetC, targetR - AlgoConstant.R};
             else
-                return new int[]{targetC, targetR + r};
+                return new int[]{targetC, targetR + AlgoConstant.R};
         }
     }
 
@@ -83,31 +74,30 @@ public class TrajectoryCalculation {
 
         if (robotTheta == 0){
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC, robotR + r};
+                return new int[] {robotC, robotR + AlgoConstant.R};
             else
-                return new int[] {robotC, robotR - r};
+                return new int[] {robotC, robotR - AlgoConstant.R};
         }
         else if (robotTheta == 90){
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC + r, robotR};
+                return new int[] {robotC + AlgoConstant.R, robotR};
             else
-                return new int[] {robotC - r, robotR};
+                return new int[] {robotC - AlgoConstant.R, robotR};
         }
         else if (robotTheta == 180){
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC, robotR - r};
+                return new int[] {robotC, robotR - AlgoConstant.R};
             else
-                return new int[] {robotC, robotR + r};
+                return new int[] {robotC, robotR + AlgoConstant.R};
         }
         else // robotTheta = 270
         {
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC - r, robotR};
+                return new int[] {robotC - AlgoConstant.R, robotR};
             else
-                return new int[] {robotC + r, robotR};
+                return new int[] {robotC + AlgoConstant.R, robotR};
         }
     }
-
 
     private int checkRelativePosition(int robotC, int robotR, int robotTheta, int targetC, int targetR) {
         // robot theta 0, facing left
@@ -161,8 +151,6 @@ public class TrajectoryCalculation {
         }
     }
 
-
-
     // function to calculate euclidean distance of 2 functions
     private double calculateEuclideanDistance(double c1, double r1, double c2, double r2){
         double deltaC = Math.abs(c1-c2);
@@ -182,7 +170,6 @@ public class TrajectoryCalculation {
         return Math.abs(alpha);
     }
 
-
     // arc length computation
     private int calculateArcLength(double startC, double startR, double destC, double destR, int dir){
         // dir = 0 for turn left, direct = 1 for turn right
@@ -190,8 +177,7 @@ public class TrajectoryCalculation {
         // while destC and destR are the coordinates for the destination point on the arc
         double alpha = calculateArcAngle(startC, startR, destC, destR, dir);
 
-        return (int)Math.abs(alpha * r);
-
+        return (int)Math.abs(alpha * AlgoConstant.R);
     }
 
     private int selectObsRelativeDir(int obstacleDir, int robotTheta){
@@ -220,8 +206,8 @@ public class TrajectoryCalculation {
 
         int relativeObsDir = selectObsRelativeDir(obstacleDir, (int)robotTheta);
 
-        if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
-            return null;
+        //if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
+            // null;
 
         if (quadrant == 1) // upper right
         {
@@ -295,8 +281,8 @@ public class TrajectoryCalculation {
         double v2R = - v1C;
 
         // get the intermidiate pt1 position
-        double pt1C = robotCircleC + (v2C * r/l);
-        double pt1R = robotCircleR + (v2R * r/l);
+        double pt1C = robotCircleC + (v2C * AlgoConstant.R/l);
+        double pt1R = robotCircleR + (v2R * AlgoConstant.R/l);
 
         // get the intermidiate pt2 position
         double pt2C = pt1C + v1C;
@@ -310,10 +296,9 @@ public class TrajectoryCalculation {
 
 //        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 1);
 
-
         double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
 
-        double arc1 = alpha1 * r;
+        double arc1 = alpha1 * AlgoConstant.R;
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
@@ -322,7 +307,7 @@ public class TrajectoryCalculation {
 
 //        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
         double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
-        double arc2 = alpha2 * r;
+        double arc2 = alpha2 * AlgoConstant.R;
 
         double totalLength = arc1 + arc2 + l;
 
@@ -347,8 +332,8 @@ public class TrajectoryCalculation {
         double v2R = v1C;
 
         // get the intermidiate pt1 position
-        double pt1C = robotCircleC + (v2C * r/l);
-        double pt1R = robotCircleR + (v2R * r/l);
+        double pt1C = robotCircleC + (v2C * AlgoConstant.R/l);
+        double pt1R = robotCircleR + (v2R * AlgoConstant.R/l);
 
         // get the intermidiate pt2 position
         double pt2C = pt1C + v1C;
@@ -364,7 +349,7 @@ public class TrajectoryCalculation {
 //        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
         double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
 
-        double arc1 = alpha1 * r;
+        double arc1 = alpha1 * AlgoConstant.R;
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
@@ -374,7 +359,7 @@ public class TrajectoryCalculation {
 //        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
 //        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
         double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
-        double arc2 = alpha2 * r;
+        double arc2 = alpha2 * AlgoConstant.R;
 
         double totalLength = arc1 + arc2 + l;
 
@@ -390,12 +375,10 @@ public class TrajectoryCalculation {
                                          int targetC, int targetR,
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR) {
-        System.out.println("calculateLSR is called.");
-
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
-        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
+        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(AlgoConstant.R, 2));
 
-        double theta_radius = Math.acos(2*r/d); // return a value from 0 to pi
+        double theta_radius = Math.acos(2*AlgoConstant.R/d); // return a value from 0 to pi
 
 
 
@@ -412,16 +395,16 @@ public class TrajectoryCalculation {
 
 
         // point pt1
-        double pt1C = robotCircleC + (r/d) * v2C;
-        double pt1R = robotCircleR + (r/d) * v2R;
+        double pt1C = robotCircleC + (AlgoConstant.R/d) * v2C;
+        double pt1R = robotCircleR + (AlgoConstant.R/d) * v2R;
 
         // reversing the direction of v2 to get v3.
         double v3C = -v2C;
         double v3R = -v2R;
 
         // point pt2
-        double pt2C = obsCircleC + r/d * v3C;
-        double pt2R = obsCircleR + r/d * v3R;
+        double pt2C = obsCircleC + AlgoConstant.R/d * v3C;
+        double pt2R = obsCircleR + AlgoConstant.R/d * v3R;
 
         // calculate the 2 arcs
         double p1pC = robotC - robotCircleC;
@@ -433,7 +416,7 @@ public class TrajectoryCalculation {
 //        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
         double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
 
-        double arc1 = alpha1 * r;
+        double arc1 = alpha1 * AlgoConstant.R;
 
 
         double p2pt2C = pt2C - obsCircleC;
@@ -444,7 +427,7 @@ public class TrajectoryCalculation {
 //        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
 //        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 1);
         double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
-        double arc2 = alpha2 * r;
+        double arc2 = alpha2 * AlgoConstant.R;
 
         double tangentCost = calculateEuclideanDistance(pt1C, pt1R, pt2C, pt2R);
 
@@ -461,12 +444,10 @@ public class TrajectoryCalculation {
                                          int targetC, int targetR,
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR) {
-        System.out.println("calculateRSL is called.");
-
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
-        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
+        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(AlgoConstant.R, 2));
 
-        double theta = Math.acos(2*r/d); // return a value from 0 to pi
+        double theta = Math.acos(2*AlgoConstant.R/d); // return a value from 0 to pi
 
         // the vector from p1 to p2
         double v1C = obsCircleC - robotCircleC;
@@ -480,8 +461,8 @@ public class TrajectoryCalculation {
         v2R = ( - v1C * Math.sin(theta) + v1R * Math.cos(theta));
 
         // point pt1
-        double pt1C = robotCircleC + (r/d) * v2C;
-        double pt1R = robotCircleR + (r/d) * v2R;
+        double pt1C = robotCircleC + (AlgoConstant.R/d) * v2C;
+        double pt1R = robotCircleR + (AlgoConstant.R/d) * v2R;
 
 
         // reversing the direction of v2 to get v3.
@@ -489,8 +470,8 @@ public class TrajectoryCalculation {
         double v3R = -v2R;
 
         // point pt2
-        double pt2C = obsCircleC + r/d * v3C;
-        double pt2R = obsCircleR + r/d * v3R;
+        double pt2C = obsCircleC + AlgoConstant.R/d * v3C;
+        double pt2R = obsCircleR + AlgoConstant.R/d * v3R;
 
         // calculate the 2 arcs
         double p1pC = robotC - robotCircleC;
@@ -502,7 +483,7 @@ public class TrajectoryCalculation {
 //        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 1);
         double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
 
-        double arc1 = alpha1 * r;
+        double arc1 = alpha1 * AlgoConstant.R;
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
@@ -512,7 +493,7 @@ public class TrajectoryCalculation {
 //        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
 //        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
         double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
-        double arc2 = alpha2 * r;
+        double arc2 = alpha2 * AlgoConstant.R;
 
         double totalLength = arc1 + arc2 + l;
 
@@ -529,9 +510,9 @@ public class TrajectoryCalculation {
 
     // public int boundary check
     private boolean borderClash(double circle1C, double circle1R, double circle2C, double circle2R){
-        if ((circle1R - r >= 0 && circle1C - r >= 0 && circle1C + r <= 39 && circle1R + r <= 39)
-         && (circle2R - r >= 0 && circle2C - r >= 0 && circle2C + r <= 39 && circle2R + r <= 39))
-            return true; // no clash
+        if ((circle1R >= 0 && circle1C >= 0 && circle1C <= 39 && circle1R <= 39)
+         && (circle2R >= 0 && circle2C >= 0 && circle2C <= 39 && circle2R <= 39))
+            return true;// no clash
         else return false;
     }
 

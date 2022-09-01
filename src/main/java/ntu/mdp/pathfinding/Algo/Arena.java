@@ -38,7 +38,7 @@ public class Arena {
         int nr, nc;
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++) {
-                nr = i * rStep; nc = j * cStep;
+                nr = r + i * rStep; nc = c + j * cStep;
                 if (inRange(nr, nc))
                     arena[nr][nc].setVirtualBlock(true);
             }
@@ -50,7 +50,7 @@ public class Arena {
         return arena[r][c].isBlocked();
     }
 
-    private boolean inRange(int x, int y) {
+    public boolean inRange(int x, int y) {
         return 0 <= x && x < m && 0 <= y && y < n;
     }
 }

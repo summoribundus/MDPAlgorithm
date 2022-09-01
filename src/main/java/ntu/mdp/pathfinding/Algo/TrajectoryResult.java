@@ -14,8 +14,8 @@ public class TrajectoryResult {
         this.circle1 = circle1;
         this.circle2 = circle2;
         this.carMove = new CarMove(theta1, theta2, length);
-        isClockwiseTurn1 = (dir1 == 1)? true: false;
-        isClockwiseTurn2 = (dir2 == 1)? true: false;
+        isClockwiseTurn1 = dir1 == 1;
+        isClockwiseTurn2 = dir2 == 1;
     }
 
     public int[] getPt1() {

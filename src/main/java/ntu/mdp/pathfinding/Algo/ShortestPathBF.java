@@ -10,12 +10,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class ShortestPathBF {
-    private Map<Integer, Obstacle> idxMapping;
-    private int n, x, y;
-    private PriorityBlockingQueue<PathDistanceResult> pq;
+    private final Map<Integer, Obstacle> idxMapping;
+    private final int n;
+    private final PriorityBlockingQueue<PathDistanceResult> pq;
     public ShortestPathBF(Obstacle[] obstacles, int x, int y) {
         n = obstacles.length;
-        this.x = x; this.y = y;
         idxMapping = new HashMap<>();
         pq = new PriorityBlockingQueue<>();
         idxMapping.put(0, new Obstacle(x, y, 0, 0, true));
@@ -65,8 +64,12 @@ public class ShortestPathBF {
         return idxMapping;
     }
 
+    public void getPathSize() {
+        System.out.println(pq.size());
+    }
+
     public int[] getNextPath() {
-        return pq.poll().getPath();
+        return pq.poll().path();
     }
 
     public boolean hasNextPath() {

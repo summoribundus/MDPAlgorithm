@@ -5,12 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TrajectoryToArenaGrid {
-    private static int[] quadrantReverse = {0, 3, 4, 1, 2};
-    private static int[] quadrantSameYSide = {0, 4, 3, 2, 1};
-    private static int[] quadrantSameXSide = {0, 2, 1, 4, 3};
-    private static int[][][] dEdgeLooping = {{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}, {{1, 0}, {0, -1}, {-1, 0}, {0, 1}}};
-
-    private static int R = 5;
+    private static final int[] quadrantReverse = {0, 3, 4, 1, 2};
+    private static final int[] quadrantSameYSide = {0, 4, 3, 2, 1};
+    private static final int[] quadrantSameXSide = {0, 2, 1, 4, 3};
+    private static final int[][][] dEdgeLooping = {{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}, {{1, 0}, {0, -1}, {-1, 0}, {0, 1}}};
 
     public static List<int[]> findReversePath(int r1, int c1, int r2, int c2, int[] dReverse) {
         List<int[]> pointsPassed = new ArrayList<>();
@@ -31,10 +29,14 @@ public class TrajectoryToArenaGrid {
         List<int[]> pointsPassed = new ArrayList<>();
         double a = (double) (r2 - r1) / (c2 - c1), b = r1 - c1 * a;
         int step = c1 < c2 ? 1 : -1;
-        for (int i = c1; i != c2; i += step) {
+        int i;
+        for (i = c1; i >= 0 && i != c2 && i < AlgoConstant.GridN; i += step) {
             double y = a * i + b;
             int j = (int) Math.ceil(y);
             pointsPassed.add(new int[]{j, i});
+        }
+        if (i != c2) {
+            return null;
         }
         pointsPassed.add(new int[]{r2, c2});
         return pointsPassed;
@@ -51,19 +53,20 @@ public class TrajectoryToArenaGrid {
         } else if (checkReverseQuadrant(quadrant1, quadrant2)) {
             boolean CClockwiseTurn = (quadrant1 == 2 || quadrant1 == 4) ? ((quadrant2 == 2) != isClockWise) : ((quadrant1 == 1) == isClockWise);
             boolean RClockwiseTurn = (quadrant1 == 2 || quadrant1 == 4) ? ((quadrant2 == 2) != isClockWise) : ((quadrant2 == 1) == isClockWise);
-            recTanR1 = RClockwiseTurn ? circleR - R : Math.min(r1, r2);
-            recTanR2 = RClockwiseTurn ? Math.max(r1, r2) : circleR + R;
-            recTanC1 = CClockwiseTurn ? Math.min(c1, c2) : circleC - R;
-            recTanC2 = CClockwiseTurn ? circleC + R : Math.max(c1, c2);
+            recTanR1 = RClockwiseTurn ? circleR - AlgoConstant.R : Math.min(r1, r2);
+            recTanR2 = RClockwiseTurn ? Math.max(r1, r2) : circleR + AlgoConstant.R;
+            recTanC1 = CClockwiseTurn ? Math.min(c1, c2) : circleC - AlgoConstant.R;
+            recTanC2 = CClockwiseTurn ? circleC + AlgoConstant.R : Math.max(c1, c2);
         } else if (checkQuadrantSameXSide(quadrant1, quadrant2)) {
-            recTanR1 = quadrant1 <= 2 ? circleR - R : Math.min(r1, r2);
-            recTanR2 = quadrant1 <= 2 ? Math.max(r1, r2) : circleR + R;
+            recTanR1 = quadrant1 <= 2 ? circleR - AlgoConstant.R : Math.min(r1, r2);
+            recTanR2 = quadrant1 <= 2 ? Math.max(r1, r2) : circleR + AlgoConstant.R;
             recTanC1 = Math.min(c1, c2); recTanC2 = Math.max(c1, c2);
         } else if(checkQuadrantSameYSide(quadrant1, quadrant2)) {
             recTanR1 = Math.min(r1, r2); recTanR2 = Math.max(r1, r2);
-            recTanC1 = (quadrant1 == 2 || quadrant1 == 3) ? circleC - R : Math.min(c1, c2);
-            recTanC2 = (quadrant1 == 2 || quadrant1 == 3) ? Math.max(c1, c2) : circleC + R;
+            recTanC1 = (quadrant1 == 2 || quadrant1 == 3) ? circleC - AlgoConstant.R : Math.min(c1, c2);
+            recTanC2 = (quadrant1 == 2 || quadrant1 == 3) ? Math.max(c1, c2) : circleC + AlgoConstant.R;
         }
+        if (recTanR2 <= recTanR1 || recTanC2 <= recTanC1) return null;
 
         int[][] endingPoint = {{recTanR1, recTanC2, recTanR2, recTanC1}, {recTanR2, recTanC1, recTanR1, recTanC2}};
 
@@ -80,15 +83,17 @@ public class TrajectoryToArenaGrid {
             int walkingEdge = turn == 0 ? (edge1 + i) % 4 : (edge1 - i + 4) % 4;
             int[] currentDir = dEdgeLooping[turn][walkingEdge];
             if (currentDir[0] == 0) {
-                while (c1 != endP[walkingEdge]) {
+                while (0 <= c1 && c1 < AlgoConstant.GridN && c1 != endP[walkingEdge]) {
                     pointsPassed.add(new int[]{r1, c1});
                     c1 += currentDir[1];
                 }
+                if (c1 != endP[walkingEdge]) return null;
             } else {
-                while (r1 != endP[walkingEdge]) {
+                while (0 <= r1 && r1 < AlgoConstant.GridM && r1 != endP[walkingEdge]) {
                     pointsPassed.add(new int[]{r1, c1});
                     r1 += currentDir[0];
                 }
+                if (r1 != endP[walkingEdge]) return null;
             }
             if (walkingEdge == edge2) break;
         }

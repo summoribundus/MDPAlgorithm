@@ -8,22 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ShortestPathAlgo {
-    private Arena arena;
-    private Obstacle[] obstacles;
-    private int carR, carC;
-    private ShortestPathBF shortestPathBF;
-    private int[][] dReverses = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
-    private int R = 5, m, n;
+    private final Arena arena;
+    private final ShortestPathBF shortestPathBF;
+    private final static int[][] dReverses = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
 
     private List<CarMove> carMoves;
     private List<int[]> pathGrids;
 
     public ShortestPathAlgo(int m, int n, Obstacle[] obstacles, int r, int c) {
-        this.obstacles = obstacles;
-        this.m = m;
-        this.n = n;
-        this.carR = r;
-        this.carC = c;
         this.arena = new Arena(m, n, obstacles);
         this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
     }
@@ -54,49 +46,69 @@ public class ShortestPathAlgo {
         shortestPathBF.findPath();
 
         Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
+        int cnt = 0;
+        shortestPathBF.getPathSize();
         while (shortestPathBF.hasNextPath()) {
+            System.out.println("Checking " + cnt +" path.");
+            cnt++;
             carMoves = new ArrayList<>();
             pathGrids = new ArrayList<>();
             int[] path = shortestPathBF.getNextPath();
             boolean pathValid = true;
             Obstacle car = idxMapping.get(path[0]);
-            int carR = car.getR(), carC = car.getC(), theta = 90;
+            int carR = car.getR(), carC = car.getC(), theta = 270;
             for (int i = 1; i < path.length; i++) {
+                System.out.println("carR: " + carR + " carC: " + carC + " theta: " + theta);
                 Obstacle ob = idxMapping.get(path[i]);
-                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getTargetedC(), ob.getTargetedR(), ob.getDir(), carR, carR, theta);
-                TrajectoryResult trajectoryResult= trajectoryCalculation.trajectoryResult();
-                if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC())) { pathValid = false; break; }
-                carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = trajectoryResult.getCarMove().getTurnTheta2();
+                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getTargetedC(), ob.getTargetedR(), ob.getDir(), carC, carR, theta);
+                TrajectoryResult trajectoryResult = trajectoryCalculation.trajectoryResult();
+                if (trajectoryResult == null) { pathValid = false; break; }
+                if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC(), true)) { pathValid = false; break; }
+                carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
                 if (i != path.length-1) {
-                    int reversedR = carR + dReverses[ob.getDir()][0] * (R-1), reverseC = carC + dReverses[ob.getDir()][1] * (R-1);
-                    if (!validateReversePath(carR, carC, reversedR, reverseC, dReverses[ob.getDir()])) { pathValid = false; break; }
-                    carR = reversedR; carC = reverseC;
+                    Obstacle nextOb = idxMapping.get(path[i+1]);
+                    int reversedR = carR, reversedC = carC;
+                    boolean found = false;
+                    List<int[]> reversePath = new ArrayList<>();
+                    while (arena.inRange(reversedR, reversedC)) {
+                        trajectoryCalculation = new TrajectoryCalculation(nextOb.getTargetedC(), nextOb.getTargetedR(), nextOb.getDir(), reversedC, reversedR, theta);
+                        trajectoryResult = trajectoryCalculation.trajectoryResult();
+                        if (trajectoryResult != null && validatePath(trajectoryResult, reversedR, reversedC, nextOb.getTargetedR(), nextOb.getTargetedC(), false)) {found = true; break;}
+                        reversedR += dReverses[ob.getDir()][0]; reversedC += dReverses[ob.getDir()][1];
+                        reversePath.add(new int[]{reversedR, reversedC});
+                    }
+                    if (!found) { pathValid = false; break;}
+                    pathGrids.addAll(reversePath);
+                    carR = reversedR; carC = reversedC;
                 }
             }
             if (pathValid) return carMoves;
+
         }
         return null;
     }
 
-    private boolean validatePath(TrajectoryResult trajectoryResult, int startR, int startC, int endR, int endC) {
-        int r1 = trajectoryResult.getPt1()[0], c1 = trajectoryResult.getPt1()[1];
-        int r2 = trajectoryResult.getPt2()[0], c2 = trajectoryResult.getPt2()[1];
-        int circle1R = trajectoryResult.getCircle1()[0], circle1C = trajectoryResult.getCircle1()[1];
-        int circle2R = trajectoryResult.getCircle2()[0], circle2C = trajectoryResult.getCircle2()[1];
+    private boolean validatePath(TrajectoryResult trajectoryResult, int startR, int startC, int endR, int endC, boolean pathRecord) {
+        int r1 = trajectoryResult.getPt1()[1], c1 = trajectoryResult.getPt1()[0];
+        int r2 = trajectoryResult.getPt2()[1], c2 = trajectoryResult.getPt2()[0];
+        int circle1R = trajectoryResult.getCircle1()[1], circle1C = trajectoryResult.getCircle1()[0];
+        int circle2R = trajectoryResult.getCircle2()[1], circle2C = trajectoryResult.getCircle2()[0];
         boolean isClockwise1 = trajectoryResult.isClockwiseTurn1(), isClockwise2 = trajectoryResult.isClockwiseTurn2();
 
         List<int[]> points1 = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, isClockwise1);
-        if (!validatePoint(points1)) return false;
+        if (points1 == null || !validatePoint(points1)) return false;
 
         List<int[]> points2 = TrajectoryToArenaGrid.findGirdLinePath(r1, c1, r2, c2);
-        if (!validatePoint(points2)) return false;
+        if (points2 == null || !validatePoint(points2)) return false;
 
         List<int[]> points3 = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, isClockwise2);
-        if(!validatePoint(points3)) return false;
+        if(points3 == null || !validatePoint(points3)) return false;
 
-        pathGrids.addAll(points1);
-        pathGrids.addAll(points2);
-        pathGrids.addAll(points3);
+        if (pathRecord) {
+            pathGrids.addAll(points1);
+            pathGrids.addAll(points2);
+            pathGrids.addAll(points3);
+        }
         return true;
     }
 
