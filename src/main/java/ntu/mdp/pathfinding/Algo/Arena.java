@@ -2,8 +2,6 @@ package ntu.mdp.pathfinding.Algo;
 
 import ntu.mdp.pathfinding.Obstacle;
 
-import java.util.Arrays;
-
 public class Arena {
     private Node[][] arena;
     private int m, n;
@@ -46,7 +44,7 @@ public class Arena {
 
     // 5 based r and c
     public boolean checkWithCorrespondingBlock(int r, int c) {
-        if (!inRange(r, c)) return false;
+        if (!inRange(r, c)) return true;
         return arena[r][c].isBlocked();
     }
 

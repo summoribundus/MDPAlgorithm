@@ -18,7 +18,6 @@ public class Obstacle {
         this.imgIdx = imgIdx;
         this.targetedR = !isFakeObstacle ? r + imgDirToTargetMapping[dir][0] : r;
         this.targetedC = !isFakeObstacle ? c + imgDirToTargetMapping[dir][1] : c;
-        System.out.println(this.targetedR + " " + this.targetedC);
     }
 
     public int getR() {
