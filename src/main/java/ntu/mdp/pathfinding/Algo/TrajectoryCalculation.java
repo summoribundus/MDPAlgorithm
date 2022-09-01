@@ -32,17 +32,17 @@ public class TrajectoryCalculation {
     private double robotThetaRadius;
 
 
-//    public static void main (String[] args) {
-//        TrajectoryCalculation traj = new TrajectoryCalculation(8, 23, 2, 31, 6, 270);
-//        TrajectoryResult res = traj.trajectoryResult();
-//        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
-//        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
-//        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
-//        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
-//        System.out.println("carMove: " + res.getCarMove());
-//        System.out.println("isClockwiseTurn1: " + res.isClockwiseTurn1());
-//        System.out.println("isClockwiseTurn2: " + res.isClockwiseTurn2());
-//    }
+    public static void main (String[] args) {
+        TrajectoryCalculation traj = new TrajectoryCalculation(18, 10, 2, 0, 0, 270);
+        TrajectoryResult res = traj.trajectoryResult();
+        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
+        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
+        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
+        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
+        System.out.println("carMove: " + res.getCarMove());
+        System.out.println("isClockwiseTurn1: " + res.isClockwiseTurn1());
+        System.out.println("isClockwiseTurn2: " + res.isClockwiseTurn2());
+    }
 
 
     public TrajectoryCalculation(int obsC, int obsR, int obsDir, int robotC, int robotR, int robotTheta){
@@ -174,12 +174,11 @@ public class TrajectoryCalculation {
     private double calculateArcAngle(double startC, double startR, double destC, double destR, int dir) {
         double alpha =Math.abs(Math.atan2(destR, destC) - Math.atan2(startR, startC));
 
-         while (alpha > Math.PI) {
-            alpha -= Math.PI;
-        }
-         while (alpha > Math.PI/2) {
-             alpha = Math.PI - alpha;
-         }
+        if (alpha < 0 && dir == 0)
+            alpha = alpha - 2*Math.PI;
+        else if (alpha > 0 && dir == 1)
+            alpha = alpha - 2*Math.PI;
+
         return Math.abs(alpha);
     }
 
@@ -383,6 +382,8 @@ public class TrajectoryCalculation {
                                          int targetC, int targetR,
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR) {
+        System.out.println("calculateLSR is called.");
+
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
         double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
 
@@ -446,6 +447,8 @@ public class TrajectoryCalculation {
                                          int targetC, int targetR,
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR) {
+        System.out.println("calculateRSL is called.");
+
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
         double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(r, 2));
 
@@ -507,8 +510,8 @@ public class TrajectoryCalculation {
 
     // public int boundary check
     private boolean borderClash(double circle1C, double circle1R, double circle2C, double circle2R){
-        if ((circle1R - r > 0 && circle1C - r > 0 && circle1C + r < 39 && circle1R + r < 39)
-         && (circle2R - r > 0 && circle2C - r > 0 && circle2C + r < 39 && circle2R + r < 39))
+        if ((circle1R - r >= 0 && circle1C - r >= 0 && circle1C + r <= 39 && circle1R + r <= 39)
+         && (circle2R - r >= 0 && circle2C - r >= 0 && circle2C + r <= 39 && circle2R + r <= 39))
             return true; // no clash
         else return false;
     }
