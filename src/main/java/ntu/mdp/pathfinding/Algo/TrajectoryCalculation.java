@@ -308,16 +308,21 @@ public class TrajectoryCalculation {
         double p1pt1C = pt1C - robotCircleC;
         double p1pt1R = pt1R - robotCircleR;
 
-        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 1);
-        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 1);
+//        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 1);
+
+
+        double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
+
+        double arc1 = alpha1 * r;
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
         double p2pC = targetC - obsCircleC;
         double p2pR = targetR - obsCircleR;
 
-        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
-        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 1);
+//        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
+        double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
+        double arc2 = alpha2 * r;
 
         double totalLength = arc1 + arc2 + l;
 
@@ -355,18 +360,21 @@ public class TrajectoryCalculation {
         double p1pt1C = pt1C - robotCircleC;
         double p1pt1R = pt1R - robotCircleR;
 
-        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 0);
-        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
-        System.out.println("arc1: " + arc1);
+//        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 0);
+//        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
+        double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
+
+        double arc1 = alpha1 * r;
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
         double p2pC = targetC - obsCircleC;
         double p2pR = targetR - obsCircleR;
 
-        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
-        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
-        System.out.println("arc2: " + arc2);
+//        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
+//        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
+        double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
+        double arc2 = alpha2 * r;
 
         double totalLength = arc1 + arc2 + l;
 
@@ -421,16 +429,22 @@ public class TrajectoryCalculation {
         double p1pt1C = pt1C - robotCircleC;
         double p1pt1R = pt1R - robotCircleR;
 
-        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 0);
-        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
+//        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 0);
+//        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
+        double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
+
+        double arc1 = alpha1 * r;
+
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
         double p2pC = targetC - obsCircleC;
         double p2pR = targetR - obsCircleR;
 
-        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
-        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 1);
+//        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
+//        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 1);
+        double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
+        double arc2 = alpha2 * r;
 
         double tangentCost = calculateEuclideanDistance(pt1C, pt1R, pt2C, pt2R);
 
@@ -484,16 +498,21 @@ public class TrajectoryCalculation {
         double p1pt1C = pt1C - robotCircleC;
         double p1pt1R = pt1R - robotCircleR;
 
-        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 1);
-        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 1);
+//        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 1);
+//        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 1);
+        double alpha1 = Math.abs(Math.atan2(p1pt1C, p1pt1R) - Math.atan2(p1pC, p1pR));
+
+        double arc1 = alpha1 * r;
 
         double p2pt2C = pt2C - obsCircleC;
         double p2pt2R = pt2R - obsCircleR;
         double p2pC = targetC - obsCircleC;
         double p2pR = targetR - obsCircleR;
 
-        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
-        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
+//        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
+//        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
+        double alpha2 = Math.abs(Math.atan2(p2pC, p2pR) - Math.atan2(p2pt2C, p2pt2R));
+        double arc2 = alpha2 * r;
 
         double totalLength = arc1 + arc2 + l;
 
