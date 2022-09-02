@@ -109,7 +109,7 @@ public class Grid extends Pane {
 
     public void setUpGridRefresh() {
         KeyFrame keyFrame = new KeyFrame(
-                Duration.seconds(1),
+                Duration.seconds(0.5),
                 actionEvent -> {
                     Point point = path.poll();
                     if (point == null) return;

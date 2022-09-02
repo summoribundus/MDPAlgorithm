@@ -24,8 +24,6 @@ class ShortestPathRunner implements Runnable {
     @Override
     public void run() {
         Car car = InputData.getCar();
-        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
-        algo.findShortestValidPath();
 //        ShortestPathAlgo algo = new ShortestPathAlgo(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
 //        ShortestPathTrajectoryResult result = algo.findShortestPath();
 //        if (result == null)
@@ -36,6 +34,8 @@ class ShortestPathRunner implements Runnable {
 //                car.goTo(p[0], p[1]);
 //            }
 //        }
+        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        algo.findShortestValidPath();
         System.out.println("Path checking done");
         List<int[]> points = algo.getPathGrids();
         if (points == null || points.isEmpty()) {

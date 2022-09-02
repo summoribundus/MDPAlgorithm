@@ -122,10 +122,10 @@ public class TrajectoryCalculation {
     private int[] calculateObstacleCenterOfAllCurveRoutes(int targetC, int targetR, int obsRelativeDir, int quadrant){
         int firstIndexQua = quadrant - 1;
         int secondIndex = obsRelativeDir;
-        int thirdIndex = (int)robotTheta/90;
+        int thirdIndex = (int)(robotTheta % 360) /90;
 
-        int obsCircleC = relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][0];
-        int obsCircleR = relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][1];
+        int obsCircleC = targetC + relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][0] * AlgoConstant.R;
+        int obsCircleR = targetR + relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][1] * AlgoConstant.R;
 
         return new int[]{obsCircleC, obsCircleR};
 
