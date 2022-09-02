@@ -53,7 +53,7 @@ public class TrajectoryResult {
     }
 
     public int[] getPt2() {
-        return pt2;
+        return this.pt2;
     }
 
     public int[] getCircle1() {

@@ -717,7 +717,21 @@ public class TrajectoryCalculation {
     }
 
     // public int boundary check
-    private boolean borderClash(double circle1C, double circle1R, double circle2C, double circle2R){
+    private boolean possibleBorderClash(double robotC, double robotR,
+                                double robotCircleC, double robotCircleR,
+                                double targetC, double targetR,
+                                double obsCircleC, double obsCircleR){
+
+        // if the robot is too close to c = 0 or R = 0;
+
+        if (robotC < AlgoConstant.R)
+            if (robotCircleC < 0)
+                return true;
+        if (robotR < AlgoConstant.R)
+            if (robotCircleR < 0)
+                \
+
+
         if ((circle1R >= 0 && circle1C >= 0 && circle1C < AlgoConstant.GridN && circle1R <= AlgoConstant.GridM)
          && (circle2R >= 0 && circle2C >= 0 && circle2C <= AlgoConstant.GridN && circle2R <= AlgoConstant.GridM))
             return true;// no clash
