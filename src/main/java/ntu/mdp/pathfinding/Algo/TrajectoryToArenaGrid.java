@@ -66,7 +66,7 @@ public class TrajectoryToArenaGrid {
             recTanC1 = (quadrant1 == 2 || quadrant1 == 3) ? circleC - AlgoConstant.R : Math.min(c1, c2);
             recTanC2 = (quadrant1 == 2 || quadrant1 == 3) ? Math.max(c1, c2) : circleC + AlgoConstant.R;
         }
-        if (recTanR2 <= recTanR1 || recTanC2 <= recTanC1) return null;
+//        if (recTanR2 <= recTanR1 || recTanC2 <= recTanC1) return null;
 
         int[][] endingPoint = {{recTanR1, recTanC2, recTanR2, recTanC1}, {recTanR2, recTanC1, recTanR1, recTanC2}};
 
