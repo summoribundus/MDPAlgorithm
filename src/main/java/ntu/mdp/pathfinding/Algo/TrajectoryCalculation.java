@@ -77,16 +77,31 @@ public class TrajectoryCalculation {
 
     private int[] calculateObstacleCenterOfAllCurveRoutes(int targetC, int targetR, int obsRelativeDir, int quadrant){
 
-        if (quadrant == 1){
-            if (obsRelativeDir == 0)
-                return new int[] {targetC, targetR + AlgoConstant.R};
-            else if (obsRelativeDir == 1)
-                return new int[] {targetC - AlgoConstant.R, targetR};
+        if (quadrant == 1){ // upper right
+            if (obsRelativeDir == 0) {
+                if (robotTheta == 0)
+                    return new int[]{targetC - AlgoConstant.R, targetR};
+                else if (robotTheta == 90)
+                    return new int[]{targetC, targetR + AlgoConstant.R};
+                else if (robotTheta == 180)
+                    return new int[]{targetC + AlgoConstant.R, targetR};
+                else
+                    return new int[]{targetC, targetR - AlgoConstant.R};
+            }
+            else if (obsRelativeDir == 1) {
+                if (robotTheta == 0)
+
+                if (robotTheta == 90)
+                    return new int[]{targetC - AlgoConstant.R, targetR};
+            }
             else if (obsRelativeDir == 2)
                 return new int[] {targetC, targetR - AlgoConstant.R};
-            else
-                return new int[] {targetC + AlgoConstant.R, targetR};
-
+            else { // obsrelativedir == 3
+                if (robotTheta == 0)
+                    return new int[]{targetC, targetR + AlgoConstant.R};
+                else if (robotTheta == 90)
+                    return new int[]{targetC + AlgoConstant.R, targetR};
+            }
         } else if (quadrant == 2) {
             if (obsRelativeDir == 0)
                 return new int[] {targetC, targetR - AlgoConstant.R};
@@ -227,8 +242,8 @@ public class TrajectoryCalculation {
         int quadrant = checkRelativePosition(robotC, robotR, Math.round((float)robotTheta), targetC, targetR);
 
         int[] centerOfCircle = calculateRobotCenterOfCircle(robotC, robotR, Math.round((float)robotTheta), quadrant); //calculate the center of the robot turning trajectory
-        int robotCircleR = centerOfCircle[0];
-        int robotCircleC =centerOfCircle[1];
+        int robotCircleC = centerOfCircle[0];
+        int robotCircleR =centerOfCircle[1];
 
         int relativeObsDir = selectObsRelativeDir(obstacleDir, Math.round((float)robotTheta));
 
@@ -242,7 +257,7 @@ public class TrajectoryCalculation {
 
         if (isSmallerThan4R) {
 
-            System.out.println(" is smaller than 2r...");
+            System.out.println(" is smaller than 4r...");
             int[] obstacleCircle = calculateObstacleCenterOfAllCurveRoutes(targetC, targetR, relativeObsDir, quadrant);
 
             int obsCircleC = obstacleCircle[0];
@@ -287,8 +302,8 @@ public class TrajectoryCalculation {
 
 
         int[] obstacleCircle = calculateObstacleCircleCenter(targetC, targetR, robotC, robotR, obstacleDir);
-        int obsCircleR = obstacleCircle[0];
-        int obsCircleC = obstacleCircle[1];
+        int obsCircleC = obstacleCircle[0];
+        int obsCircleR = obstacleCircle[1];
 
         System.out.println("start calculating");
 
