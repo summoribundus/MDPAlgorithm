@@ -15,7 +15,7 @@ public class Curve extends Trajectory {
         this.theta = theta;
         this.center = center;
         this.isClockwiseTurn = isclkwise;
-        this.arcLen = AlgoConstant.R * theta;
+        this.arcLen = (int)(AlgoConstant.R * Math.toRadians(theta));
     }
 
     public int[] getStartPt(){return this.startPt;}

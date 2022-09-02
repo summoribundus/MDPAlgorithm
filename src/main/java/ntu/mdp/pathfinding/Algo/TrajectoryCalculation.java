@@ -26,7 +26,7 @@ public class TrajectoryCalculation {
 
 
     public static void main (String[] args) {
-        TrajectoryCalculation traj = new TrajectoryCalculation(18, 10, 2, 0, 0, 270);
+        TrajectoryCalculation traj = new TrajectoryCalculation(21, 4, 0, 0, 0, 270);
         TrajectoryResult res = traj.trajectoryResult();
 
         System.out.println("pt1: " + Arrays.toString(res.getPt1()));
@@ -39,6 +39,7 @@ public class TrajectoryCalculation {
         System.out.println("start theta: " + res.getStartTheta());
         System.out.println("intermediate theta (if have): " + res.getIntermediateTheta());
         System.out.println("end theta: " + res.getEndTheta());
+        System.out.println("total length: " + res.getTotalLength());
 
     }
 
