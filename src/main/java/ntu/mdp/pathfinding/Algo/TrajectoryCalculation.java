@@ -207,17 +207,6 @@ public class TrajectoryCalculation {
         return Math.sqrt(Math.pow(deltaC, 2) + Math.pow(deltaR, 2));
     }
 
-    // arc angle computation
-    private double calculateArcAngle(double startC, double startR, double destC, double destR, int dir) {
-        double alpha =Math.abs(Math.atan2(destR, destC) - Math.atan2(startR, startC));
-
-        if (alpha < 0 && dir == 0)
-            alpha = alpha - 2*Math.PI;
-        else if (alpha > 0 && dir == 1)
-            alpha = alpha - 2*Math.PI;
-
-        return Math.abs(alpha);
-    }
 
     // arc length computation
 
@@ -262,36 +251,36 @@ public class TrajectoryCalculation {
 
             if (quadrant == 1){
                 if (relativeObsDir == 3)
-                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, true);
+                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, true);
                 else{
-                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, false);
+                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, false);
                 }
             } else if (quadrant == 4){
                 if (relativeObsDir == 0)
-                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, true);
+                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, true);
                 else{
-                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, false);
+                    return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, false);
                 }
             } else if (quadrant == 2) {
                 System.out.println("relative obstacle direction: " + relativeObsDir);
                 if (relativeObsDir == 3)
-                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, true);
+                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, true);
                 else
-                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, false);
+                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, false);
 
             } else {
                 if (relativeObsDir == 2)
-                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, true);
+                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, true);
                 else
-                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleR,
-                            robotCircleC, obsCircleR, obsCircleC, false);
+                    return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleC,
+                            robotCircleR, obsCircleC, obsCircleR, false);
             }
 
         }
@@ -308,14 +297,14 @@ public class TrajectoryCalculation {
             System.out.println("start calculating, q = 1");
             if (relativeObsDir == 1 || relativeObsDir == 0) {
                 //rsr
-                return calculateRSR(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateRSR(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
             else // (relativeObsDir == 3 || relativeObsDir == 2)
             {
                 //rsl
-                return calculateRSL(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateRSL(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
         }
 
@@ -325,13 +314,13 @@ public class TrajectoryCalculation {
             System.out.println("relative dir: " + relativeObsDir);
             if (relativeObsDir == 1 || relativeObsDir == 2) {
                 //lsl
-                return calculateLSL(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateLSL(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
             else {
                 //lsr
-                return calculateLSR(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateLSR(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
         }
 
@@ -340,13 +329,13 @@ public class TrajectoryCalculation {
             System.out.println("start calculating, q = 3");
             if (relativeObsDir == 1 || relativeObsDir == 0) {
                 //lsl
-                return calculateLSL(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateLSL(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
             else {
                 //lsr
-                return calculateLSR(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateLSR(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
         }
 
@@ -354,13 +343,13 @@ public class TrajectoryCalculation {
             System.out.println("start calculating, q = 4");
             if (relativeObsDir == 1 || relativeObsDir == 2 ) {
                 //rsr
-                return calculateRSR(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateRSR(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
             else {
                 //rsl
-                return calculateRSL(robotC, robotR, targetC, targetR, robotCircleR,
-                        robotCircleC, obsCircleR, obsCircleC);
+                return calculateRSL(robotC, robotR, targetC, targetR, robotCircleC,
+                        robotCircleR, obsCircleC, obsCircleR);
             }
         }
     }
