@@ -9,8 +9,6 @@ public class TrajectoryResult {
 
     private int[] pt1, pt2;
 
-    private int[] circle1, circle2;
-
     private boolean isAllCurve;
 
     private CarMove carMove;
@@ -26,9 +24,6 @@ public class TrajectoryResult {
 
         this.pt1 = c2.getStartPt();
         this.pt2 = c2.getEndPt();
-
-        this.circle1 = c1.getCenter();
-        this.circle2 = c3.getCenter();
 
         this.totalLength = c1.getArcLen() + c2.getArcLen() + c3.getArcLen();
 
@@ -47,9 +42,6 @@ public class TrajectoryResult {
         this.pt1 = l2.getStartPt();
         this.pt2 = l2.getEndPt();
 
-        this.circle1 = c1.getCenter();
-        this.circle2 = c3.getCenter();
-
         this.totalLength = c1.getArcLen() + l2.getLength() + c3.getArcLen();
 
         this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(),
@@ -57,7 +49,7 @@ public class TrajectoryResult {
     }
 
     public int[] getPt1() {
-        return pt1;
+        return this.pt1;
     }
 
     public int[] getPt2() {
@@ -65,11 +57,15 @@ public class TrajectoryResult {
     }
 
     public int[] getCircle1() {
-        return circle1;
+       return startCurve.getCenter();
     }
 
     public int[] getCircle2() {
-        return circle2;
+        return endCurve.getCenter();
+    }
+
+    public int[] getCircleInter() {
+        return intermediateCurve.getCenter();
     }
 
     public CarMove getCarMove() {

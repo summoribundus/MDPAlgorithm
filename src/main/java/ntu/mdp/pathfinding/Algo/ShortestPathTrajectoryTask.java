@@ -12,10 +12,10 @@ class ShortestPathTrajectoryResult implements Comparable<ShortestPathTrajectoryR
     private final int pathCost, batch, idx;
     private final List<CarMove> carMoves;
 
-    public ShortestPathTrajectoryResult(int batch, int idx, List<int[]> pathGrids, List<CarMove> carMoves) {
+    public ShortestPathTrajectoryResult(int batch, int idx, int cost, List<int[]> pathGrids, List<CarMove> carMoves) {
         this.carMoves = carMoves;
         this.pathGrids = pathGrids;
-        this.pathCost = pathGrids.size();
+        this.pathCost = cost;
         this.batch = batch;
         this.idx = idx;
     }
@@ -67,6 +67,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
         Obstacle car = idxMap.get(path[0]);
         int carR = car.getR(), carC = car.getC(), theta = 270;
         boolean pathValid = true;
+        int cost = 0;
         for (int i = 1; i < path.length; i++) {
             Obstacle ob = idxMap.get(path[i]);
             TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getTargetedC(),
@@ -75,6 +76,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             if (trajectoryResult == null || !ShortestPathTrajectory.validatePath(trajectoryResult, carR, carC,
                     ob.getTargetedR(), ob.getTargetedC(), pathGrids, arena)) { pathValid = false; break; }
             carMoves.add(trajectoryResult.getCarMove());
+            cost += trajectoryResult.getTotalLength();
 
             carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
             if (i == path.length-1) continue;
@@ -102,6 +104,6 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             carR = reversedR; carC = reversedC;
         }
         if (!pathValid) return null;
-        return new ShortestPathTrajectoryResult(batch, idx, pathGrids, carMoves);
+        return new ShortestPathTrajectoryResult(batch, idx, cost, pathGrids, carMoves);
     }
 }

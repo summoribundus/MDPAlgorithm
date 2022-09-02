@@ -94,15 +94,20 @@ public class ShortestPathTrajectory {
         int r2 = trajectoryResult.getPt2()[1], c2 = trajectoryResult.getPt2()[0];
         int circle1R = trajectoryResult.getCircle1()[1], circle1C = trajectoryResult.getCircle1()[0];
         int circle2R = trajectoryResult.getCircle2()[1], circle2C = trajectoryResult.getCircle2()[0];
-        boolean isClockwise1 = trajectoryResult.isClockwiseTurn1(), isClockwise2 = trajectoryResult.isClockwiseTurn2();
 
-        List<int[]> points1 = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, isClockwise1);
+        List<int[]> points1 = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, trajectoryResult.isClockwiseTurnStart());
         if (points1 == null || !validatePoint(points1, arena)) return false;
 
-        List<int[]> points2 = TrajectoryToArenaGrid.findGirdLinePath(r1, c1, r2, c2);
+        List<int[]> points2;
+        if (!trajectoryResult.isAllCurve()) {
+            points2 = TrajectoryToArenaGrid.findGirdLinePath(r1, c1, r2, c2);
+        } else {
+            int circleInterR = trajectoryResult.getCircleInter()[1], circleInterC = trajectoryResult.getCircleInter()[0];
+            points2 = TrajectoryToArenaGrid.findGridCirclePath(r1, c1, r2, c2, circleInterR, circleInterC, trajectoryResult.isClockwiseTurnIntermediate());
+        }
         if (points2 == null || !validatePoint(points2, arena)) return false;
 
-        List<int[]> points3 = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, isClockwise2);
+        List<int[]> points3 = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, trajectoryResult.isClockwiseTurnEnd());
         if(points3 == null || !validatePoint(points3, arena)) return false;
 
         if (gridCollector != null) {
