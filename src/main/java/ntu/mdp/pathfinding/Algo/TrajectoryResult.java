@@ -31,6 +31,9 @@ public class TrajectoryResult {
         this.circle2 = c3.getCenter();
 
         this.totalLength = c1.getArcLen() + c2.getArcLen() + c3.getArcLen();
+
+        this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(), c2.getTheta(), c2.isClockwiseTurn(),
+                c3.getTheta(), c3.isClockwiseTurn(), totalLength);
     }
 
 
@@ -48,6 +51,9 @@ public class TrajectoryResult {
         this.circle2 = c3.getCenter();
 
         this.totalLength = c1.getArcLen() + l2.getLength() + c3.getArcLen();
+
+        this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(),
+                c3.getTheta(), c3.isClockwiseTurn(), totalLength);
     }
 
     public int[] getPt1() {
