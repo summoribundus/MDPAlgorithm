@@ -13,6 +13,50 @@ public class TrajectoryCalculation {
     final int[] relativeObsDir180 = new int[] {1, 2, 3, 0};
     final int[] relativeObsDir270 = new int[] {2, 3, 0, 1};
 
+    final int[][][][] relativeObsCircleMapping = new int[][][][] {
+            // quadrant 1
+        {
+                //obs Relative direction = 0
+                {{-1, 0}, {0, 1}, {1, 0}, {0, -1}},
+                //obs Relative direction = 1
+                {{0, -1}, {-1, 0}, {0, 1}, {1, 0}},
+                //obs Relative direction = 2
+                {{1, 0}, {0, -1}, {-1, 0}, {0, 1}},
+                //obs Relative direction = 3
+                {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+        }, {
+            // quadrant 2
+                //dir = 0
+            {{1, 0}, {0, -1}, {-1, 0}, {0, 1}},
+                //dir = 1
+            {{0, 1}, {1, 0}, {0, -1}, {-1, 0}},
+                //dir = 2
+            {{-1, 0}, {0, 1}, {1, 0}, {0, -1}},
+                //dir = 3
+            {{0, -1}, {-1, 0}, {0, 1}, {1, 0}}
+        }, {
+            // quadrant 3
+                // dir = 0
+            {{1, 0}, {0, -1}, {-1, 0}, {0, 1}},
+                // dir = 1
+            {{0, 1}, {1, 0}, {0, -1}, {-1, 0}},
+                // dir = 2
+            {{-1, 0}, {0, 1}, {1, 0}, {0, -1}},
+                // dir = 3
+            {{0, -1}, {-1, 0}, {0, 1}, {1, 0}}
+        }, {
+            // quadrant 4
+                // dir = 0
+            {{-1, 0}, {0, 1}, {1, 0}, {0, -1}},
+                //  dir = 1
+            {{0, -1}, {-1, 0}, {0, 1}, {1, 0}},
+                // dir = 2
+            {{1, 0}, {0, -1}, {-1, 0}, {0, 1}},
+                // dir = 3
+            {{0, 1}, {1, 0}, {0, -1}, {-1, 0}},
+        }
+    };
+
 
     // the real coordinates of the obstacle
     private final int targetC;
@@ -76,62 +120,15 @@ public class TrajectoryCalculation {
     }
 
     private int[] calculateObstacleCenterOfAllCurveRoutes(int targetC, int targetR, int obsRelativeDir, int quadrant){
+        int firstIndexQua = quadrant - 1;
+        int secondIndex = obsRelativeDir;
+        int thirdIndex = (int)robotTheta/90;
 
-        if (quadrant == 1){ // upper right
-            if (obsRelativeDir == 0) {
-                if (robotTheta == 0)
-                    return new int[]{targetC - AlgoConstant.R, targetR};
-                else if (robotTheta == 90)
-                    return new int[]{targetC, targetR + AlgoConstant.R};
-                else if (robotTheta == 180)
-                    return new int[]{targetC + AlgoConstant.R, targetR};
-                else
-                    return new int[]{targetC, targetR - AlgoConstant.R};
-            }
-            else if (obsRelativeDir == 1) {
-                if (robotTheta == 0)
+        int obsCircleC = relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][0];
+        int obsCircleR = relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][1];
 
-                if (robotTheta == 90)
-                    return new int[]{targetC - AlgoConstant.R, targetR};
-            }
-            else if (obsRelativeDir == 2)
-                return new int[] {targetC, targetR - AlgoConstant.R};
-            else { // obsrelativedir == 3
-                if (robotTheta == 0)
-                    return new int[]{targetC, targetR + AlgoConstant.R};
-                else if (robotTheta == 90)
-                    return new int[]{targetC + AlgoConstant.R, targetR};
-            }
-        } else if (quadrant == 2) {
-            if (obsRelativeDir == 0)
-                return new int[] {targetC, targetR - AlgoConstant.R};
-            else if (obsRelativeDir == 1)
-                return new int[] {targetC + AlgoConstant.R, targetR};
-            else if (obsRelativeDir == 2)
-                return new int[] {targetC, targetR + AlgoConstant.R};
-            else
-                return new int[] {targetC - AlgoConstant.R, targetR};
+        return new int[]{obsCircleC, obsCircleR};
 
-        } else if (quadrant == 3) {
-            if  (obsRelativeDir == 0)
-                    return new int[] {targetC, targetR - AlgoConstant.R};
-            else if (obsRelativeDir == 1)
-                    return new int[] {targetC + AlgoConstant.R, targetR};
-            else if (obsRelativeDir == 2)
-                    return new int[] {targetC, targetR + AlgoConstant.R};
-            else
-                    return new int[] {targetC - AlgoConstant.R, targetR};
-
-        } else { //quadrant == 4 lower right
-            if (obsRelativeDir == 0)
-                return new int[] {targetC, targetR + AlgoConstant.R};
-            else if (obsRelativeDir == 1)
-                return new int[] {targetC - AlgoConstant.R, targetR};
-            else if (obsRelativeDir == 2)
-                return new int[] {targetC, targetR - AlgoConstant.R};
-            else
-                return new int[] {targetC + AlgoConstant.R, targetR};
-        }
     }
 
     private int[] calculateRobotCenterOfCircle(int robotC, int robotR, int robotTheta, int quadrant){
