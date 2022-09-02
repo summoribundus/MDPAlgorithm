@@ -6,7 +6,7 @@ public class Line extends Trajectory {
 
     public Line(int[] startPt, int[] endPt){
         super(startPt, endPt);
-        this.length = (int)calculateEuclideanDistance(startPt[0], startPt[1], endPt[0], endPt[1]);
+        this.length = Math.round((float)(calculateEuclideanDistance(startPt[0], startPt[1], endPt[0], endPt[1])));
     }
 
     public int[] getStartPt() {return this.startPt;}
