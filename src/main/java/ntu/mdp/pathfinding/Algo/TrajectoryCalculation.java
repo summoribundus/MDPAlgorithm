@@ -220,14 +220,6 @@ public class TrajectoryCalculation {
     }
 
     // arc length computation
-    private int calculateArcLength(double startC, double startR, double destC, double destR, int dir){
-        // dir = 0 for turn left, direct = 1 for turn right
-        // tan_x and tan_y are the coordinates for the starting point on the arc,
-        // while destC and destR are the coordinates for the destination point on the arc
-        double alpha = calculateArcAngle(startC, startR, destC, destR, dir);
-
-        return (int)Math.abs(alpha * AlgoConstant.R);
-    }
 
     private int selectObsRelativeDir(int obstacleDir, int robotTheta){
         if (robotTheta == 0)
@@ -243,13 +235,13 @@ public class TrajectoryCalculation {
     // choose the path according to the relative position of
     public TrajectoryResult trajectoryResult() {
 
-        int quadrant = checkRelativePosition(robotC, robotR, (int)robotTheta, targetC, targetR);
+        int quadrant = checkRelativePosition(robotC, robotR, Math.round((float)robotTheta), targetC, targetR);
 
-        int[] centerOfCircle = calculateRobotCenterOfCircle(robotC, robotR, (int)robotTheta, quadrant); //calculate the center of the robot turning trajectory
+        int[] centerOfCircle = calculateRobotCenterOfCircle(robotC, robotR, Math.round((float)robotTheta), quadrant); //calculate the center of the robot turning trajectory
         int robotCircleR = centerOfCircle[0];
         int robotCircleC =centerOfCircle[1];
 
-        int relativeObsDir = selectObsRelativeDir(obstacleDir, (int)robotTheta);
+        int relativeObsDir = selectObsRelativeDir(obstacleDir, Math.round((float)robotTheta));
 
         //if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
             // null;
@@ -414,9 +406,9 @@ public class TrajectoryCalculation {
 //        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 1);
         double alpha2 = Math.abs(Math.atan2(p2pR, p2pC) - Math.atan2(p2pt2R, p2pt2C));
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {(int)pt1C, (int)pt1R}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
-        Line line = new Line(new int[] {(int)pt1C, (int)pt1R}, new int[]{(int) pt2C, (int) pt2R});
-        Curve endCurve = new Curve(new int[]{(int) pt2C, (int) pt2R}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), true);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
+        Line line = new Line(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)});
+        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), true);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, line, endCurve);
 
@@ -451,8 +443,6 @@ public class TrajectoryCalculation {
         double p1pt1C = pt1C - robotCircleC;
         double p1pt1R = pt1R - robotCircleR;
 
-//        double alpha1 = calculateArcAngle(p1pC, p1pR, p1pt1C, p1pt1R, 0);
-//        double arc1 = calculateArcLength(p1pC, p1pR, p1pt1C, p1pt1R, 0);
         double alpha1 = Math.abs(Math.atan2(p1pt1R, p1pt1C) - Math.atan2(p1pR, p1pC));
 
         double p2pt2C = pt2C - obsCircleC;
@@ -460,13 +450,11 @@ public class TrajectoryCalculation {
         double p2pC = targetC - obsCircleC;
         double p2pR = targetR - obsCircleR;
 
-//        double alpha2 = calculateArcAngle(p2pt2C, p2pt2R, p2pC, p2pR, 0);
-//        double arc2 = calculateArcLength(p2pt2C, p2pt2R, p2pC, p2pR, 0);
         double alpha2 = Math.abs(Math.atan2(p2pR, p2pC) - Math.atan2(p2pt2R, p2pt2C));
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {(int)pt1C, (int)pt1R}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), false);
-        Line line = new Line(new int[] {(int)pt1C, (int)pt1R}, new int[]{(int) pt2C, (int) pt2R});
-        Curve endCurve = new Curve(new int[]{(int) pt2C, (int) pt2R}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), false);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), false);
+        Line line = new Line(new int[] {Math.round((float)pt1C),  Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)});
+        Curve endCurve = new Curve(new int[]{ Math.round((float)pt2C),  Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), false);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, line, endCurve);
 
@@ -532,9 +520,9 @@ public class TrajectoryCalculation {
         double alpha2 = Math.abs(Math.atan2(p2pR, p2pC) - Math.atan2(p2pt2R, p2pt2C));
 
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {(int)pt1C, (int)pt1R}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), false);
-        Line line = new Line(new int[] {(int)pt1C, (int)pt1R}, new int[]{(int) pt2C, (int) pt2R});
-        Curve endCurve = new Curve(new int[]{(int) pt2C, (int) pt2R}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), true);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), false);
+        Line line = new Line(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)});
+        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), true);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, line, endCurve);
 
@@ -592,9 +580,9 @@ public class TrajectoryCalculation {
         double alpha2 = Math.abs(Math.atan2(p2pR, p2pC) - Math.atan2(p2pt2R, p2pt2C));
 
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {(int)pt1C, (int)pt1R}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
-        Line line = new Line(new int[] {(int)pt1C, (int)pt1R}, new int[]{(int) pt2C, (int) pt2R});
-        Curve endCurve = new Curve(new int[]{(int) pt2C, (int) pt2R}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), false);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
+        Line line = new Line(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)});
+        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha2), false);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, line, endCurve);
         return res;
@@ -672,9 +660,9 @@ public class TrajectoryCalculation {
         double alpha3 = Math.abs(Math.atan2(p2pR, p2pC) - Math.atan2(p2pt2R, p2pt2C));
 
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {(int)pt1C, (int)pt1R}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
-        Curve intermediateCurve = new Curve(new int[] {(int)pt1C, (int)pt1R}, new int[]{(int) pt2C, (int) pt2R}, new int[] {(int)p3C, (int)p3R}, toDegrees(alpha2), false);
-        Curve endCurve = new Curve(new int[]{(int) pt2C, (int) pt2R}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha3), true);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
+        Curve intermediateCurve = new Curve(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {Math.round((float)p3C), Math.round((float)p3R)}, toDegrees(alpha2), false);
+        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha3), true);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, intermediateCurve, endCurve);
 
@@ -776,9 +764,9 @@ public class TrajectoryCalculation {
         System.out.println("alpha3 in degrees: "+ toDegrees(alpha3));
 
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {(int)pt1C, (int)pt1R}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
-        Curve intermediateCurve = new Curve(new int[] {(int)pt1C, (int)pt1R}, new int[]{(int) pt2C, (int) pt2R}, new int[] {(int)p3C, (int)p3R}, toDegrees(alpha2), false);
-        Curve endCurve = new Curve(new int[]{(int) pt2C, (int) pt2R}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha3), true);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
+        Curve intermediateCurve = new Curve(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {Math.round((float)p3C), Math.round((float)p3R)}, toDegrees(alpha2), false);
+        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha3), true);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, intermediateCurve, endCurve);
 
@@ -787,7 +775,7 @@ public class TrajectoryCalculation {
     }
 
     private int toDegrees(double inRadius) {
-        return (int)(inRadius*360/(2*Math.PI));
+        return Math.round((float)(inRadius*360/(2*Math.PI)));
     }
 
     // public int boundary check
