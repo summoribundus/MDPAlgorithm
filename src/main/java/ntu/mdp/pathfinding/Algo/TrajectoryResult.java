@@ -64,7 +64,19 @@ public class TrajectoryResult {
         return endCurve.getCenter();
     }
 
+    public int getStartTheta() { return startCurve.getTheta();}
+
+    public int getIntermediateTheta() {
+        if (!isAllCurve)
+            return -1;
+        return intermediateCurve.getTheta();
+    }
+
+    public int getEndTheta() { return endCurve.getTheta();}
+
     public int[] getCircleInter() {
+        if (!isAllCurve)
+            return null;
         return intermediateCurve.getCenter();
     }
 

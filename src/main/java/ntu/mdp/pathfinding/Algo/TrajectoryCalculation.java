@@ -28,6 +28,18 @@ public class TrajectoryCalculation {
     public static void main (String[] args) {
         TrajectoryCalculation traj = new TrajectoryCalculation(18, 10, 2, 0, 0, 270);
         TrajectoryResult res = traj.trajectoryResult();
+
+        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
+        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
+
+        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
+        System.out.println("intermediate circle (only if exist): " + Arrays.toString(res.getCircleInter()));
+        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
+
+        System.out.println("start theta: " + res.getStartTheta());
+        System.out.println("intermediate theta (if have): " + res.getIntermediateTheta());
+        System.out.println("end theta: " + res.getEndTheta());
+
     }
 
 
@@ -59,6 +71,50 @@ public class TrajectoryCalculation {
                 return new int[]{targetC, targetR - AlgoConstant.R};
             else
                 return new int[]{targetC, targetR + AlgoConstant.R};
+        }
+    }
+
+    private int[] calculateObstacleCenterOfAllCurveRoutes(int targetC, int targetR, int obsRelativeDir, int quadrant){
+
+        if (quadrant == 1){
+            if (obsRelativeDir == 0)
+                return new int[] {targetC, targetR + AlgoConstant.R};
+            else if (obsRelativeDir == 1)
+                return new int[] {targetC - AlgoConstant.R, targetR};
+            else if (obsRelativeDir == 2)
+                return new int[] {targetC, targetR - AlgoConstant.R};
+            else
+                return new int[] {targetC + AlgoConstant.R, targetR};
+
+        } else if (quadrant == 2) {
+            if (obsRelativeDir == 0)
+                return new int[] {targetC, targetR - AlgoConstant.R};
+            else if (obsRelativeDir == 1)
+                return new int[] {targetC + AlgoConstant.R, targetR};
+            else if (obsRelativeDir == 2)
+                return new int[] {targetC, targetR + AlgoConstant.R};
+            else
+                return new int[] {targetC - AlgoConstant.R, targetR};
+
+        } else if (quadrant == 3) {
+            if  (obsRelativeDir == 0)
+                    return new int[] {targetC, targetR - AlgoConstant.R};
+            else if (obsRelativeDir == 1)
+                    return new int[] {targetC + AlgoConstant.R, targetR};
+            else if (obsRelativeDir == 2)
+                    return new int[] {targetC, targetR + AlgoConstant.R};
+            else
+                    return new int[] {targetC - AlgoConstant.R, targetR};
+
+        } else { //quadrant == 4 lower right
+            if (obsRelativeDir == 0)
+                return new int[] {targetC, targetR + AlgoConstant.R};
+            else if (obsRelativeDir == 1)
+                return new int[] {targetC - AlgoConstant.R, targetR};
+            else if (obsRelativeDir == 2)
+                return new int[] {targetC, targetR - AlgoConstant.R};
+            else
+                return new int[] {targetC + AlgoConstant.R, targetR};
         }
     }
 
@@ -192,21 +248,25 @@ public class TrajectoryCalculation {
         int robotCircleR = centerOfCircle[0];
         int robotCircleC =centerOfCircle[1];
 
-        int[] obstacleCircle = calculateObstacleCircleCenter(targetC, targetR, robotC, robotR, obstacleDir);
-        int obsCircleR = obstacleCircle[0];
-        int obsCircleC = obstacleCircle[1];
-
         int relativeObsDir = selectObsRelativeDir(obstacleDir, (int)robotTheta);
 
         //if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
             // null;
-        double centerDist = calculateEuclideanDistance(obsCircleC, obsCircleR, robotCircleC, robotCircleR);
+        double centerDist = calculateEuclideanDistance(robotC, robotR, targetC, targetR);
         boolean isSmallerThan4R = (centerDist <= 4*AlgoConstant.R)? true: false;
 //
 //        if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
 //            return null;
 
         if (isSmallerThan4R) {
+
+            System.out.println(" is smaller than 4r...");
+            int[] obstacleCircle = calculateObstacleCenterOfAllCurveRoutes(targetC, targetR, relativeObsDir, quadrant);
+
+            int obsCircleC = obstacleCircle[0];
+            int obsCircleR = obstacleCircle[1];
+
+
             if (quadrant == 1){
                 if (relativeObsDir == 3)
                     return calculateCurveRLR(robotC, robotR, targetC, targetR, robotCircleR,
@@ -244,8 +304,15 @@ public class TrajectoryCalculation {
         }
 
 
+        int[] obstacleCircle = calculateObstacleCircleCenter(targetC, targetR, robotC, robotR, obstacleDir);
+        int obsCircleR = obstacleCircle[0];
+        int obsCircleC = obstacleCircle[1];
+
+        System.out.println("start calculating");
+
         if (quadrant == 1) // upper right
         {
+            System.out.println("start calculating, q = 1");
             if (relativeObsDir == 1 || relativeObsDir == 0) {
                 //rsr
                 return calculateRSR(robotC, robotR, targetC, targetR, robotCircleR,
@@ -261,6 +328,8 @@ public class TrajectoryCalculation {
 
         if (quadrant == 2) // upper left
         {
+            System.out.println("start calculating, q = 2");
+            System.out.println("relative dir: " + relativeObsDir);
             if (relativeObsDir == 1 || relativeObsDir == 2) {
                 //lsl
                 return calculateLSL(robotC, robotR, targetC, targetR, robotCircleR,
@@ -275,6 +344,7 @@ public class TrajectoryCalculation {
 
         if (quadrant == 3) // lower left
         {
+            System.out.println("start calculating, q = 3");
             if (relativeObsDir == 1 || relativeObsDir == 0) {
                 //lsl
                 return calculateLSL(robotC, robotR, targetC, targetR, robotCircleR,
@@ -288,6 +358,7 @@ public class TrajectoryCalculation {
         }
 
         else { // lower right
+            System.out.println("start calculating, q = 4");
             if (relativeObsDir == 1 || relativeObsDir == 2 ) {
                 //rsr
                 return calculateRSR(robotC, robotR, targetC, targetR, robotCircleR,
@@ -619,6 +690,12 @@ public class TrajectoryCalculation {
     ){
 
         System.out.println("now calling LRL curve...");
+
+        System.out.println("robotCircleC: " + robotCircleC);
+        System.out.println("robotCircleR: " + robotCircleR);
+
+        System.out.println("obsCircleC: " + obsCircleC);
+        System.out.println("obsCircleR: " + obsCircleR);
 
         // distance between the centres of the two turning circles p1 and p2
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
