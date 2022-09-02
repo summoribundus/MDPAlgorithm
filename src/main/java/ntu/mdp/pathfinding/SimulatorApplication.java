@@ -4,7 +4,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import ntu.mdp.pathfinding.Algo.AlgoConstant;
+import ntu.mdp.pathfinding.Algo.ShortestPathAlgo;
 import ntu.mdp.pathfinding.Algo.ShortestPathTrajectory;
+import ntu.mdp.pathfinding.Algo.ShortestPathTrajectoryResult;
 import ntu.mdp.pathfinding.GUI.Grid;
 import ntu.mdp.pathfinding.GUI.GridControlPane;
 import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
@@ -12,6 +15,7 @@ import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -20,8 +24,18 @@ class ShortestPathRunner implements Runnable {
     @Override
     public void run() {
         Car car = InputData.getCar();
-        ShortestPathTrajectory algo = new ShortestPathTrajectory(40, 40, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
         algo.findShortestValidPath();
+//        ShortestPathAlgo algo = new ShortestPathAlgo(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+//        ShortestPathTrajectoryResult result = algo.findShortestPath();
+//        if (result == null)
+//            System.out.println("No solution found");
+//        else {
+//            List<int[]> path = result.getPathGrids();
+//            for (int[] p : path) {
+//                car.goTo(p[0], p[1]);
+//            }
+//        }
         System.out.println("Path checking done");
         List<int[]> points = algo.getPathGrids();
         if (points == null || points.isEmpty()) {
@@ -74,6 +88,6 @@ public class SimulatorApplication extends Application {
     public static void main(String[] args) {
         Thread thread = new Thread(new ShortestPathRunner());
         thread.start();
-//        launch();
+        launch();
     }
 }

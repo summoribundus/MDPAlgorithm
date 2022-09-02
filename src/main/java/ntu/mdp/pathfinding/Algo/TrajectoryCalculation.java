@@ -253,7 +253,7 @@ public class TrajectoryCalculation {
 
         if (isSmallerThan4R) {
 
-            System.out.println(" is smaller than 4r...");
+            System.out.println(" is smaller than 2r...");
             int[] obstacleCircle = calculateObstacleCenterOfAllCurveRoutes(targetC, targetR, relativeObsDir, quadrant);
 
             int obsCircleC = obstacleCircle[0];
