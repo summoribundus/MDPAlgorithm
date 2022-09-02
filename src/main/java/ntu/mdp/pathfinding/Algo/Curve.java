@@ -1,7 +1,6 @@
 package ntu.mdp.pathfinding.Algo;
 
 public class Curve extends Trajectory {
-    private int[] startPt, endPt;
 
     private int[] center;
 

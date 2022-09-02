@@ -1,7 +1,6 @@
 package ntu.mdp.pathfinding.Algo;
 
 public class Line extends Trajectory {
-    private int[] startPt, endPt;
 
     private int length;
 
