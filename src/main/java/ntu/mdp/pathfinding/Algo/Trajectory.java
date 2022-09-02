@@ -1,10 +1,10 @@
 package ntu.mdp.pathfinding.Algo;
 
 public class Trajectory {
-    private int[] start, end;
+    private int[] startPt, endPt;
 
     public Trajectory(int[] start, int[] end){
-        this.start = start;
-        this.end = end;
+        this.startPt = start;
+        this.endPt = end;
     }
 }

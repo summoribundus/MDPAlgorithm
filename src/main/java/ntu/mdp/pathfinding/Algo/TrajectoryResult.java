@@ -57,11 +57,11 @@ public class TrajectoryResult {
     }
 
     public int[] getPt1() {
-        return pt1;
+        return this.pt1;
     }
 
     public int[] getPt2() {
-        return pt2;
+        return this.pt2;
     }
 
     public int[] getCircle1() {
