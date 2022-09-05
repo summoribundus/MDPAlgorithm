@@ -765,9 +765,9 @@ public class TrajectoryCalculation {
         System.out.println("alpha3 in degrees: "+ toDegrees(alpha3));
 
 
-        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), true);
-        Curve intermediateCurve = new Curve(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {Math.round((float)p3C), Math.round((float)p3R)}, toDegrees(alpha2), false);
-        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha3), true);
+        Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), false);
+        Curve intermediateCurve = new Curve(new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {Math.round((float)p3C), Math.round((float)p3R)}, toDegrees(alpha2), true);
+        Curve endCurve = new Curve(new int[]{Math.round((float)pt2C), Math.round((float)pt2R)}, new int[] {targetC, targetR}, new int[] {obsCircleC, obsCircleR}, toDegrees(alpha3), false);
 
         TrajectoryResult res = new TrajectoryResult(startCurve, intermediateCurve, endCurve);
 
