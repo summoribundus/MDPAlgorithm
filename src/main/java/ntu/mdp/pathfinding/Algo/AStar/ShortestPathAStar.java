@@ -1,5 +1,7 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.AStar;
 
+import ntu.mdp.pathfinding.Algo.AStarResult;
+import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.util.*;
