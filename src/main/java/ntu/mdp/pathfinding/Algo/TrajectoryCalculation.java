@@ -70,7 +70,7 @@ public class TrajectoryCalculation {
 
 
     public static void main (String[] args) {
-        TrajectoryCalculation traj = new TrajectoryCalculation(21, 4, 0, 0, 0, 270);
+        TrajectoryCalculation traj = new TrajectoryCalculation(10, 13, 0, 4, 4, 270);
         TrajectoryResult res = traj.trajectoryResult();
 
 //        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
