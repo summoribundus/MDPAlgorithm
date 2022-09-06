@@ -30,7 +30,7 @@ public class ShortestPathBF {
         permStart[0] = 0;
         visited[0] = true;
         getPermutation(permStart, visited, 1, possiblePermutations);
-        ExecutorService es = Executors.newCachedThreadPool();
+        ExecutorService es = Executors.newCachedThreadPool(); // fixed pool available processor??
         for (int[] path : possiblePermutations) {
             PathDistance p = new PathDistance(path, idxMapping, pq);
             es.execute(p);

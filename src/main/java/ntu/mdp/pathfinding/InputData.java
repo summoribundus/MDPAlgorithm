@@ -1,15 +1,15 @@
 package ntu.mdp.pathfinding;
 
 public class InputData {
-    private static final int startR = 4;
-    private static final int startC = 4;
+    private static final int startR = 2;
+    private static final int startC = 2;
     private static final Obstacle[] obstacles = new Obstacle[]{
-                new Obstacle(4, 26, 2, 3, false),
-                new Obstacle(14, 20, 2, 8, false),
-                new Obstacle(18, 38, 0, 13, false), // tricky point
-                new Obstacle(24, 12, 3, 19, false),
-                new Obstacle(32, 30, 0, 22, false),
-                new Obstacle(36, 2, 1, 25, false),
+                new Obstacle(5, 12, 3, 3, false),
+                new Obstacle(20, 20, 3, 8, false),
+                new Obstacle(33, 17, 0, 13, false), // tricky point
+                new Obstacle(15, 32, 1, 19, false),
+                new Obstacle(27, 2, 2, 22, false),
+                new Obstacle(35, 36, 1, 25, false),
         };
 
     private static final Car car = new Car(startR, startC);

@@ -88,6 +88,6 @@ public class SimulatorApplication extends Application {
     public static void main(String[] args) {
         Thread thread = new Thread(new ShortestPathRunner());
         thread.start();
-        launch();
+//        launch();
     }
 }

@@ -32,7 +32,7 @@ public class ShortestPathAlgo {
                         idxMap, arena);
                 tasks.add(runnable);
             }
-            System.out.println("Trajectory task prepared");
+//            System.out.println("Trajectory task prepared");
 
             try {
                 List<Future<ShortestPathTrajectoryResult>> futures = service.invokeAll(tasks);
