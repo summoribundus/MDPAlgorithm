@@ -43,9 +43,9 @@ public class TrajectoryResult {
         this.pt2 = l2.getEndPt();
 
         this.totalLength = c1.getArcLen() + l2.getLength() + c3.getArcLen();
-        System.out.println("c1 arclen: " + c1.getArcLen());
-        System.out.println("l2 length: " + l2.getLength());
-        System.out.println("c3 arclen: " + c3.getArcLen());
+//        System.out.println("c1 arclen: " + c1.getArcLen());
+//        System.out.println("l2 length: " + l2.getLength());
+//        System.out.println("c3 arclen: " + c3.getArcLen());
 
         this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(),
                 c3.getTheta(), c3.isClockwiseTurn(), totalLength);

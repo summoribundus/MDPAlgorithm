@@ -24,27 +24,27 @@ class ShortestPathRunner implements Runnable {
     @Override
     public void run() {
         Car car = InputData.getCar();
-//        ShortestPathAlgo algo = new ShortestPathAlgo(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
-//        ShortestPathTrajectoryResult result = algo.findShortestPath();
-//        if (result == null)
-//            System.out.println("No solution found");
-//        else {
-//            List<int[]> path = result.getPathGrids();
-//            for (int[] p : path) {
-//                car.goTo(p[0], p[1]);
-//            }
-//        }
-        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
-        algo.findShortestValidPath();
-        System.out.println("Path checking done");
-        List<int[]> points = algo.getPathGrids();
-        if (points == null || points.isEmpty()) {
+        ShortestPathAlgo algo = new ShortestPathAlgo(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        ShortestPathTrajectoryResult result = algo.findShortestPath();
+        if (result == null)
             System.out.println("No solution found");
-            return;
+        else {
+            List<int[]> path = result.getPathGrids();
+            for (int[] p : path) {
+                car.goTo(p[0], p[1]);
+            }
         }
-        for (int[] p : points) {
-            car.goTo(p[0], p[1]);
-        }
+//        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+//        algo.findShortestValidPath();
+//        System.out.println("Path checking done");
+//        List<int[]> points = algo.getPathGrids();
+//        if (points == null || points.isEmpty()) {
+//            System.out.println("No solution found");
+//            return;
+//        }
+//        for (int[] p : points) {
+//            car.goTo(p[0], p[1]);
+//        }
     }
 }
 

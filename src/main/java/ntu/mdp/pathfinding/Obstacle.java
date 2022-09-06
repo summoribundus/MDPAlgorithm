@@ -8,7 +8,7 @@ public class Obstacle {
     private int imgIdx;
 
     public static int[][] imgDirToTargetMapping = new int[][]{{0, -5}, {-5, 0}, {0, 6}, {6, 0}};
-    private static int[] imgDirToTargetDegree = new int[]{0, 270, 180, 360};
+    private static int[] imgDirToTargetDegree = new int[]{0, 270, 180, 90};
 
     // 10 based r and c
     public Obstacle(int r, int c, int dir, int imgIdx, boolean isFakeObstacle) {

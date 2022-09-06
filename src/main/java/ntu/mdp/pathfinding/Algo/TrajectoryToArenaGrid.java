@@ -226,71 +226,71 @@ public class TrajectoryToArenaGrid {
                 }
             }
         } else if (checkReverseQuadrant(quadrant1, quadrant2)) {
-            boolean p1 = (quadrant1 == 1 || quadrant1 == 2) ? isClockWise : !isClockWise;
-            if (p1) {
-                int xAxis = (quadrant1 == 1 || quadrant1 == 4) ? circleC + AlgoConstant.R : circleC - AlgoConstant.R;
-                int yAxis = (quadrant1 == 1 || quadrant1 == 2) ? circleR + AlgoConstant.R : circleR - AlgoConstant.R;
-                edges.add(new Edge(r1, c1, r1, xAxis));
-                edges.add(new Edge(r1, xAxis, yAxis, xAxis));
-                edges.add(new Edge(yAxis, xAxis, yAxis, c2));
-                edges.add(new Edge(yAxis, c2, r2, c2));
-            } else {
-                int yAxis = (quadrant1 == 1 || quadrant1 == 2) ? circleR - AlgoConstant.R : circleR + AlgoConstant.R;
-                int xAxis = (quadrant1 == 1 || quadrant1 == 4) ? circleC - AlgoConstant.R : circleC + AlgoConstant.R;
-                edges.add(new Edge(r1, c1, yAxis, c1));
-                edges.add(new Edge(yAxis, c1, yAxis, xAxis));
-                edges.add(new Edge(yAxis, xAxis, r2, xAxis));
-                edges.add(new Edge(r2, xAxis, r2, c2));
-            }
-//            if (quadrant1 == 1) {
-//                if (isClockWise) {
-//                    edges.add(new Edge(r1, c1, r1, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(r1, circleC + AlgoConstant.R, circleR + AlgoConstant.R, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, circleC + AlgoConstant.R, circleR + AlgoConstant.R, c2));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, c2, r2, c2));
-//                } else {
-//                    edges.add(new Edge(r1, c1, circleR - AlgoConstant.R, c1));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, c1, circleR - AlgoConstant.R, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, circleC - AlgoConstant.R, r2, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(r2, circleC - AlgoConstant.R, r2, c2));
-//                }
-//            } else if (quadrant1 == 2) {
-//                if (!isClockWise) {
-//                    edges.add(new Edge(r1, c1, r1, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(r1, circleC - AlgoConstant.R, circleR + AlgoConstant.R, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, circleC - AlgoConstant.R, circleR + AlgoConstant.R, c2));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, c2, r2, c2));
-//                } else {
-//                    edges.add(new Edge(r1, c1, circleR - AlgoConstant.R, c1));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, c1, circleR - AlgoConstant.R, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, circleC + AlgoConstant.R, r2, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(r2, circleC + AlgoConstant.R, r2, c2));
-//                }
-//            } else if (quadrant1 == 3) {
-//                if (isClockWise) {
-//                    edges.add(new Edge(r1, c1, r1, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(r1, circleC - AlgoConstant.R, circleR - AlgoConstant.R, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, circleC - AlgoConstant.R, circleR - AlgoConstant.R, c2));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, c2, r2, c2));
-//                } else {
-//                    edges.add(new Edge(r1, c1, circleR + AlgoConstant.R, c1));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, c1, circleR + AlgoConstant.R, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, circleC + AlgoConstant.R, r2, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(r2, circleC + AlgoConstant.R, r2, c2));
-//                }
+//            boolean p1 = (quadrant1 == 1 || quadrant1 == 2) ? isClockWise : !isClockWise;
+//            if (p1) {
+//                int xAxis = (quadrant1 == 1 || quadrant1 == 4) ? circleC + AlgoConstant.R : circleC - AlgoConstant.R;
+//                int yAxis = (quadrant1 == 1 || quadrant1 == 2) ? circleR + AlgoConstant.R : circleR - AlgoConstant.R;
+//                edges.add(new Edge(r1, c1, r1, xAxis));
+//                edges.add(new Edge(r1, xAxis, yAxis, xAxis));
+//                edges.add(new Edge(yAxis, xAxis, yAxis, c2));
+//                edges.add(new Edge(yAxis, c2, r2, c2));
 //            } else {
-//                if (!isClockWise) {
-//                    edges.add(new Edge(r1, c1, r1, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(r1, circleC + AlgoConstant.R, circleR - AlgoConstant.R, circleC + AlgoConstant.R));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, circleC + AlgoConstant.R, circleR - AlgoConstant.R, c2));
-//                    edges.add(new Edge(circleR - AlgoConstant.R, c2, r2, c2));
-//                } else {
-//                    edges.add(new Edge(r1, c1, circleR + AlgoConstant.R, c1));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, c1, circleR + AlgoConstant.R, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(circleR + AlgoConstant.R, circleC - AlgoConstant.R, r2, circleC - AlgoConstant.R));
-//                    edges.add(new Edge(r2, circleC - AlgoConstant.R, r2, c2));
-//                }
+//                int yAxis = (quadrant1 == 1 || quadrant1 == 2) ? circleR - AlgoConstant.R : circleR + AlgoConstant.R;
+//                int xAxis = (quadrant1 == 1 || quadrant1 == 4) ? circleC - AlgoConstant.R : circleC + AlgoConstant.R;
+//                edges.add(new Edge(r1, c1, yAxis, c1));
+//                edges.add(new Edge(yAxis, c1, yAxis, xAxis));
+//                edges.add(new Edge(yAxis, xAxis, r2, xAxis));
+//                edges.add(new Edge(r2, xAxis, r2, c2));
 //            }
+            if (quadrant1 == 1) {
+                if (isClockWise) {
+                    edges.add(new Edge(r1, c1, r1, circleC + AlgoConstant.R));
+                    edges.add(new Edge(r1, circleC + AlgoConstant.R, circleR + AlgoConstant.R, circleC + AlgoConstant.R));
+                    edges.add(new Edge(circleR + AlgoConstant.R, circleC + AlgoConstant.R, circleR + AlgoConstant.R, c2));
+                    edges.add(new Edge(circleR + AlgoConstant.R, c2, r2, c2));
+                } else {
+                    edges.add(new Edge(r1, c1, circleR - AlgoConstant.R, c1));
+                    edges.add(new Edge(circleR - AlgoConstant.R, c1, circleR - AlgoConstant.R, circleC - AlgoConstant.R));
+                    edges.add(new Edge(circleR - AlgoConstant.R, circleC - AlgoConstant.R, r2, circleC - AlgoConstant.R));
+                    edges.add(new Edge(r2, circleC - AlgoConstant.R, r2, c2));
+                }
+            } else if (quadrant1 == 2) {
+                if (!isClockWise) {
+                    edges.add(new Edge(r1, c1, r1, circleC - AlgoConstant.R));
+                    edges.add(new Edge(r1, circleC - AlgoConstant.R, circleR + AlgoConstant.R, circleC - AlgoConstant.R));
+                    edges.add(new Edge(circleR + AlgoConstant.R, circleC - AlgoConstant.R, circleR + AlgoConstant.R, c2));
+                    edges.add(new Edge(circleR + AlgoConstant.R, c2, r2, c2));
+                } else {
+                    edges.add(new Edge(r1, c1, circleR - AlgoConstant.R, c1));
+                    edges.add(new Edge(circleR - AlgoConstant.R, c1, circleR - AlgoConstant.R, circleC + AlgoConstant.R));
+                    edges.add(new Edge(circleR - AlgoConstant.R, circleC + AlgoConstant.R, r2, circleC + AlgoConstant.R));
+                    edges.add(new Edge(r2, circleC + AlgoConstant.R, r2, c2));
+                }
+            } else if (quadrant1 == 3) {
+                if (isClockWise) {
+                    edges.add(new Edge(r1, c1, r1, circleC - AlgoConstant.R));
+                    edges.add(new Edge(r1, circleC - AlgoConstant.R, circleR - AlgoConstant.R, circleC - AlgoConstant.R));
+                    edges.add(new Edge(circleR - AlgoConstant.R, circleC - AlgoConstant.R, circleR - AlgoConstant.R, c2));
+                    edges.add(new Edge(circleR - AlgoConstant.R, c2, r2, c2));
+                } else {
+                    edges.add(new Edge(r1, c1, circleR + AlgoConstant.R, c1));
+                    edges.add(new Edge(circleR + AlgoConstant.R, c1, circleR + AlgoConstant.R, circleC + AlgoConstant.R));
+                    edges.add(new Edge(circleR + AlgoConstant.R, circleC + AlgoConstant.R, r2, circleC + AlgoConstant.R));
+                    edges.add(new Edge(r2, circleC + AlgoConstant.R, r2, c2));
+                }
+            } else {
+                if (!isClockWise) {
+                    edges.add(new Edge(r1, c1, r1, circleC + AlgoConstant.R));
+                    edges.add(new Edge(r1, circleC + AlgoConstant.R, circleR - AlgoConstant.R, circleC + AlgoConstant.R));
+                    edges.add(new Edge(circleR - AlgoConstant.R, circleC + AlgoConstant.R, circleR - AlgoConstant.R, c2));
+                    edges.add(new Edge(circleR - AlgoConstant.R, c2, r2, c2));
+                } else {
+                    edges.add(new Edge(r1, c1, circleR + AlgoConstant.R, c1));
+                    edges.add(new Edge(circleR + AlgoConstant.R, c1, circleR + AlgoConstant.R, circleC - AlgoConstant.R));
+                    edges.add(new Edge(circleR + AlgoConstant.R, circleC - AlgoConstant.R, r2, circleC - AlgoConstant.R));
+                    edges.add(new Edge(r2, circleC - AlgoConstant.R, r2, c2));
+                }
+            }
         } else if (checkQuadrantSameXSide(quadrant1, quadrant2)) {
             boolean shorter = (quadrant1 == 1 || quadrant1 == 3) ? !isClockWise : isClockWise;
             if (shorter) {
@@ -424,9 +424,6 @@ public class TrajectoryToArenaGrid {
 //                    edges.add(new Edge(circleR - AlgoConstant.R, c2, r2, c2));
 //                }
 //            }
-        }
-        for (Edge e : edges) {
-            System.out.println(e);
         }
         return circleRecTanEdgeLooping(edges);
     }

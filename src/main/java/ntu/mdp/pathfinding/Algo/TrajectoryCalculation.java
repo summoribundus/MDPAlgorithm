@@ -73,17 +73,17 @@ public class TrajectoryCalculation {
         TrajectoryCalculation traj = new TrajectoryCalculation(21, 4, 0, 0, 0, 270);
         TrajectoryResult res = traj.trajectoryResult();
 
-        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
-        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
-
-        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
-        System.out.println("intermediate circle (only if exist): " + Arrays.toString(res.getCircleInter()));
-        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
-
-        System.out.println("start theta: " + res.getStartTheta());
-        System.out.println("intermediate theta (if have): " + res.getIntermediateTheta());
-        System.out.println("end theta: " + res.getEndTheta());
-        System.out.println("total length: " + res.getTotalLength());
+//        System.out.println("pt1: " + Arrays.toString(res.getPt1()));
+//        System.out.println("pt2: " + Arrays.toString(res.getPt2()));
+//
+//        System.out.println("circle1: " + Arrays.toString(res.getCircle1()));
+//        System.out.println("intermediate circle (only if exist): " + Arrays.toString(res.getCircleInter()));
+//        System.out.println("circle2: " + Arrays.toString(res.getCircle2()));
+//
+//        System.out.println("start theta: " + res.getStartTheta());
+//        System.out.println("intermediate theta (if have): " + res.getIntermediateTheta());
+//        System.out.println("end theta: " + res.getEndTheta());
+//        System.out.println("total length: " + res.getTotalLength());
 
     }
 
@@ -199,7 +199,7 @@ public class TrajectoryCalculation {
 
         // robot theta 270, facing south
         else {
-            System.out.println("theta = 270, calculating...");
+//            System.out.println("theta = 270, calculating...");
             if (targetC <= robotC && targetR >= robotR)
                 return 1;
             if (targetC >= robotC && targetR >= robotR)
@@ -254,7 +254,7 @@ public class TrajectoryCalculation {
 
         if (isSmallerThan4R) {
 
-            System.out.println(" is smaller than 4r...");
+//            System.out.println(" is smaller than 4r...");
             int[] obstacleCircle = calculateObstacleCenterOfAllCurveRoutes(targetC, targetR, relativeObsDir, quadrant);
 
             int obsCircleC = obstacleCircle[0];
@@ -278,7 +278,7 @@ public class TrajectoryCalculation {
                             robotCircleR, obsCircleC, obsCircleR, false);
                 }
             } else if (quadrant == 2) {
-                System.out.println("relative obstacle direction: " + relativeObsDir);
+//                System.out.println("relative obstacle direction: " + relativeObsDir);
                 if (relativeObsDir == 3)
                     return calculateCurveLRL(robotC, robotR, targetC, targetR, robotCircleC,
                             robotCircleR, obsCircleC, obsCircleR, true);
@@ -302,11 +302,11 @@ public class TrajectoryCalculation {
         int obsCircleC = obstacleCircle[0];
         int obsCircleR = obstacleCircle[1];
 
-        System.out.println("start calculating");
+//        System.out.println("start calculating");
 
         if (quadrant == 1) // upper right
         {
-            System.out.println("start calculating, q = 1");
+//            System.out.println("start calculating, q = 1");
             if (relativeObsDir == 1 || relativeObsDir == 0) {
                 //rsr
                 return calculateRSR(robotC, robotR, targetC, targetR, robotCircleC,
@@ -322,8 +322,8 @@ public class TrajectoryCalculation {
 
         if (quadrant == 2) // upper left
         {
-            System.out.println("start calculating, q = 2");
-            System.out.println("relative dir: " + relativeObsDir);
+//            System.out.println("start calculating, q = 2");
+//            System.out.println("relative dir: " + relativeObsDir);
             if (relativeObsDir == 1 || relativeObsDir == 2) {
                 //lsl
                 return calculateLSL(robotC, robotR, targetC, targetR, robotCircleC,
@@ -338,7 +338,7 @@ public class TrajectoryCalculation {
 
         if (quadrant == 3) // lower left
         {
-            System.out.println("start calculating, q = 3");
+//            System.out.println("start calculating, q = 3");
             if (relativeObsDir == 1 || relativeObsDir == 0) {
                 //lsl
                 return calculateLSL(robotC, robotR, targetC, targetR, robotCircleC,
@@ -352,7 +352,7 @@ public class TrajectoryCalculation {
         }
 
         else { // lower right
-            System.out.println("start calculating, q = 4");
+//            System.out.println("start calculating, q = 4");
             if (relativeObsDir == 1 || relativeObsDir == 2 ) {
                 //rsr
                 return calculateRSR(robotC, robotR, targetC, targetR, robotCircleC,
@@ -371,7 +371,7 @@ public class TrajectoryCalculation {
                                          int targetC, int targetR,
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR){
-        System.out.println("calculateRSR is called.");
+//        System.out.println("calculateRSR is called.");
         double l = calculateEuclideanDistance(obsCircleC, obsCircleR, robotCircleC, robotCircleR);
         // calculate v1 which points from center p1 to center p2
         double v1C = obsCircleC - robotCircleC;
@@ -421,7 +421,7 @@ public class TrajectoryCalculation {
                                          int targetC, int targetR,
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR){
-        System.out.println("calculateLSL is called.");
+//        System.out.println("calculateLSL is called.");
         double l = calculateEuclideanDistance(obsCircleC, obsCircleR, robotCircleC, robotCircleR);
         // calculate v1 which points from center p1 to center p2
         double v1C = obsCircleC - robotCircleC;
@@ -596,7 +596,7 @@ public class TrajectoryCalculation {
                                                     int obsCircleC, int obsCircleR,
                                                     boolean isBigCurve
                                                     ){
-        System.out.println("now calling RLR curve...");
+//        System.out.println("now calling RLR curve...");
 
         // distance between the centres of the two turning circles p1 and p2
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
@@ -679,13 +679,13 @@ public class TrajectoryCalculation {
                                                     boolean isBigCurve
     ){
 
-        System.out.println("now calling LRL curve...");
-
-        System.out.println("robotCircleC: " + robotCircleC);
-        System.out.println("robotCircleR: " + robotCircleR);
-
-        System.out.println("obsCircleC: " + obsCircleC);
-        System.out.println("obsCircleR: " + obsCircleR);
+//        System.out.println("now calling LRL curve...");
+//
+//        System.out.println("robotCircleC: " + robotCircleC);
+//        System.out.println("robotCircleR: " + robotCircleR);
+//
+//        System.out.println("obsCircleC: " + obsCircleC);
+//        System.out.println("obsCircleR: " + obsCircleR);
 
         // distance between the centres of the two turning circles p1 and p2
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
@@ -697,9 +697,9 @@ public class TrajectoryCalculation {
         // the vector from p1 to p2 is vector v1
         double v1C = obsCircleC - robotCircleC;
         double v1R = obsCircleR - robotCircleR;
-        System.out.println("================== v1 calculation ================== ");
-        System.out.println("v1C: " + v1C);
-        System.out.println("v1R: " + v1R);
+//        System.out.println("================== v1 calculation ================== ");
+//        System.out.println("v1C: " + v1C);
+//        System.out.println("v1R: " + v1R);
 
         double v2C, v2R;
 
@@ -712,8 +712,8 @@ public class TrajectoryCalculation {
             v2R = -v1C;
         }
 
-        System.out.println("v2C: " + v2C);
-        System.out.println("v2R: " + v2R);
+//        System.out.println("v2C: " + v2C);
+//        System.out.println("v2R: " + v2R);
 
         // the distance from p3 to q is:
         double d1 = Math.sqrt(4*Math.pow(AlgoConstant.R, 2) - 0.25*Math.pow(d, 2));
@@ -721,9 +721,9 @@ public class TrajectoryCalculation {
         // the point p3 is (0, 0) to the mid-point q plus d1*
         double p3C = qC + d1/d*v2C;
         double p3R = qR + d1/d*v2R;
-        System.out.println("================== p3 calculation ================== ");
-        System.out.println("d1/d*v2C: " + d1/d*v2C);
-        System.out.println("d1/d*v2R: " + d1/d*v2R);
+//        System.out.println("================== p3 calculation ================== ");
+//        System.out.println("d1/d*v2C: " + d1/d*v2C);
+//        System.out.println("d1/d*v2R: " + d1/d*v2R);
 
         // pt1 is the midpoint of p1p3
         double pt1C = (robotCircleC + p3C)/2;
@@ -742,7 +742,7 @@ public class TrajectoryCalculation {
 
         double alpha1 = Math.abs(Math.atan2(p1pt1R, p1pt1C) - Math.atan2(p1pR, p1pC));
 
-        System.out.println("alpha1 in degrees: "+ toDegrees(alpha1));
+//        System.out.println("alpha1 in degrees: "+ toDegrees(alpha1));
         double arc1 = alpha1 * AlgoConstant.R;
 
         // arc 2:
@@ -752,7 +752,7 @@ public class TrajectoryCalculation {
         double p3pt1R = pt1R - p3R;
 
         double alpha2 = Math.abs(Math.atan2(p3pt2R, p3pt2C) - Math.atan2(p3pt1R, p3pt1C));
-        System.out.println("alpha2 in degrees: "+ toDegrees(alpha2));
+//        System.out.println("alpha2 in degrees: "+ toDegrees(alpha2));
 
         // arc 3:
         double p2pt2C = pt2C - obsCircleC;
@@ -762,7 +762,7 @@ public class TrajectoryCalculation {
 
         double alpha3 = Math.abs(Math.atan2(p2pR, p2pC) - Math.atan2(p2pt2R, p2pt2C));
 
-        System.out.println("alpha3 in degrees: "+ toDegrees(alpha3));
+//        System.out.println("alpha3 in degrees: "+ toDegrees(alpha3));
 
 
         Curve startCurve = new Curve(new int[]{robotC, robotR}, new int[] {Math.round((float)pt1C), Math.round((float)pt1R)}, new int[] {robotCircleC, robotCircleR}, toDegrees(alpha1), false);
