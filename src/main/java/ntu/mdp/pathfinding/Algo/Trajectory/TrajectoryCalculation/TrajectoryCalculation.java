@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding.Algo.Trajectory;
+package ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation;
 
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 

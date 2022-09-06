@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding.Algo.Trajectory;
+package ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation;
 
 public class TrajectoryLine extends Trajectory {
 

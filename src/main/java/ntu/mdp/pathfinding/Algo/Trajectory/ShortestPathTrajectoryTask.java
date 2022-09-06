@@ -2,6 +2,8 @@ package ntu.mdp.pathfinding.Algo.Trajectory;
 
 import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.CarMove;
+import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryCalculation;
+import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryResult;
 import ntu.mdp.pathfinding.Obstacle;
 
 import java.util.ArrayList;
