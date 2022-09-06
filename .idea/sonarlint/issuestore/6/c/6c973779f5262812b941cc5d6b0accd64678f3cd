@@ -1,0 +1,90 @@
+
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(·¨Ë‡
+<
+java:S1659"!Declare "stC" on a separate line.(ë¯çÀ˛ˇˇˇˇ
+<
+java:S1659	"!Declare "edC" on a separate line.(È‹‰≥¸ˇˇˇˇ
+;
+java:S1659
+" Declare "dc" on a separate line.(ØÄìµ˛ˇˇˇˇ
+U
+java:S1118:":Add a private constructor to hide the implicit public one.(◊é√ß¸ˇˇˇˇ
+S
+java:S1854A"=Remove this useless assignment to local variable "!unknown!".(√Â¿Ÿ
+X
+java:S1854C"=Remove this useless assignment to local variable "!unknown!".(ıß‘Ó˚ˇˇˇˇ
+X
+java:S1854G"=Remove this useless assignment to local variable "!unknown!".(´¬—˙ˇˇˇˇ
+X
+java:S1854Q"=Remove this useless assignment to local variable "!unknown!".(Åçﬁ˘¯ˇˇˇˇ
+X
+java:S1854Q"=Remove this useless assignment to local variable "!unknown!".(Åçﬁ˘¯ˇˇˇˇ
+S
+java:S1854P"=Remove this useless assignment to local variable "!unknown!".(√Â¿Ÿ
+X
+java:S1854R"=Remove this useless assignment to local variable "!unknown!".(¨¢‡„¸ˇˇˇˇ
+S
+java:S1854V"=Remove this useless assignment to local variable "!unknown!".(◊ˆÃÃ
+S
+java:S1854U"=Remove this useless assignment to local variable "!unknown!".(à£í‹
+:
+java:S1659Q"Declare "b" on a separate line.(Åçﬁ˘¯ˇˇˇˇ
+n
+java:S3776`"SRefactor this method to reduce its Cognitive Complexity from 132 to the 15 allowed.(ˇÿ’·˚ˇˇˇˇ
+X
+java:S1854b"=Remove this useless assignment to local variable "!unknown!".(ïÖÌ≈ˇˇˇˇˇ
+S
+java:S1854l"=Remove this useless assignment to local variable "!unknown!".(ıΩπ‰
+X
+java:S1854k"=Remove this useless assignment to local variable "!unknown!".(∞®ê˚˚ˇˇˇˇ
+X
+java:S1854j"=Remove this useless assignment to local variable "!unknown!".(‘öÓø˝ˇˇˇˇ
+X
+java:S1854h"=Remove this useless assignment to local variable "!unknown!".(º◊§µ¸ˇˇˇˇ
+T
+java:S1854Ø"=Remove this useless assignment to local variable "!unknown!".(•á˜Å
+T
+java:S1854±"=Remove this useless assignment to local variable "!unknown!".(·∑æÅ
+Y
+java:S1854∂"=Remove this useless assignment to local variable "!unknown!".(∂ç¢È¯ˇˇˇˇ
+Y
+java:S1854∑"=Remove this useless assignment to local variable "!unknown!".(‰Øõº˘ˇˇˇˇ
+T
+java:S1854∏"=Remove this useless assignment to local variable "!unknown!".(€Ù˘ú
+Y
+java:S1854Ú"=Remove this useless assignment to local variable "!unknown!".(¨¬æ›˝ˇˇˇˇ
+Y
+java:S1854Ù"=Remove this useless assignment to local variable "!unknown!".(˚ÔÃˇ¯ˇˇˇˇ
+Y
+java:S1854˘"=Remove this useless assignment to local variable "!unknown!".(‡ΩãÉ˛ˇˇˇˇ
+T
+java:S1854˙"=Remove this useless assignment to local variable "!unknown!".(´Èß∂
+T
+java:S1854˚"=Remove this useless assignment to local variable "!unknown!".(∆óõ‰
+`
+java:S1659i"EDeclare "recTanC1" and all following declarations on a separate line.(©·Â˚ˇˇˇˇ
+P	java:S125o"<This block of commented-out lines of code should be removed.(ì¢Ì-
+W	java:S125Ì"<This block of commented-out lines of code should be removed.(Èﬁ≠Ô˙ˇˇˇˇ
+W	java:S125¿"<This block of commented-out lines of code should be removed.(ö”ï˝ˇˇˇˇ
+W	java:S125Ç"<This block of commented-out lines of code should be removed.(ö”ï˝ˇˇˇˇ
+i
+java:S3776∑"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ò˙∆Ü
+T
+java:S1854∏"=Remove this useless assignment to local variable "!unknown!".(√Â¿Ÿ
+Y
+java:S1854∫"=Remove this useless assignment to local variable "!unknown!".(Ì±ÎÛ˘ˇˇˇˇ
+Y
+java:S1854∫"=Remove this useless assignment to local variable "!unknown!".(Ì±ÎÛ˘ˇˇˇˇ
+Y
+java:S1854…"=Remove this useless assignment to local variable "!unknown!".(ÀﬂÆ¸˝ˇˇˇˇ
+;
+java:S1659∫"Declare "c" on a separate line.(Ì±ÎÛ˘ˇˇˇˇ
+K
+java:S1172Ê"/Remove this unused method parameter "recTanR2".(†º€Œ˛ˇˇˇˇ
+W	java:S125Œ"<This block of commented-out lines of code should be removed.(—Ñæ”˛ˇˇˇˇ
+Y
+java:S1854É"=Remove this useless assignment to local variable "!unknown!".(Ïë˝¬ˇˇˇˇˇ
+B
+java:S1172Ç"+Remove this unused method parameter "args".(«µÌë
+R	java:S125Ñ"<This block of commented-out lines of code should be removed.(´Ü˛
+O	java:S106á"9Replace this use of System.out or System.err by a logger.(›íö¡

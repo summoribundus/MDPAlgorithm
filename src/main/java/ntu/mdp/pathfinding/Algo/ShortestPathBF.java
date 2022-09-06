@@ -13,6 +13,7 @@ public class ShortestPathBF {
     private final Map<Integer, Obstacle> idxMapping;
     private final int n;
     private final PriorityBlockingQueue<PathDistanceResult> pq;
+    private PriorityQueue<PathDistanceResult> pqCopy;
     public ShortestPathBF(Obstacle[] obstacles, int x, int y) {
         n = obstacles.length;
         idxMapping = new HashMap<>();
@@ -21,6 +22,7 @@ public class ShortestPathBF {
         for (int i = 0; i < n; i++) {
             idxMapping.put(i+1, obstacles[i]);
         }
+        findPath();
     }
 
     public void findPath() {
@@ -69,11 +71,15 @@ public class ShortestPathBF {
     }
 
     public int[] getNextPath() {
-        return pq.poll().path();
+        return pqCopy.poll().path();
     }
 
     public boolean hasNextPath() {
-        return !pq.isEmpty();
+        return !pqCopy.isEmpty();
+    }
+
+    public void refreshPath() {
+        pqCopy = new PriorityQueue<>(pq);
     }
 
     public static void main(String[] args) {

@@ -1,0 +1,17 @@
+
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÒÆÅ¸
+P
+java:S1854":Remove this useless assignment to local variable "idxMap".(àëŠå
+Q
+java:S1854";Remove this useless assignment to local variable "service".(›ØÇ¬
+D
+java:S1659")Declare "threadLimit" on a separate line.(ŠÉÜ“úÿÿÿÿ
+E
+java:S1481"*Remove this unused "batch" local variable.(ŠÉÜ“úÿÿÿÿ
+B
+java:S1481",Remove this unused "service" local variable.(›ØÇ¬
+A
+java:S1481"+Remove this unused "idxMap" local variable.(àëŠå
+=	java:S108")Either remove or fill this block of code.(Ç´¹
+D
+java:S1068")Remove this unused "arena" private field.(¡’ßýþÿÿÿÿ

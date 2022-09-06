@@ -1,6 +1,8 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
 
-public class Curve extends Trajectory {
+import ntu.mdp.pathfinding.Algo.AlgoConstant;
+
+public class TrajectoryCurve extends Trajectory {
 
     private int[] center;
 
@@ -10,7 +12,7 @@ public class Curve extends Trajectory {
 
     private int arcLen;
 
-    public Curve(int[] start, int[] end, int[] center, int theta, boolean isclkwise){
+    public TrajectoryCurve(int[] start, int[] end, int[] center, int theta, boolean isclkwise){
         super(start, end);
         this.theta = theta;
         this.center = center;
@@ -29,6 +31,4 @@ public class Curve extends Trajectory {
     public int getArcLen() {return arcLen;}
 
     public boolean isClockwiseTurn() {return this.isClockwiseTurn;}
-
-
 }

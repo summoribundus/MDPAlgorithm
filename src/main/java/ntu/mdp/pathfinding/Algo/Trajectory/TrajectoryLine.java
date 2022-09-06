@@ -1,10 +1,10 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
 
-public class Line extends Trajectory {
+public class TrajectoryLine extends Trajectory {
 
     private int length;
 
-    public Line(int[] startPt, int[] endPt){
+    public TrajectoryLine(int[] startPt, int[] endPt){
         super(startPt, endPt);
         this.length = Math.round((float)(calculateEuclideanDistance(startPt[0], startPt[1], endPt[0], endPt[1])));
     }

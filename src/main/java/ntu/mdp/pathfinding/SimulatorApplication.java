@@ -4,10 +4,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import ntu.mdp.pathfinding.Algo.AlgoConstant;
-import ntu.mdp.pathfinding.Algo.ShortestPathAlgo;
-import ntu.mdp.pathfinding.Algo.ShortestPathTrajectory;
-import ntu.mdp.pathfinding.Algo.ShortestPathTrajectoryResult;
+import ntu.mdp.pathfinding.Algo.*;
+import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryAlgo;
+import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryResult;
 import ntu.mdp.pathfinding.GUI.Grid;
 import ntu.mdp.pathfinding.GUI.GridControlPane;
 import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
@@ -15,7 +14,6 @@ import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -24,7 +22,9 @@ class ShortestPathRunner implements Runnable {
     @Override
     public void run() {
         Car car = InputData.getCar();
-        ShortestPathAlgo algo = new ShortestPathAlgo(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        ShortestPathBF shortestPathBF = new ShortestPathBF(InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles());
+        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
         ShortestPathTrajectoryResult result = algo.findShortestPath();
         if (result == null)
             System.out.println("No solution found");

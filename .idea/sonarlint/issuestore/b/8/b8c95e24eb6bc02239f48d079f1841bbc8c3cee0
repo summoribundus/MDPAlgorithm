@@ -1,0 +1,40 @@
+
+n	java:S135)"YReduce the total number of break and continue statements in this loop to use at most one.(˜ÅÒ·
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(á¬èà
+h
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ŸõÃæ
+S
+java:S1854"=Remove this useless assignment to local variable "!unknown!".(àëŠå
+S
+java:S1854"=Remove this useless assignment to local variable "!unknown!".(›ØÇ¬
+X
+java:S1854"=Remove this useless assignment to local variable "!unknown!".(ŠÉÜ“úÿÿÿÿ
+X
+java:S1854"=Remove this useless assignment to local variable "!unknown!".(§ËöÕıÿÿÿÿ
+X
+java:S1854 "=Remove this useless assignment to local variable "!unknown!".(’Äşøÿÿÿÿ
+S
+java:S1854"=Remove this useless assignment to local variable "!unknown!".(±‘ì
+X
+java:S1854'"=Remove this useless assignment to local variable "!unknown!".(«Å»ÿÿÿÿÿ
+X
+java:S1854("=Remove this useless assignment to local variable "!unknown!".(ğÓÁïøÿÿÿÿ
+S
+java:S1854+"=Remove this useless assignment to local variable "!unknown!".(š¸¢Ş
+D
+java:S1659")Declare "threadLimit" on a separate line.(ŠÉÜ“úÿÿÿÿ
+Q	java:S125$"<This block of commented-out lines of code should be removed.(²÷†É
+X
+java:S1854F"=Remove this useless assignment to local variable "!unknown!".(›µ“ úÿÿÿÿ
+S
+java:S1854E"=Remove this useless assignment to local variable "!unknown!".(Ñòˆˆ
+S
+java:S1854D"=Remove this useless assignment to local variable "!unknown!".(ÛÙ‰¶
+S
+java:S1854C"=Remove this useless assignment to local variable "!unknown!".(³ªªŠ
+X
+java:S1854J"=Remove this useless assignment to local variable "!unknown!".(¾Â¹„şÿÿÿÿ
+A
+java:S1172B"+Remove this unused method parameter "args".(Çµí‘
+S	java:S106H"9Replace this use of System.out or System.err by a logger.(¥É”×ıÿÿÿÿ
+N	java:S106L"9Replace this use of System.out or System.err by a logger.(İ’šÁ

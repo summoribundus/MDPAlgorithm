@@ -1,23 +1,24 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
 
+import ntu.mdp.pathfinding.Algo.AlgoConstant;
+import ntu.mdp.pathfinding.Algo.Arena;
+import ntu.mdp.pathfinding.Algo.ShortestPathBF;
 import ntu.mdp.pathfinding.InputData;
 import ntu.mdp.pathfinding.Obstacle;
 
 import java.util.*;
 import java.util.concurrent.*;
 
-public class ShortestPathAlgo {
+public class ShortestPathTrajectoryAlgo {
     private final Arena arena;
     private final ShortestPathBF shortestPathBF;
 
-    public ShortestPathAlgo(int m, int n, Obstacle[] obstacles, int r, int c) {
-        this.arena = new Arena(m, n, obstacles);
-        this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
+    public ShortestPathTrajectoryAlgo(Arena arena, ShortestPathBF shortestPathBF) {
+        this.arena = arena;
+        this.shortestPathBF = shortestPathBF;
     }
 
     public ShortestPathTrajectoryResult findShortestPath() {
-        shortestPathBF.findPath();
-
         int batch = 0, threadLimit = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(threadLimit);
 
@@ -63,7 +64,9 @@ public class ShortestPathAlgo {
     }
 
     public static void main(String[] args) {
-        ShortestPathAlgo algo = new ShortestPathAlgo(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        ShortestPathBF shortestPathBF = new ShortestPathBF(InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
+        Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles());
+        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
         ShortestPathTrajectoryResult result = algo.findShortestPath();
         if (result == null)
             System.out.println("No solution found");

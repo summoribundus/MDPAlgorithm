@@ -1,4 +1,6 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
+
+import ntu.mdp.pathfinding.Algo.CarMove;
 
 import java.util.List;
 

@@ -1,6 +1,8 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
 
-import javafx.scene.chart.AreaChart;
+import ntu.mdp.pathfinding.Algo.Arena;
+import ntu.mdp.pathfinding.Algo.CarMove;
+import ntu.mdp.pathfinding.Algo.ShortestPathBF;
 import ntu.mdp.pathfinding.Obstacle;
 
 import java.util.ArrayList;
@@ -15,9 +17,9 @@ public class ShortestPathTrajectory {
     private List<CarMove> carMoves;
     private List<int[]> pathGrids;
 
-    public ShortestPathTrajectory(int m, int n, Obstacle[] obstacles, int r, int c) {
-        this.arena = new Arena(m, n, obstacles);
-        this.shortestPathBF = new ShortestPathBF(obstacles, r, c);
+    public ShortestPathTrajectory(Arena arena, ShortestPathBF shortestPathBF) {
+        this.arena = arena;
+        this.shortestPathBF = shortestPathBF;
     }
 
     public List<CarMove> fakeShortestValidPathForTesting() {
@@ -43,14 +45,8 @@ public class ShortestPathTrajectory {
     }
 
     public List<CarMove> findShortestValidPath() {
-        shortestPathBF.findPath();
-
         Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
-        int cnt = 0;
-        shortestPathBF.getPathSize();
         while (shortestPathBF.hasNextPath()) {
-            System.out.println("Checking " + cnt +" path.");
-            cnt++;
             carMoves = new ArrayList<>();
             pathGrids = new ArrayList<>();
             int[] path = shortestPathBF.getNextPath();

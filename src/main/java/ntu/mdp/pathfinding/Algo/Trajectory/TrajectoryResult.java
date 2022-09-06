@@ -1,11 +1,13 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
+
+import ntu.mdp.pathfinding.Algo.CarMove;
 
 public class TrajectoryResult {
 
-    private Curve startCurve;
-    private Line straightLine;
-    private Curve intermediateCurve;
-    private Curve endCurve;
+    private TrajectoryCurve startCurve;
+    private TrajectoryLine straightLine;
+    private TrajectoryCurve intermediateCurve;
+    private TrajectoryCurve endCurve;
 
     private int[] pt1, pt2;
 
@@ -15,7 +17,7 @@ public class TrajectoryResult {
 
     private int totalLength;
 
-    public TrajectoryResult(Curve c1, Curve c2, Curve c3) {
+    public TrajectoryResult(TrajectoryCurve c1, TrajectoryCurve c2, TrajectoryCurve c3) {
         this.startCurve = c1;
         this.intermediateCurve = c2;
         this.straightLine = null;
@@ -32,7 +34,7 @@ public class TrajectoryResult {
     }
 
 
-    public TrajectoryResult(Curve c1, Line l2, Curve c3){
+    public TrajectoryResult(TrajectoryCurve c1, TrajectoryLine l2, TrajectoryCurve c3){
         this.startCurve = c1;
         this.straightLine = l2;
         this.intermediateCurve = null;

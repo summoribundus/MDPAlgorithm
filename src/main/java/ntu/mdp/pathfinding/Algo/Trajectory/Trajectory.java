@@ -1,4 +1,4 @@
-package ntu.mdp.pathfinding.Algo;
+package ntu.mdp.pathfinding.Algo.Trajectory;
 
 public class Trajectory {
     int[] startPt, endPt;
