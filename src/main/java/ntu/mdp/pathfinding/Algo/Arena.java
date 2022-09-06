@@ -34,8 +34,8 @@ public class Arena {
 
     private void walkForVirtualBlock(int r, int c, int rStep, int cStep) {
         int nr, nc;
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < AlgoConstant.VirtualBlock; i++)
+            for (int j = 0; j < AlgoConstant.VirtualBlock; j++) {
                 nr = r + i * rStep; nc = c + j * cStep;
                 if (inRange(nr, nc))
                     arena[nr][nc].setVirtualBlock(true);

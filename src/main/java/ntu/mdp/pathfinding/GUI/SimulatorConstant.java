@@ -16,4 +16,6 @@ public class SimulatorConstant {
     public static final int GControlPGap = 10;
     public static final int GControlPWidth = 60;
     public static final int GControlPHeight = 30;
+
+    public static final int VirtualBlockNum = 4;
 }

@@ -94,6 +94,11 @@ public class TrajectoryToArenaGrid {
     }
 
     public static List<int[]> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise) {
+        if (r1 == r2 && c1 == c2) {
+            List<int[]> res = new ArrayList<>();
+            res.add(new int[]{r1, c1});
+            return res;
+        }
         int recTanR1 = 0, recTanC1 = 0, recTanR2 = 0, recTanC2 = 0;
         int quadrant1 = getQuadrantOfPoints(r1, c1, circleR, circleC);
         int quadrant2 = getQuadrantOfPoints(r2, c2, circleR, circleC);

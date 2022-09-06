@@ -75,8 +75,8 @@ public class Grid extends Pane {
     }
 
     private void setUpVirtualObstacles(int r, int c, int idx) {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < SimulatorConstant.VirtualBlockNum; i++) {
+            for (int j = 0; j < SimulatorConstant.VirtualBlockNum; j++) {
                 int nr = r + i * dVirtualBlockSquare[idx][0], nc = c + j * dVirtualBlockSquare[idx][1];
                 if (inRange(nr, nc) && !cells[nr][nc].isImageSet()) cells[nr][nc].virtualBoarderHighlight();
             }
