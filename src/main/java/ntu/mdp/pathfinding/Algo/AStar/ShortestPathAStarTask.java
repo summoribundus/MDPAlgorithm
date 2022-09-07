@@ -34,8 +34,8 @@ public class ShortestPathAStarTask implements Callable<AStarResult> {
 
         for (int i = 1; i < path.length; i++) {
             Obstacle ob = idxMap.get(path[i]);
-            ShortestPathAStar shortestPathAStar = new ShortestPathAStar(carC, carR, theta, ob.getTargetedC(), ob.getTargetedR(), ob.getDir());
-            AStarResult aStarResult = shortestPathAStar.planPath(carC, carR, theta, ob.getTargetedC(), ob.getTargetedR(), ob.getDir());
+            ShortestPathAStar shortestPathAStar = new ShortestPathAStar(carC, carR, theta, ob.getTargetedC(), ob.getTargetedR(), ob.getDir(), arena);
+            AStarResult aStarResult = shortestPathAStar.planPath();
             if (aStarResult == null) { pathValid = false; break; }
             pathGrids.addAll(aStarResult.getPointPath());
             carMoves.addAll(aStarResult.getCarMoves());

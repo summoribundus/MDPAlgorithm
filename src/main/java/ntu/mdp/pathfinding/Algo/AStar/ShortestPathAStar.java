@@ -6,6 +6,7 @@ import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
+import ntu.mdp.pathfinding.InputData;
 
 import java.util.*;
 
@@ -17,9 +18,9 @@ public class ShortestPathAStar {
 
     private int[][][][] grid; // grid of positions
 
-    private int[]  currentNode;
+    private int[] currentNode;
 
-    private int targetC, targetR, targetDir;
+    private int targetC, targetR, obstacleDir;
 
     private final Map<int[], int[]> predMap;
 
@@ -27,6 +28,11 @@ public class ShortestPathAStar {
     // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
 
     private int[] endPosition;
+
+
+    private List<int[]> path = new ArrayList<>(); // list of points as the final path
+
+    private List<CarMove> moves = new ArrayList<CarMove>();  // the moves of the final path
 
     private int totalCost;
 
@@ -38,39 +44,56 @@ public class ShortestPathAStar {
         put(0, 2);
     }};
 
-//    private int[] obstacleTargetDirMapping = new int[] {2, }
+    private int[] obstacleTargetDirMapping = new int[] {2, 3, 0, 1};
+
+    final int movePenalty = 10;
+    final int reversePenalty = 10;
+    final int turnPenalty = 60;
 
     //int[][]
 
-    public ShortestPathAStar(int currentC, int currentR, int currentDirDegrees, int targetC, int targetR, int targetDir, Arena arena){
+    public ShortestPathAStar(int currentC, int currentR, int currentDirDegrees, int targetC, int targetR, int obstacleDir, Arena arena){
         this.arena = arena;
+        this.grid = new int[AlgoConstant.GridM][AlgoConstant.GridN][4][7];
         this.currentC = currentC;
         this.currentR = currentR;
         this.currentDirDegrees = currentDirDegrees;
         this.targetC = targetC;
         this.targetR = targetR;
-        this.targetDir = targetDir;
+        this.obstacleDir = obstacleDir;
         this.predMap = new HashMap<>();
         this.visitQueue = new PriorityQueue<>(Comparator.comparing(k -> k[0]));
         this.endPosition = new int[3];
         this.totalCost = 0;
     }
 
+    public static void main (String[] args){
+        Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles());
+        ShortestPathAStar astar = new ShortestPathAStar(2, 2, 270, 7, 4, 2, arena);
+        AStarResult res = astar.planPath();
+        List<int[]> path = res.getPointPath();
+        if (path == null) System.out.println("path null");
+        for (int[] pt: path){
+            System.out.println("printing");
+            System.out.println(Arrays.toString(pt));
+        }
+    }
+
     public void clear(){
         predMap.clear();
 
         // initialize the arrays
-        for (int c = 0; c < SimulatorConstant.nRowGridGrid; c++){ // dimension c
-            for (int r = 0; r < SimulatorConstant.nColumnGrid; r++){ // dimension r
+        for (int r = 0; r < SimulatorConstant.nRowGridGrid; r++){ // dimension c
+            for (int c = 0; c < SimulatorConstant.nColumnGrid; c++){ // dimension r
                 for (int dir = 0; dir < 4; dir++){
                     // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
-                    grid[c][r][dir] = new int[] {
+                    grid[r][c][dir] = new int[] {
                             Integer.MAX_VALUE, // set total cost to be the max value first;
                             Integer.MAX_VALUE,
                             Integer.MAX_VALUE,
                             c,
                             r,
-                            dir,
+                            directionToDegreesMapping[dir],
                             0
                     };
                 }
@@ -81,53 +104,89 @@ public class ShortestPathAStar {
     }
 
 
-    public AStarResult planPath(int startC, int startR, int startDir, int targetC, int targetR, int targetDir){
 
-        if (0 > startC || startC >= SimulatorConstant.nColumnGrid || 0 > startR || startR >= SimulatorConstant.nRowGridGrid) {
+    public AStarResult planPath(){
+
+        if (0 > currentC || currentC >= SimulatorConstant.nColumnGrid || 0 > currentR || currentR >= SimulatorConstant.nRowGridGrid) {
             this.totalCost += 9999;
+            System.out.println("Early return null");
             return null;
         }
         clear();
 
         int endC, endR, endDir;
-        List<int[]> path = new ArrayList<>();
-        List<CarMove> moves = new ArrayList<CarMove>();
+
+        int startDir = degreesToDirectionsMapping.get(currentDirDegrees);
+
         boolean goalFound = false;
 
-        int c, r, dir;
+
+        if (!isSafePosition(targetC, targetR)) {
+            System.out.println("Not safe return null");
+            return null;
+        }
+
+
+
+        int c, r, dirDegrees;
         int[] nextNode;
         int[] forwardLocation, backwardLocation, leftLocation, rightLocation;
-        int currentGcost, hCost, gCost;
+        int currentGCost, hCost, gCost, totalNodeCost;
 
-        int[] goalNode = grid[targetC][targetR][targetDir];
-        this.currentNode = grid[startC][startR][startDir];
+        // start searching
+
+        int[] goalNode = grid[targetR][targetC][obstacleTargetDirMapping[obstacleDir]];
+        System.out.println("goalNode: " + Arrays.toString(goalNode));
+
+
+
+        this.currentNode = grid[currentR][currentC][startDir];
+
+
+        setCost(grid, currentR, currentC, startDir, 0, heuristic(currentC, currentR, targetC, targetR));
+
         this.visitQueue.add(currentNode);
-
-
-
-        // if the goal node is reachable
+        System.out.println("startNode: " + Arrays.toString(currentNode));
+        int i = 0;
+        System.out.println(" i");
 
         // searching
-        while (!goalFound && !visitQueue.isEmpty()){
-            currentNode = visitQueue.remove();
+        while (!visitQueue.isEmpty()){
 
+            int[] nowNode = visitQueue.remove();
 
-            c = currentNode[3];
-            r = currentNode[4];
-            dir = currentNode[5];
-            currentGcost = currentNode[1];
+            System.out.println("i = " + i);
 
+            c = nowNode[3];
+            r = nowNode[4];
+            dirDegrees = nowNode[5];
+            totalNodeCost = nowNode[0];
+            currentGCost = nowNode[1];
 
-            if (currentNode == goalNode){
+            System.out.println("now node: " + Arrays.toString(nowNode));
+
+            if (nodeMatchesGoal(nowNode, goalNode)){
                 goalFound = true;
-                endPosition = new int[]{c, r, dir};
+                endPosition = new int[]{c, r, dirDegrees};
                 break;
             }
 
-            forwardLocation = getForwardLocation(c, r, dir);
-            leftLocation = getLeftLocation(c, r, dir);
-            rightLocation = getRightLocation(c, r, dir);
-            backwardLocation = getBackwardLocation(c, r, dir);
+
+            forwardLocation = getForwardLocation(c, r, dirDegrees);
+            System.out.println(" 1. forward Location ");
+            System.out.println(Arrays.toString(forwardLocation));
+
+            leftLocation = getLeftLocation(c, r, dirDegrees);
+            System.out.println(" 2. left Location ");
+            System.out.println(Arrays.toString(leftLocation));
+
+            rightLocation = getRightLocation(c, r, dirDegrees);
+            System.out.println(" 3. right Location ");
+            System.out.println(Arrays.toString(rightLocation));
+
+            backwardLocation = getBackwardLocation(c, r, dirDegrees);
+            System.out.println(" 4. backward Location ");
+            System.out.println(Arrays.toString(backwardLocation));
 
             if (forwardLocation != null){
 
@@ -136,18 +195,26 @@ public class ShortestPathAStar {
                 int nextDirDegrees = forwardLocation[2];
                 // from degrees to direction conversion.
                 int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
-                nextNode = grid[nextC][nextR][nextDir];
 
-                gCost = currentGcost + 1;
-                hCost = heuristic(c, r, targetC, targetR);
+                nextNode = grid[nextR][nextC][nextDir];
+
+                gCost = currentGCost + greedyPenaltyForMove(nowNode, nextNode);
+                System.out.println("gcost: " + gCost);
+                hCost = heuristic(nextC, nextR, targetC, targetR);
+                System.out.println("targetC = " + targetC + "targetR = " + targetR);
+                System.out.println("hcost: " + hCost);
+                totalNodeCost = gCost + hCost;
 
                 // if this node is already added, we will only change it when the cost is better.
-                if (gCost < nextNode[1]){
-                    predMap.put(currentNode, nextNode);
-                    nextNode[1] = gCost;
-                    nextNode[2] = hCost;
+                if (totalNodeCost < nextNode[0]){
+                    System.out.println("forward - updating the next node with total cost : " + totalNodeCost);
+                    predMap.put(nextNode, nowNode);
+                    setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
+//                    System.out.println("forward - updating done");
                 }
+//                if (i == 0)
+//                    System.out.println(Arrays.toString(nextNode));
             }
 
             if (backwardLocation != null){
@@ -156,16 +223,20 @@ public class ShortestPathAStar {
                 int nextDirDegrees = backwardLocation[2];
 
                 int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
-                nextNode = grid[nextC][nextR][nextDir];
+                nextNode = grid[nextR][nextC][nextDir];
 
-                gCost = currentGcost + 1;
-                hCost = heuristic(c, r, targetC, targetR);
+                gCost = currentGCost + greedyPenaltyForMove(nowNode, nextNode);
+//                if (r == -1 || c == -1) {
+//                    System.out.println("???????");
+//                }
+                hCost = heuristic(nextC, nextR, targetC, targetR);
+                totalNodeCost = gCost + hCost;
 
                 // if this node is already added, we will only change it when the cost is better.
-                if (gCost < nextNode[1]){
-                    predMap.put(currentNode, nextNode);
-                    nextNode[1] = gCost;
-                    nextNode[2] = hCost;
+                if (totalNodeCost < nextNode[0]){
+                    System.out.println("backward - updating the next node with total cost : " + totalNodeCost);
+                    predMap.put(nextNode, nowNode);
+                    setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
                 }
             }
@@ -176,16 +247,17 @@ public class ShortestPathAStar {
                 int nextDirDegrees = leftLocation[2];
 
                 int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
-                nextNode = grid[nextC][nextR][nextDir];
+                nextNode = grid[nextR][nextC][nextDir];
 
-                gCost = currentGcost + 1;
-                hCost = heuristic(c, r, targetC, targetR);
+                gCost = currentGCost + greedyPenaltyForMove(nowNode, nextNode);
+                hCost = heuristic(nextC, nextR, targetC, targetR);
+                totalNodeCost = gCost + hCost;
 
                 // if this node is already added, we will only change it when the cost is better.
-                if (gCost < nextNode[1]){
-                    predMap.put(currentNode, nextNode);
-                    nextNode[1] = gCost;
-                    nextNode[2] = hCost;
+                if (totalNodeCost < nextNode[0]){
+                    System.out.println("left - updating the next node with total cost : " + totalNodeCost);
+                    predMap.put(nextNode, nowNode);
+                    setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
                 }
             }
@@ -196,80 +268,259 @@ public class ShortestPathAStar {
                 int nextDirDegrees = rightLocation[2];
 
                 int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
-                nextNode = grid[nextC][nextR][nextDir];
+                nextNode = grid[nextR][nextC][nextDir];
 
-                gCost = currentGcost + 1;
-                hCost = heuristic(c, r, targetC, targetR);
+                gCost = currentGCost + greedyPenaltyForMove(nowNode, nextNode);
+                hCost = heuristic(nextC, nextR, targetC, targetR);
+                totalNodeCost = gCost + hCost;
 
                 // if this node is already added, we will only change it when the cost is better.
-                if (gCost < nextNode[1]){
-                    predMap.put(currentNode, nextNode);
-                    nextNode[1] = gCost;
-                    nextNode[2] = hCost;
+                if (totalNodeCost < nextNode[0]){
+                    System.out.println("forward - updating the right node with total cost : " + totalNodeCost);
+                    predMap.put(nextNode, nowNode);
+                    setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
                 }
             }
-
+            i++;
             // the node has been visited.
-            currentNode[6] = 1;
+            nowNode[6] = 1;
 
         }
 
         if (!goalFound){
             this.totalCost += 9999;
+            System.out.println("Goal not found");
             return null;
         }
+
+        this.totalCost += goalNode[1];
+
+        backtrack(goalNode);
 
         return new AStarResult(moves, path, totalCost);
 
     }
 
-    private int[] getForwardLocation(int currentC, int currentR, int currentDirDegrees){
-        int[] forwardPosition;
+    // backtrack the map to get the path
+    private List<int[]> backtrack(int[] endNode){
+        System.out.println("backtracking...");
+        List<int[]> path = new ArrayList<>();
+        List<CarMove> moves = new ArrayList<>();
+        int[] curr,prev;
 
-        switch(currentDirDegrees){
+        curr = endNode;
+
+        boolean turnLeft;
+        boolean reversing;
+        int lineStartC, lineStartR;
+        int lineEndC = endNode[3];
+        int lineEndR = endNode[4];
+
+        System.out.println("current node is : " + Arrays.toString(curr));
+
+        while (curr != null) {
+
+            reversing = false;
+            prev = predMap.get(curr); // get the previous node in the backtrack
+            System.out.println("previous node is: " + Arrays.toString(prev));
+            int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
+            if (prev == null) // if this is the starting node, handle the special case.
+                {
+                    path.add(new int[] {curr[4], curr[3]});
+                    break;
+                }
+
+            lineStartC = prev[3];
+            lineStartR = prev[4];
+            lineEndC = curr[3];
+            lineEndR = curr[4];
+
+            // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
+            if (prev[5] == currDirInDegrees){
+                System.out.println("direction did not change");
+                path.add(new int[] {curr[4], curr[3]});
+                int moveLength = 0;
+                switch (currDirInDegrees) { // check if reversing
+                    case 0:
+                        if (lineEndC < lineStartC) {
+                            reversing = true;
+                        }
+                        moveLength = Math.abs(lineEndC - lineStartC);
+                        break;
+                    case 90:
+                        if (lineEndR > lineStartR) {
+                            reversing = true;
+                        }
+                        moveLength = Math.abs(lineStartR - lineEndR);
+                        break;
+                    case 180:
+                        if (lineEndC > lineStartC) {
+                            reversing = true;
+                        }
+                        moveLength = Math.abs(lineStartC - lineEndC);
+                        break;
+                    case 270:
+                        if (lineEndR < lineStartR) {
+                            reversing = true;
+                        }
+                        moveLength = Math.abs(lineEndR - lineStartR);
+                        break;
+                    default:
+                }
+                if (reversing)
+                    moves.add(new CarMove(0, true, 0, true, -1*moveLength));
+                else
+                    moves.add(new CarMove(0, true, 0, true, moveLength));
+            } else { // otherwise, only look for points where direction changes to construct the line segments
+                System.out.println("direction changed");
+                int prevDirInDegrees = prev[5];
+                int prevC = prev[3];
+                int prevR = prev[4];
+
+                List<int[]> pathSegments;
+
+                boolean isClockWise;
+
+                if ((prevDirInDegrees + 90) % 360 == currDirInDegrees) {
+                    turnLeft = true;
+                    isClockWise = false;
+                } else {
+                    turnLeft = false;
+                    isClockWise = true;
+                }
+                if (turnLeft){
+                    pathSegments = getPathSegmentsForLeftTurning(prevC, prevR, prevDirInDegrees);
+                } else {
+                    pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
+                }
+                moves.add(new CarMove(90, isClockWise, 0, true,0 ));
+                Collections.reverse(pathSegments);
+                for (int[] pt : pathSegments)
+                    path.add(pt);
+            }
+            curr = prev;
+        }
+
+
+        Collections.reverse(path); // reverse the path and put it in the correct order
+//        printPath(path);
+        Collections.reverse(moves);
+
+        System.out.println("-----------print carmove:");
+        for (CarMove i : moves) System.out.println(i.toString());
+
+        System.out.println("-----------print path:");
+        for (int[] pt : path) {
+            System.out.println(Arrays.toString(pt));
+        }
+
+//        System.out.println("-----------print predMap:");
+//        for (int[] nd : predMap.keySet()) {
+//            System.out.println("key(nextNode):" + Arrays.toString(nd));
+//            System.out.println("value(nowNode):" + Arrays.toString(predMap.get(nd)));
+//        }
+
+
+
+        return path;
+
+
+    }
+
+    private List<int[]> getPathSegmentsForLeftTurning(int currentC, int currentR, int currentDirDegrees) {
+        int[] leftPos;
+        int[] circleCenter;
+        List<int[]> leftTurnPath;
+
+        switch (currentDirDegrees) {
             case 0:
-                forwardPosition = new int[]{currentC + 1, currentR, currentDirDegrees};
+                leftPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
                 break;
             case 90:
-                forwardPosition = new int[]{currentC, currentR - 1, currentDirDegrees};
+                leftPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
                 break;
             case 180:
-                forwardPosition = new int[]{currentC - 1, currentR, currentDirDegrees};
+                leftPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
                 break;
             case 270:
-                forwardPosition = new int[]{currentC, currentR + 1, currentDirDegrees};
+                leftPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
                 break;
             default:
-                forwardPosition = null;
+                leftPos = null;
+                circleCenter = null;
                 break;
         }
-        if (forwardPosition != null && isSafePosition(currentC, currentR))
+
+        leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
+                leftPos[1], leftPos[0], circleCenter[1], circleCenter[0], false);
+
+        return leftTurnPath;
+    }
+
+    private List<int[]> getPathSegmentsForRightTurning(int currentC, int currentR, int currentDirDegrees){
+        int[] rightPos;
+        int[] circleCenter;
+        List<int[]> rightTurnPath;
+
+        switch (currentDirDegrees) {
+            case 0 -> {
+                rightPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+            }
+            case 90 -> {
+                rightPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+            }
+            case 180 -> {
+                rightPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+            }
+            case 270 -> {
+                rightPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+            }
+            default -> {
+                rightPos = null;
+                circleCenter = null;
+            }
+        }
+
+        rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
+                    rightPos[1], rightPos[0], circleCenter[1], circleCenter[0], true);
+
+
+        return rightTurnPath;
+    }
+
+    private int[] getForwardLocation(int currentC, int currentR, int currentDirDegrees){
+        int[] forwardPosition = switch (currentDirDegrees) {
+            case 0 -> new int[]{currentC + 1, currentR, currentDirDegrees};
+            case 90 -> new int[]{currentC, currentR - 1, currentDirDegrees};
+            case 180 -> new int[]{currentC - 1, currentR, currentDirDegrees};
+            case 270 -> new int[]{currentC, currentR + 1, currentDirDegrees};
+            default -> null;
+        };
+
+        if (forwardPosition != null && isSafePosition(forwardPosition[0], forwardPosition[1]))
             return forwardPosition;
         return null;
     }
 
     private int[] getBackwardLocation(int currentC, int currentR, int currentDirDegrees){
-        int[] backwardPos;
+        int[] backwardPos = switch (currentDirDegrees) {
+            case 0 -> new int[]{currentC - 1, currentR, currentDirDegrees};
+            case 90 -> new int[]{currentC, currentR + 1, currentDirDegrees};
+            case 180 -> new int[]{currentC + 1, currentR, currentDirDegrees};
+            case 270 -> new int[]{currentC, currentR - 1, currentDirDegrees};
+            default -> null;
+        };
 
-        switch(currentDirDegrees){
-            case 0:
-                backwardPos = new int[] {currentC - 1, currentR, currentDirDegrees};
-                break;
-            case 90:
-                backwardPos = new int[] {currentC, currentR + 1, currentDirDegrees};
-                break;
-            case 180:
-                backwardPos = new int[] {currentC + 1, currentR, currentDirDegrees};
-                break;
-            case 270:
-                backwardPos = new int[] {currentC, currentR - 1, currentDirDegrees};
-                break;
-            default:
-                backwardPos = null;
-                break;
-        }
-        if (backwardPos != null & isSafePosition(currentC, currentR))
+        if (backwardPos != null & isSafePosition(backwardPos[0], backwardPos[1]))
             return backwardPos;
         return null;
     }
@@ -279,39 +530,39 @@ public class ShortestPathAStar {
         int[] circleCenter;
         List<int[]> leftTurnPath;
 
-        switch (currentDirDegrees){
-            case 0:
-                leftPos = new int[] {currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
-                circleCenter = new int[] {currentC, currentR - AlgoConstant.R};
-                break;
-            case 90:
-                leftPos = new int[] {currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
-                circleCenter = new int[] {currentC - AlgoConstant.R,  currentR};
-                break;
-            case 180:
-                leftPos = new int[] {currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
-                circleCenter = new int[] {currentC, currentR + AlgoConstant.R};
-                break;
-            case 270:
-                leftPos = new int[] {currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
-                circleCenter = new int[] {currentC + AlgoConstant.R, currentR};
-                break;
-            default:
+        switch (currentDirDegrees) {
+            case 0 -> {
+                leftPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+            }
+            case 90 -> {
+                leftPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+            }
+            case 180 -> {
+                leftPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+            }
+            case 270 -> {
+                leftPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+            }
+            default -> {
                 leftPos = null;
                 circleCenter = null;
-                break;
+            }
         }
         // check if the grid is satisfiable.
         if (leftPos != null && isSafePosition(circleCenter[0], circleCenter[1])) {
-            leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentC, currentR,
-                    leftPos[0], leftPos[1],
-                    circleCenter[0], circleCenter[1],
+            leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
+                    leftPos[1], leftPos[0],
+                    circleCenter[1], circleCenter[0],
                     false);
-
+            if (leftTurnPath != null && arena.validatePoint(leftTurnPath))
+                return leftPos;
         }
 
-
-        return leftPos;
+        return null;
     }
 
     private int[] getRightLocation(int currentC, int currentR, int currentDirDegrees) {
@@ -319,42 +570,42 @@ public class ShortestPathAStar {
         int[] circleCenter;
         List<int[]> rightTurnPath;
 
-        switch (currentDirDegrees){
-            case 0:
-                rightPos = new int[] {currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
-                circleCenter = new int[] {currentC, currentR + AlgoConstant.R};
-                break;
-            case 90:
-                rightPos = new int[] {currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
-                circleCenter = new int[] {currentC + AlgoConstant.R, currentR};
-                break;
-            case 180:
-                rightPos = new int[] {currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
-                circleCenter = new int[] {currentC, currentR - AlgoConstant.R};
-                break;
-            case 270:
-                rightPos = new int[] {currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
-                circleCenter = new int[] {currentC - AlgoConstant.R, currentR};
-                break;
-            default:
+        switch (currentDirDegrees) {
+            case 0 -> {
+                rightPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+            }
+            case 90 -> {
+                rightPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+            }
+            case 180 -> {
+                rightPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+            }
+            case 270 -> {
+                rightPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+            }
+            default -> {
                 rightPos = null;
                 circleCenter = null;
-                break;
+            }
         }
         if (rightPos != null && isSafePosition(circleCenter[0], circleCenter[1]) ){
-            rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentC, currentR,
-                    rightPos[0], rightPos[1],
-                    circleCenter[0], circleCenter[1],
+            rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
+                    rightPos[1], rightPos[0],
+                    circleCenter[1], circleCenter[0],
                     true);
+            if (rightTurnPath != null && arena.validatePoint(rightTurnPath))
+                return rightPos;
         }
-        return rightPos;
+
+        return null;
     }
 
     private boolean isSafePosition(int c, int r){
-        if (c > 0 && c < SimulatorConstant.nColumnGrid &&  r > 0 && r < SimulatorConstant.nRowGridGrid ){
-            return arena.checkWithCorrespondingBlock(r, c);
-        }
-        return false;
+        return !arena.checkWithCorrespondingBlock(r, c);
     }
 
     // using Manhattan distance as heuristic. Note that the Manhattan distance denotes the right angle distance,
@@ -363,7 +614,55 @@ public class ShortestPathAStar {
         int absC = Math.abs(nextC - curC);
         int absR = Math.abs(nextR - curR);
 
-        return absC + absR;
+        return (absC + absR) * movePenalty;
+    }
+
+    private int greedyPenaltyForMove(int[] node1, int[] node2){
+        int dirInDegrees1 = node1[5];
+        int dirInDegrees2 = node2[5];
+        int c1 = node1[3];
+        int r1 = node1[4];
+        int c2 = node2[3];
+        int r2 = node2[4];
+
+        int penalty = movePenalty;
+        int turningPenalty = 0;
+
+        if (dirInDegrees1 != dirInDegrees2) {
+            turningPenalty = turnPenalty;
+        } else {
+            switch(node1[5]){
+                case 0:
+                    if (c2 < c1)
+                        penalty = reversePenalty;
+                    break;
+                case 90:
+                    if (r2 > r1)
+                        penalty = reversePenalty;
+                    break;
+                case 180:
+                    if (c2 > c1)
+                        penalty = reversePenalty;
+                    break;
+                case 270:
+                    if (r2 < r1)
+                        penalty = reversePenalty;
+                    break;
+            }
+        }
+
+        return penalty + turningPenalty;
+    }
+
+    private void setCost(int[][][][] grid, int r, int c, int dir, int g, int h){
+        // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
+        grid[r][c][dir][0] = g+h;
+        grid[r][c][dir][1] = g;
+        grid[r][c][dir][2] = h;
+    }
+
+    private boolean nodeMatchesGoal(int[] currentNode, int[] goalNode){
+        return currentNode[3] == goalNode[3] && currentNode[4] == goalNode[4] && currentNode[5] == goalNode[5];
     }
 
 
