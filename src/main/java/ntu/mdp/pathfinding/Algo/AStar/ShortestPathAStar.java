@@ -72,11 +72,6 @@ public class ShortestPathAStar {
         ShortestPathAStar astar = new ShortestPathAStar(2, 2, 270, 7, 4, 2, arena);
         AStarResult res = astar.planPath();
         List<int[]> path = res.getPointPath();
-        if (path == null) System.out.println("path null");
-        for (int[] pt: path){
-            System.out.println("printing");
-            System.out.println(Arrays.toString(pt));
-        }
     }
 
     public void clear(){
@@ -109,7 +104,7 @@ public class ShortestPathAStar {
 
         if (0 > currentC || currentC >= SimulatorConstant.nColumnGrid || 0 > currentR || currentR >= SimulatorConstant.nRowGridGrid) {
             this.totalCost += 9999;
-            System.out.println("Early return null");
+
             return null;
         }
         clear();
@@ -122,7 +117,6 @@ public class ShortestPathAStar {
 
 
         if (!isSafePosition(targetC, targetR)) {
-            System.out.println("Not safe return null");
             return null;
         }
 
@@ -136,8 +130,6 @@ public class ShortestPathAStar {
         // start searching
 
         int[] goalNode = grid[targetR][targetC][obstacleTargetDirMapping[obstacleDir]];
-        System.out.println("goalNode: " + Arrays.toString(goalNode));
-
 
 
         this.currentNode = grid[currentR][currentC][startDir];
@@ -146,24 +138,19 @@ public class ShortestPathAStar {
         setCost(grid, currentR, currentC, startDir, 0, heuristic(currentC, currentR, targetC, targetR));
 
         this.visitQueue.add(currentNode);
-        System.out.println("startNode: " + Arrays.toString(currentNode));
+
         int i = 0;
-        System.out.println(" i");
 
         // searching
         while (!visitQueue.isEmpty()){
 
             int[] nowNode = visitQueue.remove();
 
-            System.out.println("i = " + i);
-
             c = nowNode[3];
             r = nowNode[4];
             dirDegrees = nowNode[5];
             totalNodeCost = nowNode[0];
             currentGCost = nowNode[1];
-
-            System.out.println("now node: " + Arrays.toString(nowNode));
 
             if (nodeMatchesGoal(nowNode, goalNode)){
                 goalFound = true;
@@ -173,20 +160,12 @@ public class ShortestPathAStar {
 
 
             forwardLocation = getForwardLocation(c, r, dirDegrees);
-            System.out.println(" 1. forward Location ");
-            System.out.println(Arrays.toString(forwardLocation));
 
             leftLocation = getLeftLocation(c, r, dirDegrees);
-            System.out.println(" 2. left Location ");
-            System.out.println(Arrays.toString(leftLocation));
 
             rightLocation = getRightLocation(c, r, dirDegrees);
-            System.out.println(" 3. right Location ");
-            System.out.println(Arrays.toString(rightLocation));
 
             backwardLocation = getBackwardLocation(c, r, dirDegrees);
-            System.out.println(" 4. backward Location ");
-            System.out.println(Arrays.toString(backwardLocation));
 
             if (forwardLocation != null){
 
@@ -199,22 +178,17 @@ public class ShortestPathAStar {
                 nextNode = grid[nextR][nextC][nextDir];
 
                 gCost = currentGCost + greedyPenaltyForMove(nowNode, nextNode);
-                System.out.println("gcost: " + gCost);
                 hCost = heuristic(nextC, nextR, targetC, targetR);
-                System.out.println("targetC = " + targetC + "targetR = " + targetR);
-                System.out.println("hcost: " + hCost);
+
                 totalNodeCost = gCost + hCost;
 
                 // if this node is already added, we will only change it when the cost is better.
-                if (totalNodeCost < nextNode[0]){
-                    System.out.println("forward - updating the next node with total cost : " + totalNodeCost);
+                if (totalNodeCost < nextNode[0]) {
+
                     predMap.put(nextNode, nowNode);
                     setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
-//                    System.out.println("forward - updating done");
                 }
-//                if (i == 0)
-//                    System.out.println(Arrays.toString(nextNode));
             }
 
             if (backwardLocation != null){
@@ -226,15 +200,14 @@ public class ShortestPathAStar {
                 nextNode = grid[nextR][nextC][nextDir];
 
                 gCost = currentGCost + greedyPenaltyForMove(nowNode, nextNode);
-//                if (r == -1 || c == -1) {
-//                    System.out.println("???????");
-//                }
+
+
                 hCost = heuristic(nextC, nextR, targetC, targetR);
                 totalNodeCost = gCost + hCost;
 
                 // if this node is already added, we will only change it when the cost is better.
                 if (totalNodeCost < nextNode[0]){
-                    System.out.println("backward - updating the next node with total cost : " + totalNodeCost);
+
                     predMap.put(nextNode, nowNode);
                     setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
@@ -255,7 +228,7 @@ public class ShortestPathAStar {
 
                 // if this node is already added, we will only change it when the cost is better.
                 if (totalNodeCost < nextNode[0]){
-                    System.out.println("left - updating the next node with total cost : " + totalNodeCost);
+
                     predMap.put(nextNode, nowNode);
                     setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
@@ -276,7 +249,7 @@ public class ShortestPathAStar {
 
                 // if this node is already added, we will only change it when the cost is better.
                 if (totalNodeCost < nextNode[0]){
-                    System.out.println("forward - updating the right node with total cost : " + totalNodeCost);
+
                     predMap.put(nextNode, nowNode);
                     setCost(grid, nextR, nextC, nextDir, gCost, hCost);
                     visitQueue.add(nextNode);
@@ -290,13 +263,12 @@ public class ShortestPathAStar {
 
         if (!goalFound){
             this.totalCost += 9999;
-            System.out.println("Goal not found");
             return null;
         }
 
         this.totalCost += goalNode[1];
 
-        backtrack(goalNode);
+        path = backtrack(goalNode);
 
         return new AStarResult(moves, path, totalCost);
 
@@ -304,9 +276,8 @@ public class ShortestPathAStar {
 
     // backtrack the map to get the path
     private List<int[]> backtrack(int[] endNode){
-        System.out.println("backtracking...");
+
         List<int[]> path = new ArrayList<>();
-        List<CarMove> moves = new ArrayList<>();
         int[] curr,prev;
 
         curr = endNode;
@@ -317,13 +288,12 @@ public class ShortestPathAStar {
         int lineEndC = endNode[3];
         int lineEndR = endNode[4];
 
-        System.out.println("current node is : " + Arrays.toString(curr));
 
         while (curr != null) {
 
             reversing = false;
             prev = predMap.get(curr); // get the previous node in the backtrack
-            System.out.println("previous node is: " + Arrays.toString(prev));
+
             int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if (prev == null) // if this is the starting node, handle the special case.
                 {
@@ -338,7 +308,7 @@ public class ShortestPathAStar {
 
             // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if (prev[5] == currDirInDegrees){
-                System.out.println("direction did not change");
+
                 path.add(new int[] {curr[4], curr[3]});
                 int moveLength = 0;
                 switch (currDirInDegrees) { // check if reversing
@@ -373,7 +343,7 @@ public class ShortestPathAStar {
                 else
                     moves.add(new CarMove(0, true, 0, true, moveLength));
             } else { // otherwise, only look for points where direction changes to construct the line segments
-                System.out.println("direction changed");
+
                 int prevDirInDegrees = prev[5];
                 int prevC = prev[3];
                 int prevR = prev[4];
@@ -404,25 +374,8 @@ public class ShortestPathAStar {
 
 
         Collections.reverse(path); // reverse the path and put it in the correct order
-//        printPath(path);
         Collections.reverse(moves);
-
-        System.out.println("-----------print carmove:");
-        for (CarMove i : moves) System.out.println(i.toString());
-
-        System.out.println("-----------print path:");
-        for (int[] pt : path) {
-            System.out.println(Arrays.toString(pt));
-        }
-
-//        System.out.println("-----------print predMap:");
-//        for (int[] nd : predMap.keySet()) {
-//            System.out.println("key(nextNode):" + Arrays.toString(nd));
-//            System.out.println("value(nowNode):" + Arrays.toString(predMap.get(nd)));
-//        }
-
-
-
+        
         return path;
 
 
