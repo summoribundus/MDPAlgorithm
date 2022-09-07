@@ -4,6 +4,7 @@ import ntu.mdp.pathfinding.Algo.AStarResult;
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.CarMove;
+import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
 import java.util.*;
@@ -36,6 +37,8 @@ public class ShortestPathAStar {
         put(270, 3);
         put(0, 2);
     }};
+
+//    private int[] obstacleTargetDirMapping = new int[] {2, }
 
     //int[][]
 
@@ -77,6 +80,7 @@ public class ShortestPathAStar {
         visitQueue.clear();
     }
 
+
     public AStarResult planPath(int startC, int startR, int startDir, int targetC, int targetR, int targetDir){
 
         if (0 > startC || startC >= SimulatorConstant.nColumnGrid || 0 > startR || startR >= SimulatorConstant.nRowGridGrid) {
@@ -114,7 +118,7 @@ public class ShortestPathAStar {
             currentGcost = currentNode[1];
 
 
-            if (c == targetC && r == targetR){
+            if (currentNode == goalNode){
                 goalFound = true;
                 endPosition = new int[]{c, r, dir};
                 break;
@@ -272,49 +276,77 @@ public class ShortestPathAStar {
 
     private int[] getLeftLocation(int currentC, int currentR, int currentDirDegrees) {
         int[] leftPos;
+        int[] circleCenter;
+        List<int[]> leftTurnPath;
 
         switch (currentDirDegrees){
             case 0:
                 leftPos = new int[] {currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                circleCenter = new int[] {currentC, currentR - AlgoConstant.R};
                 break;
             case 90:
                 leftPos = new int[] {currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
+                circleCenter = new int[] {currentC - AlgoConstant.R,  currentR};
                 break;
             case 180:
                 leftPos = new int[] {currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                circleCenter = new int[] {currentC, currentR + AlgoConstant.R};
                 break;
             case 270:
                 leftPos = new int[] {currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
+                circleCenter = new int[] {currentC + AlgoConstant.R, currentR};
                 break;
             default:
                 leftPos = null;
+                circleCenter = null;
                 break;
         }
         // check if the grid is satisfiable.
+        if (leftPos != null && isSafePosition(circleCenter[0], circleCenter[1])) {
+            leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentC, currentR,
+                    leftPos[0], leftPos[1],
+                    circleCenter[0], circleCenter[1],
+                    false);
+
+        }
+
+
         return leftPos;
     }
 
     private int[] getRightLocation(int currentC, int currentR, int currentDirDegrees) {
         int[] rightPos;
+        int[] circleCenter;
+        List<int[]> rightTurnPath;
 
         switch (currentDirDegrees){
             case 0:
                 rightPos = new int[] {currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                circleCenter = new int[] {currentC, currentR + AlgoConstant.R};
                 break;
             case 90:
                 rightPos = new int[] {currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
+                circleCenter = new int[] {currentC + AlgoConstant.R, currentR};
                 break;
             case 180:
                 rightPos = new int[] {currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                circleCenter = new int[] {currentC, currentR - AlgoConstant.R};
                 break;
             case 270:
                 rightPos = new int[] {currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
+                circleCenter = new int[] {currentC - AlgoConstant.R, currentR};
                 break;
             default:
                 rightPos = null;
+                circleCenter = null;
                 break;
         }
-        // check if the grid is satisfiable.
+        if (rightPos != null && isSafePosition(circleCenter[0], circleCenter[1]) ){
+            rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentC, currentR,
+                    rightPos[0], rightPos[1],
+                    circleCenter[0], circleCenter[1],
+                    true);
+        }
         return rightPos;
     }
 
