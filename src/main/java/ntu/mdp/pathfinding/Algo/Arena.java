@@ -2,6 +2,8 @@ package ntu.mdp.pathfinding.Algo;
 
 import ntu.mdp.pathfinding.Obstacle;
 
+import java.util.List;
+
 public class Arena {
     private Node[][] arena;
 
@@ -41,6 +43,13 @@ public class Arena {
                 if (inRange(nr, nc))
                     arena[nr][nc].setVirtualBlock(true);
             }
+    }
+
+    public boolean validatePoint(List<int[]> points) {
+        for (int[] p : points) {
+            if (checkWithCorrespondingBlock(p[0], p[1])) return false;
+        }
+        return true;
     }
 
     // 5 based r and c
