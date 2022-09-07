@@ -1,6 +1,8 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
 import ntu.mdp.pathfinding.Algo.AStarResult;
+import ntu.mdp.pathfinding.Algo.AlgoConstant;
+import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 
@@ -8,35 +10,71 @@ import java.util.*;
 
 public class ShortestPathAStar {
 
-    private int currentC, currentR, currentDir;
+    private int currentC, currentR, currentDirDegrees;
+
+    private Arena arena;
+
+    private int[][][][] grid; // grid of positions
+
+    private int[]  currentNode;
+
     private int targetC, targetR, targetDir;
 
-    private final Map<Integer, Integer> predMap;
+    private final Map<int[], int[]> predMap;
 
-    private PriorityQueue<int[]> visitedQueue;
+    private PriorityQueue<int[]> visitQueue;
+    // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
 
     private int[] endPosition;
 
     private int totalCost;
 
+    private int[] directionToDegreesMapping = new int[] {180, 90, 0, 270};
+    private Map<Integer, Integer> degreesToDirectionsMapping  = new HashMap<>(){{
+        put(180, 0);
+        put(90, 1);
+        put(270, 3);
+        put(0, 2);
+    }};
+
     //int[][]
 
-    public ShortestPathAStar(int currentC, int currentR, int currentDir, int targetC, int targetR, int targetDir){
+    public ShortestPathAStar(int currentC, int currentR, int currentDirDegrees, int targetC, int targetR, int targetDir, Arena arena){
+        this.arena = arena;
         this.currentC = currentC;
         this.currentR = currentR;
-        this.currentDir = currentDir;
+        this.currentDirDegrees = currentDirDegrees;
         this.targetC = targetC;
         this.targetR = targetR;
         this.targetDir = targetDir;
         this.predMap = new HashMap<>();
-        this.visitedQueue = new PriorityQueue<>(Comparator.comparing(k -> k[0]));
+        this.visitQueue = new PriorityQueue<>(Comparator.comparing(k -> k[0]));
         this.endPosition = new int[3];
         this.totalCost = 0;
     }
 
     public void clear(){
         predMap.clear();
-        visitedQueue.clear();
+
+        // initialize the arrays
+        for (int c = 0; c < SimulatorConstant.nRowGridGrid; c++){ // dimension c
+            for (int r = 0; r < SimulatorConstant.nColumnGrid; r++){ // dimension r
+                for (int dir = 0; dir < 4; dir++){
+                    // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
+                    grid[c][r][dir] = new int[] {
+                            Integer.MAX_VALUE, // set total cost to be the max value first;
+                            Integer.MAX_VALUE,
+                            Integer.MAX_VALUE,
+                            c,
+                            r,
+                            dir,
+                            0
+                    };
+                }
+            }
+        }
+
+        visitQueue.clear();
     }
 
     public AStarResult planPath(int startC, int startR, int startDir, int targetC, int targetR, int targetDir){
@@ -48,45 +86,253 @@ public class ShortestPathAStar {
         clear();
 
         int endC, endR, endDir;
-        List<int[]> path = new ArrayList<int[]>();
+        List<int[]> path = new ArrayList<>();
         List<CarMove> moves = new ArrayList<CarMove>();
         boolean goalFound = false;
-        this.visitedQueue.add(new int[] {totalCost, currentC, currentR, currentDir, 0});
+
+        int c, r, dir;
+        int[] nextNode;
+        int[] forwardLocation, backwardLocation, leftLocation, rightLocation;
+        int currentGcost, hCost, gCost;
+
+        int[] goalNode = grid[targetC][targetR][targetDir];
+        this.currentNode = grid[startC][startR][startDir];
+        this.visitQueue.add(currentNode);
+
+
 
         // if the goal node is reachable
 
         // searching
-        while (!goalFound && !visitedQueue.isEmpty()){
-            int[] currentNode = visitedQueue.remove();
+        while (!goalFound && !visitQueue.isEmpty()){
+            currentNode = visitQueue.remove();
 
 
-            int c = currentNode[1];
-            int r = currentNode[2];
-            int dir = currentNode[3];
-            int currentNodeCost = currentNode[4];
+            c = currentNode[3];
+            r = currentNode[4];
+            dir = currentNode[5];
+            currentGcost = currentNode[1];
+
 
             if (c == targetC && r == targetR){
                 goalFound = true;
-                endPosition = new int[]{currentC, currentR, currentDir};
+                endPosition = new int[]{c, r, dir};
                 break;
             }
 
-            //forwardLocation = getForwardNode()
+            forwardLocation = getForwardLocation(c, r, dir);
+            leftLocation = getLeftLocation(c, r, dir);
+            rightLocation = getRightLocation(c, r, dir);
+            backwardLocation = getBackwardLocation(c, r, dir);
 
+            if (forwardLocation != null){
 
+                int nextC = forwardLocation[0];
+                int nextR = forwardLocation[1];
+                int nextDirDegrees = forwardLocation[2];
+                // from degrees to direction conversion.
+                int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
+                nextNode = grid[nextC][nextR][nextDir];
+
+                gCost = currentGcost + 1;
+                hCost = heuristic(c, r, targetC, targetR);
+
+                // if this node is already added, we will only change it when the cost is better.
+                if (gCost < nextNode[1]){
+                    predMap.put(currentNode, nextNode);
+                    nextNode[1] = gCost;
+                    nextNode[2] = hCost;
+                    visitQueue.add(nextNode);
+                }
+            }
+
+            if (backwardLocation != null){
+                int nextC = backwardLocation[0];
+                int nextR = backwardLocation[1];
+                int nextDirDegrees = backwardLocation[2];
+
+                int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
+                nextNode = grid[nextC][nextR][nextDir];
+
+                gCost = currentGcost + 1;
+                hCost = heuristic(c, r, targetC, targetR);
+
+                // if this node is already added, we will only change it when the cost is better.
+                if (gCost < nextNode[1]){
+                    predMap.put(currentNode, nextNode);
+                    nextNode[1] = gCost;
+                    nextNode[2] = hCost;
+                    visitQueue.add(nextNode);
+                }
+            }
+
+            if (leftLocation != null){
+                int nextC = leftLocation[0];
+                int nextR = leftLocation[1];
+                int nextDirDegrees = leftLocation[2];
+
+                int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
+                nextNode = grid[nextC][nextR][nextDir];
+
+                gCost = currentGcost + 1;
+                hCost = heuristic(c, r, targetC, targetR);
+
+                // if this node is already added, we will only change it when the cost is better.
+                if (gCost < nextNode[1]){
+                    predMap.put(currentNode, nextNode);
+                    nextNode[1] = gCost;
+                    nextNode[2] = hCost;
+                    visitQueue.add(nextNode);
+                }
+            }
+
+            if (rightLocation != null){
+                int nextC = rightLocation[0];
+                int nextR = rightLocation[1];
+                int nextDirDegrees = rightLocation[2];
+
+                int nextDir = degreesToDirectionsMapping.get(nextDirDegrees);
+                nextNode = grid[nextC][nextR][nextDir];
+
+                gCost = currentGcost + 1;
+                hCost = heuristic(c, r, targetC, targetR);
+
+                // if this node is already added, we will only change it when the cost is better.
+                if (gCost < nextNode[1]){
+                    predMap.put(currentNode, nextNode);
+                    nextNode[1] = gCost;
+                    nextNode[2] = hCost;
+                    visitQueue.add(nextNode);
+                }
+            }
+
+            // the node has been visited.
+            currentNode[6] = 1;
 
         }
 
+        if (!goalFound){
+            this.totalCost += 9999;
+            return null;
+        }
 
         return new AStarResult(moves, path, totalCost);
 
-
     }
 
+    private int[] getForwardLocation(int currentC, int currentR, int currentDirDegrees){
+        int[] forwardPosition;
 
-//    private int[] getForwardNode(int currentC, int currentR, int currentDir){
-//        int forwardC;
-//    }
+        switch(currentDirDegrees){
+            case 0:
+                forwardPosition = new int[]{currentC + 1, currentR, currentDirDegrees};
+                break;
+            case 90:
+                forwardPosition = new int[]{currentC, currentR - 1, currentDirDegrees};
+                break;
+            case 180:
+                forwardPosition = new int[]{currentC - 1, currentR, currentDirDegrees};
+                break;
+            case 270:
+                forwardPosition = new int[]{currentC, currentR + 1, currentDirDegrees};
+                break;
+            default:
+                forwardPosition = null;
+                break;
+        }
+        if (forwardPosition != null && isSafePosition(currentC, currentR))
+            return forwardPosition;
+        return null;
+    }
+
+    private int[] getBackwardLocation(int currentC, int currentR, int currentDirDegrees){
+        int[] backwardPos;
+
+        switch(currentDirDegrees){
+            case 0:
+                backwardPos = new int[] {currentC - 1, currentR, currentDirDegrees};
+                break;
+            case 90:
+                backwardPos = new int[] {currentC, currentR + 1, currentDirDegrees};
+                break;
+            case 180:
+                backwardPos = new int[] {currentC + 1, currentR, currentDirDegrees};
+                break;
+            case 270:
+                backwardPos = new int[] {currentC, currentR - 1, currentDirDegrees};
+                break;
+            default:
+                backwardPos = null;
+                break;
+        }
+        if (backwardPos != null & isSafePosition(currentC, currentR))
+            return backwardPos;
+        return null;
+    }
+
+    private int[] getLeftLocation(int currentC, int currentR, int currentDirDegrees) {
+        int[] leftPos;
+
+        switch (currentDirDegrees){
+            case 0:
+                leftPos = new int[] {currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                break;
+            case 90:
+                leftPos = new int[] {currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
+                break;
+            case 180:
+                leftPos = new int[] {currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                break;
+            case 270:
+                leftPos = new int[] {currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
+                break;
+            default:
+                leftPos = null;
+                break;
+        }
+        // check if the grid is satisfiable.
+        return leftPos;
+    }
+
+    private int[] getRightLocation(int currentC, int currentR, int currentDirDegrees) {
+        int[] rightPos;
+
+        switch (currentDirDegrees){
+            case 0:
+                rightPos = new int[] {currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
+                break;
+            case 90:
+                rightPos = new int[] {currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
+                break;
+            case 180:
+                rightPos = new int[] {currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
+                break;
+            case 270:
+                rightPos = new int[] {currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
+                break;
+            default:
+                rightPos = null;
+                break;
+        }
+        // check if the grid is satisfiable.
+        return rightPos;
+    }
+
+    private boolean isSafePosition(int c, int r){
+        if (c > 0 && c < SimulatorConstant.nColumnGrid &&  r > 0 && r < SimulatorConstant.nRowGridGrid ){
+            return arena.checkWithCorrespondingBlock(r, c);
+        }
+        return false;
+    }
+
+    // using Manhattan distance as heuristic. Note that the Manhattan distance denotes the right angle distance,
+    // whereas the euclidean distance denotes the straight line distance
+    private int heuristic(int curC, int curR, int nextC, int nextR){
+        int absC = Math.abs(nextC - curC);
+        int absR = Math.abs(nextR - curR);
+
+        return absC + absR;
+    }
 
 
 }

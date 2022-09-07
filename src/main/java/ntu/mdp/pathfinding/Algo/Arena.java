@@ -4,6 +4,7 @@ import ntu.mdp.pathfinding.Obstacle;
 
 public class Arena {
     private Node[][] arena;
+
     private int m, n;
 
     public Arena(int m, int n, Obstacle[] obstacles) {
