@@ -6,15 +6,13 @@ import java.util.List;
 
 public class ShortestPathTrajectoryResult implements Comparable<ShortestPathTrajectoryResult> {
     private final List<int[]> pathGrids;
-    private final int pathCost, batch, idx;
+    private final int pathCost;
     private final List<CarMove> carMoves;
 
-    public ShortestPathTrajectoryResult(int batch, int idx, int cost, List<int[]> pathGrids, List<CarMove> carMoves) {
+    public ShortestPathTrajectoryResult(int cost, List<int[]> pathGrids, List<CarMove> carMoves) {
         this.carMoves = carMoves;
         this.pathGrids = pathGrids;
         this.pathCost = cost;
-        this.batch = batch;
-        this.idx = idx;
     }
 
     public List<int[]> getPathGrids() {
@@ -23,14 +21,6 @@ public class ShortestPathTrajectoryResult implements Comparable<ShortestPathTraj
 
     public List<CarMove> getCarMoves() {
         return carMoves;
-    }
-
-    public int getBatch() {
-        return batch;
-    }
-
-    public int getIdx() {
-        return idx;
     }
 
     public int getPathCost() {

@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ntu.mdp.pathfinding.Algo.*;
+import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarAlgo;
 import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryAlgo;
 import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryResult;
 import ntu.mdp.pathfinding.GUI.Grid;
@@ -26,14 +27,25 @@ class ShortestPathRunner implements Runnable {
         Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles());
         ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
         ShortestPathTrajectoryResult result = algo.findShortestPath();
-        if (result == null)
-            System.out.println("No solution found");
-        else {
+        if (result != null) {
             List<int[]> path = result.getPathGrids();
             for (int[] p : path) {
                 car.goTo(p[0], p[1]);
             }
+            return;
         }
+//        System.out.println("No Trajectory Solution Found");
+//        ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
+//        AStarResult starResult = aStarAlgo.findBackupShortestPath();
+//        if (starResult != null) {
+//            List<int[]> path = starResult.getPointPath();
+//            for (int[] p : path) {
+//                car.goTo(p[0], p[1]);
+//            }
+//            return;
+//        }
+        System.out.println("No Backup Solution Found");
+
 //        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
 //        algo.findShortestValidPath();
 //        System.out.println("Path checking done");
@@ -88,6 +100,6 @@ public class SimulatorApplication extends Application {
     public static void main(String[] args) {
         Thread thread = new Thread(new ShortestPathRunner());
         thread.start();
-//        launch();
+        launch();
     }
 }

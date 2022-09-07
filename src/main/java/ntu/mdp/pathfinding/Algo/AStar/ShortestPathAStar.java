@@ -78,7 +78,7 @@ public class ShortestPathAStar {
         }
 
 
-        return new AStarResult(moves, path);
+        return new AStarResult(moves, path, totalCost);
 
 
     }
