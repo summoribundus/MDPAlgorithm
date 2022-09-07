@@ -220,7 +220,7 @@ public class ShortestPathAStar {
             return null;
         }
 
-        return new AStarResult(moves, path);
+        return new AStarResult(moves, path, totalCost);
 
     }
 

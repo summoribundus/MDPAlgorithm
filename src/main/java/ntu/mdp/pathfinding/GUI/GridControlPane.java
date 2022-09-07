@@ -34,17 +34,26 @@ public class GridControlPane extends Pane {
 
     private void setOnMoveClickedEvent() {
         setUp.setOnMouseClicked(mouseEvent -> {
+            start.setDisable(false);
+            setUp.setDisable(true);
+            clear.setDisable(false);
             grid.setUpObstacles(InputData.getObstacles());
             grid.setUpCarStart(InputData.getCar());
             mouseEvent.consume();
         });
 
         start.setOnMouseClicked(mouseEvent -> {
+            setUp.setDisable(true);
+            start.setDisable(true);
+            clear.setDisable(false);
             grid.setUpGridRefresh();
             mouseEvent.consume();
         });
 
         clear.setOnMouseClicked(mouseEvent -> {
+            setUp.setDisable(false);
+            start.setDisable(true);
+            clear.setDisable(true);
             grid.clearGridRefresh();
             grid.clearObstaclesAndPath();
         });

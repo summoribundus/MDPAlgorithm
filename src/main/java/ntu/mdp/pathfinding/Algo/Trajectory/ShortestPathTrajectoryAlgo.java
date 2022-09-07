@@ -19,7 +19,8 @@ public class ShortestPathTrajectoryAlgo {
     }
 
     public ShortestPathTrajectoryResult findShortestPath() {
-        int batch = 0, threadLimit = Runtime.getRuntime().availableProcessors();
+        shortestPathBF.refreshPath();
+        int threadLimit = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(threadLimit);
 
         Map<Integer, Obstacle> idxMap = shortestPathBF.getIdxMapping();
@@ -29,29 +30,23 @@ public class ShortestPathTrajectoryAlgo {
             List<ShortestPathTrajectoryTask> tasks = new ArrayList<>();
             for (int i = 0; i < threadLimit && shortestPathBF.hasNextPath(); i++) {
                 int[] path = shortestPathBF.getNextPath();
-                ShortestPathTrajectoryTask runnable = new ShortestPathTrajectoryTask(batch, i, path,
+                ShortestPathTrajectoryTask runnable = new ShortestPathTrajectoryTask(path,
                         idxMap, arena);
                 tasks.add(runnable);
             }
-//            System.out.println("Trajectory task prepared");
 
             try {
                 List<Future<ShortestPathTrajectoryResult>> futures = service.invokeAll(tasks);
-                List<ShortestPathTrajectoryResult> results = new ArrayList<>();
                 for (Future<ShortestPathTrajectoryResult> future : futures) {
                     if (!future.isDone()) continue;
                     ShortestPathTrajectoryResult result = future.get();
                     if (result == null) continue;
-                    results.add(result);
-                }
 
-                if (results.isEmpty()) continue;
-                for (ShortestPathTrajectoryResult res : results) {
-                    if (lastMinResult == null) lastMinResult = res;
-                    else if (lastMinResult.compareTo(res) < 0) {
+                    if (lastMinResult == null) lastMinResult = result;
+                    else if (lastMinResult.compareTo(result) < 0) {
                         service.shutdown();
                         return lastMinResult;
-                    } else lastMinResult = res;
+                    } else lastMinResult = result;
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

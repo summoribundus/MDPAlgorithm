@@ -11,6 +11,7 @@ import ntu.mdp.pathfinding.Obstacle;
 import ntu.mdp.pathfinding.Point;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Grid extends Pane {
@@ -19,7 +20,7 @@ public class Grid extends Pane {
     private Cell[][] cells;
 
     private Image[] arrowImg;
-    private LinkedBlockingQueue<Point> path;
+    private LinkedList<Point> path;
     private Point curPoint;
     private Obstacle[] obstacles;
     private Timeline timeline;
@@ -100,11 +101,10 @@ public class Grid extends Pane {
     }
 
     public void setUpCarStart(Car carStart) {
+        carStart.refreshQueue();
         path = carStart.getQueue();
-        curPoint = carStart.getQueue().poll();
-        assert curPoint != null;
-
-        cells[curPoint.getX()][curPoint.getY()].carHighlight();
+        curPoint = new Point(carStart.getR(), carStart.getC());
+        cells[carStart.getR()][carStart.getC()].carHighlight();
     }
 
     public void setUpGridRefresh() {

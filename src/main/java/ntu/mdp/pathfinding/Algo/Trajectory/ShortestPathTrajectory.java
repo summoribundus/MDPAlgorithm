@@ -94,7 +94,7 @@ public class ShortestPathTrajectory {
         int circle2R = trajectoryResult.getCircle2()[1], circle2C = trajectoryResult.getCircle2()[0];
 
         List<int[]> points1 = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, trajectoryResult.isClockwiseTurnStart());
-        if (points1 == null || !validatePoint(points1, arena)) return false;
+        if (points1 == null || !arena.validatePoint(points1)) return false;
 
         List<int[]> points2;
         if (!trajectoryResult.isAllCurve()) {
@@ -103,22 +103,15 @@ public class ShortestPathTrajectory {
             int circleInterR = trajectoryResult.getCircleInter()[1], circleInterC = trajectoryResult.getCircleInter()[0];
             points2 = TrajectoryToArenaGrid.findGridCirclePath(r1, c1, r2, c2, circleInterR, circleInterC, trajectoryResult.isClockwiseTurnIntermediate());
         }
-        if (points2 == null || !validatePoint(points2, arena)) return false;
+        if (points2 == null || !arena.validatePoint(points2)) return false;
 
         List<int[]> points3 = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, trajectoryResult.isClockwiseTurnEnd());
-        if(points3 == null || !validatePoint(points3, arena)) return false;
+        if(points3 == null || !arena.validatePoint(points3)) return false;
 
         if (gridCollector != null) {
             gridCollector.addAll(points1);
             gridCollector.addAll(points2);
             gridCollector.addAll(points3);
-        }
-        return true;
-    }
-
-    private static boolean validatePoint(List<int[]> points, Arena arena) {
-        for (int[] p : points) {
-            if (arena.checkWithCorrespondingBlock(p[0], p[1])) return false;
         }
         return true;
     }

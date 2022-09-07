@@ -12,14 +12,11 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajectoryResult> {
-    private final int batch, idx;
     private final int[] path;
     private final Map<Integer, Obstacle> idxMap;
     private final Arena arena;
 
-    public ShortestPathTrajectoryTask(int batch, int idx, int[] path, Map<Integer, Obstacle> idxMap, Arena arena) {
-        this.batch = batch;
-        this.idx = idx;
+    public ShortestPathTrajectoryTask(int[] path, Map<Integer, Obstacle> idxMap, Arena arena) {
         this.path = path;
         this.idxMap = idxMap;
         this.arena = arena;
@@ -69,6 +66,6 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             carR = reversedR; carC = reversedC;
         }
         if (!pathValid) return null;
-        return new ShortestPathTrajectoryResult(batch, idx, cost, pathGrids, carMoves);
+        return new ShortestPathTrajectoryResult(cost, pathGrids, carMoves);
     }
 }
