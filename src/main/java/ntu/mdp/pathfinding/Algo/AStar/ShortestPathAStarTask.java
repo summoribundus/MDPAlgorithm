@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class ShortestPathAStarTask implements Callable<AStarResult> {
-    private int[] path;
-    private Map<Integer, Obstacle> idxMap;
+    private final int[] path;
+    private final Map<Integer, Obstacle> idxMap;
 
-    private Arena arena;
+    private final Arena arena;
 
     public ShortestPathAStarTask(int[] path, Map<Integer, Obstacle> idxMap, Arena arena) {
         this.path = path;
@@ -39,7 +39,7 @@ public class ShortestPathAStarTask implements Callable<AStarResult> {
             if (aStarResult == null) { pathValid = false; break; }
             pathGrids.addAll(aStarResult.getPointPath());
             carMoves.addAll(aStarResult.getCarMoves());
-            cost += aStarResult.getCost();
+            carC = ob.getTargetedC(); carR = ob.getTargetedR(); theta = ob.getTargetedDegree(); cost += aStarResult.getCost();
         }
 
         if (!pathValid) return null;

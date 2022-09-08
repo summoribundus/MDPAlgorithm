@@ -28,22 +28,24 @@ class ShortestPathRunner implements Runnable {
         ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
         ShortestPathTrajectoryResult result = algo.findShortestPath();
         if (result != null) {
+            System.out.println("Trajectory Solution Found");
             List<int[]> path = result.getPathGrids();
             for (int[] p : path) {
                 car.goTo(p[0], p[1]);
             }
             return;
         }
-//        System.out.println("No Trajectory Solution Found");
-//        ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
-//        AStarResult starResult = aStarAlgo.findBackupShortestPath();
-//        if (starResult != null) {
-//            List<int[]> path = starResult.getPointPath();
-//            for (int[] p : path) {
-//                car.goTo(p[0], p[1]);
-//            }
-//            return;
-//        }
+        System.out.println("No Trajectory Solution Found");
+        ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
+        AStarResult starResult = aStarAlgo.findBackupShortestPath();
+        if (starResult != null) {
+            System.out.println("Backup Solution Found");
+            List<int[]> path = starResult.getPointPath();
+            for (int[] p : path) {
+                car.goTo(p[0], p[1]);
+            }
+            return;
+        }
         System.out.println("No Backup Solution Found");
 
 //        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());

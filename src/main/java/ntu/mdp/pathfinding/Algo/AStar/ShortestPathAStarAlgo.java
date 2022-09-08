@@ -31,7 +31,7 @@ public class ShortestPathAStarAlgo {
 
         while (shortestPathBF.hasNextPath()) {
             List<ShortestPathAStarTask> tasks = new ArrayList<>();
-            for (int i = 0; i < threadLimit; i++) {
+            for (int i = 0; i < threadLimit && shortestPathBF.hasNextPath(); i++) {
                 int[] path = shortestPathBF.getNextPath();
                 ShortestPathAStarTask task = new ShortestPathAStarTask(path, idxMap, arena);
                 tasks.add(task);

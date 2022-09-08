@@ -39,9 +39,7 @@ public class ShortestPathBF {
         }
         es.shutdown();
         try {
-            System.out.println("Start await");
             es.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-            System.out.println("Await done");
         } catch (InterruptedException e) {
            e.printStackTrace();
         }
@@ -75,7 +73,7 @@ public class ShortestPathBF {
     }
 
     public boolean hasNextPath() {
-        return !pqCopy.isEmpty();
+        return pqCopy != null && !pqCopy.isEmpty();
     }
 
     public void refreshPath() {
