@@ -5,6 +5,7 @@ import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.ShortestPathBF;
 import ntu.mdp.pathfinding.InputData;
 import ntu.mdp.pathfinding.Obstacle;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -66,9 +67,9 @@ public class ShortestPathTrajectoryAlgo {
         if (result == null)
             System.out.println("No solution found");
         else {
-            List<int[]> path = result.getPathGrids();
-            for (int[] p : path) {
-                System.out.println(Arrays.toString(p));
+            List<Point> path = result.getPathGrids();
+            for (Point p : path) {
+                System.out.println(p);
             }
         }
     }

@@ -6,6 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import ntu.mdp.pathfinding.Algo.*;
 import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarAlgo;
+import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarResult;
 import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryAlgo;
 import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryResult;
 import ntu.mdp.pathfinding.GUI.Grid;
@@ -29,20 +30,20 @@ class ShortestPathRunner implements Runnable {
         ShortestPathTrajectoryResult result = algo.findShortestPath();
         if (result != null) {
             System.out.println("Trajectory Solution Found");
-            List<int[]> path = result.getPathGrids();
-            for (int[] p : path) {
-                car.goTo(p[0], p[1]);
+            List<Point> path = result.getPathGrids();
+            for (Point p : path) {
+                car.goTo(p);
             }
             return;
         }
         System.out.println("No Trajectory Solution Found");
         ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
-        AStarResult starResult = aStarAlgo.findBackupShortestPath();
+        ShortestPathAStarResult starResult = aStarAlgo.findBackupShortestPath();
         if (starResult != null) {
             System.out.println("Backup Solution Found");
-            List<int[]> path = starResult.getPointPath();
-            for (int[] p : path) {
-                car.goTo(p[0], p[1]);
+            List<Point> path = starResult.getPointPath();
+            for (Point p : path) {
+                car.goTo(p);
             }
             return;
         }
@@ -70,15 +71,15 @@ public class SimulatorApplication extends Application {
             Pane root = new Pane();
             URL url = getClass().getResource("assets");
 
-            Grid grid = new Grid( SimulatorConstant.nRowGridGrid, SimulatorConstant.nColumnGrid,
-                    SimulatorConstant.cellWidth, SimulatorConstant.cellHeight, SimulatorConstant.marginX,
-                    SimulatorConstant.marginY, url);
-
             double startX = SimulatorConstant.marginX + SimulatorConstant.nColumnGrid * SimulatorConstant.cellWidth +
                     SimulatorConstant.gridIRPGap;
             double startY = SimulatorConstant.marginY;
             ImageRecognizePane irp = new ImageRecognizePane(startX, startY, SimulatorConstant.IRPWidth,
                     SimulatorConstant.IRPHeight, url);
+
+            Grid grid = new Grid( SimulatorConstant.nRowGridGrid, SimulatorConstant.nColumnGrid,
+                    SimulatorConstant.cellWidth, SimulatorConstant.cellHeight, SimulatorConstant.marginX,
+                    SimulatorConstant.marginY, url, irp);
 
             startY +=  SimulatorConstant.IRPHeight + 60;
             GridControlPane gControlP = new GridControlPane(startX, startY, SimulatorConstant.GControlPWidth,

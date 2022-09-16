@@ -13,9 +13,8 @@ public class Car {
         queue = new LinkedList<>();
     }
 
-    public void goTo(int x, int y) {
-        Point point = new Point(x, y);
-        queue.add(point);
+    public void goTo(Point p) {
+        queue.add(p);
     }
 
     public void refreshQueue() {

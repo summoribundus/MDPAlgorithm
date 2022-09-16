@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo;
 
 import ntu.mdp.pathfinding.Obstacle;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.List;
 
@@ -45,9 +46,9 @@ public class Arena {
             }
     }
 
-    public boolean validatePoint(List<int[]> points) {
-        for (int[] p : points) {
-            if (checkWithCorrespondingBlock(p[0], p[1])) return false;
+    public boolean validatePoint(List<Point> points) {
+        for (Point p : points) {
+            if (checkWithCorrespondingBlock(p.getX(), p.getY())) return false;
         }
         return true;
     }

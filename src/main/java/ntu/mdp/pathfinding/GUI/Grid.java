@@ -11,7 +11,9 @@ import ntu.mdp.pathfinding.Obstacle;
 import ntu.mdp.pathfinding.Point;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Grid extends Pane {
@@ -32,12 +34,18 @@ public class Grid extends Pane {
 
     private URL imageBaseFolder;
 
+    private Map<String, Integer> imageMap;
 
-    public Grid(int _m, int _n, double width, double height, double marginX, double marginY, URL url) {
+    private ImageRecognizePane imgRecPane;
+
+
+    public Grid(int _m, int _n, double width, double height, double marginX, double marginY, URL url, ImageRecognizePane imgRecPane) {
         m = _m; n = _n;
         cWidth = width; cHeight = height;
         cells = new Cell[m][n];
         arrowImg = new Image[4];
+        imageMap = new HashMap<>();
+        this.imgRecPane = imgRecPane;
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -63,14 +71,15 @@ public class Grid extends Pane {
         for (Obstacle obstacle : obstacles) {
             int r = obstacle.getR(), c = obstacle.getC(), imgIdx = obstacle.getImgIdx();
             for (int i = 0; i < 4; i++) {
-                int nr = r+dImageSquare[i][0], nc = c+dImageSquare[i][1];
+                int nr = r + dImageSquare[i][0], nc = c + dImageSquare[i][1];
                 cells[nr][nc].setImage(imgIdx, i);
                 setUpVirtualObstacles(nr, nc, i);
             }
             for (int i = 0; i < 4; i += 2) {
-                int imgDir = obstacle.getDir(), nr = r + dArrowImageSquare[imgDir][i], nc = c + dArrowImageSquare[imgDir][i+1];
+                int imgDir = obstacle.getDir(), nr = r + dArrowImageSquare[imgDir][i], nc = c + dArrowImageSquare[imgDir][i + 1];
                 if (inRange(nr, nc)) cells[nr][nc].setImage(arrowImg[imgDir]);
             }
+            imageMap.put(obstacle.getTargetedR()+":"+obstacle.getTargetedC(), imgIdx);
         }
         this.obstacles = obstacles;
     }
@@ -116,6 +125,10 @@ public class Grid extends Pane {
                     int x = curPoint.getX(), y = curPoint.getY();
                     cells[x][y].carPassHighlight();
                     cells[point.getX()][point.getY()].carHighlight();
+                    String pointStr = point.getX()+":"+point.getY();
+                    if (point.isMatchingPoint() && imageMap.containsKey(pointStr)) {
+                        imgRecPane.recognize(imageMap.get(pointStr));
+                    }
                     curPoint = point;
                 }
         );

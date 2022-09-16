@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo.Trajectory;
 
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.*;
 
@@ -76,31 +77,30 @@ public class TrajectoryToArenaGrid {
         return pointsPassed;
     }
 
-    public static List<int[]> findGirdLinePath(int r1, int c1, int r2, int c2) {
-        List<int[]> pointsPassed = new ArrayList<>();
+    public static List<Point> findGirdLinePath(int r1, int c1, int r2, int c2) {
+        List<Point> pointsPassed = new ArrayList<>();
         double a = (double) (r2 - r1) / (c2 - c1), b = r1 - c1 * a;
         int step = c1 < c2 ? 1 : -1;
         int i;
         for (i = c1; i >= 0 && i != c2 && i < AlgoConstant.GridN; i += step) {
             double y = a * i + b;
             int j = (int) Math.ceil(y);
-            pointsPassed.add(new int[]{j, i});
+            pointsPassed.add(new Point(j, i));
         }
         if (i != c2) {
             return null;
         }
-        pointsPassed.add(new int[]{r2, c2});
+        pointsPassed.add(new Point(r2, c2));
         return pointsPassed;
     }
 
-    public static List<int[]> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise) {
+    public static List<Point> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise) {
         if (r1 == r2 && c1 == c2) {
-            List<int[]> res = new ArrayList<>();
-            res.add(new int[]{r1, c1});
+            List<Point> res = new ArrayList<>();
+            res.add(new Point(r1, c1));
             return res;
         }
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparing(k -> k[0]));
         int quadrant1 = getQuadrantOfPoints(r1, c1, circleR, circleC);
         int quadrant2 = getQuadrantOfPoints(r2, c2, circleR, circleC);
         List<Edge> edges = new ArrayList<>();
@@ -299,26 +299,26 @@ public class TrajectoryToArenaGrid {
         return circleRecTanEdgeLooping(edges);
     }
 
-    private static List<int[]> circleRecTanEdgeLooping(List<Edge> edges) {
-        List<int[]> pointsPassed = new ArrayList<>();
+    private static List<Point> circleRecTanEdgeLooping(List<Edge> edges) {
+        List<Point> pointsPassed = new ArrayList<>();
         for (Edge edge : edges) {
             int r = edge.getStR(), c = edge.getStC();
             if (edge.getDr() == 0) {
                 while (0 <= c && c < AlgoConstant.GridN && c != edge.getEdC()) {
-                    pointsPassed.add(new int[]{r, c});
+                    pointsPassed.add(new Point(r, c));
                     c += edge.getDc();
                 }
                 if (c != edge.getEdC()) return null;
             } else {
                 while (0 <= r && r < AlgoConstant.GridM && r != edge.getEdR()) {
-                    pointsPassed.add(new int[]{r, c});
+                    pointsPassed.add(new Point(r, c));
                     r += edge.getDr();
                 }
                 if (r != edge.getEdR()) return null;
             }
         }
         Edge last = edges.get(edges.size()-1);
-        pointsPassed.add(new int[]{last.getEdR(), last.getEdC()});
+        pointsPassed.add(new Point(last.getEdR(), last.getEdC()));
         return pointsPassed;
     }
 
@@ -343,11 +343,11 @@ public class TrajectoryToArenaGrid {
     }
 
     public static void main(String[] args){
-        List<int[]> points = findGridCirclePath(5, 10, 3, 2, 7, 5, true);
+        List<Point> points = findGridCirclePath(5, 10, 3, 2, 7, 5, true);
 //        List<int[]> points = findGirdLinePath();
 //        List<int[]> points = findReversePath(15, 8, 15, 3, new int[]{0, -1});
-        for (int[] p : points) {
-            System.out.println(Arrays.toString(p));
+        for (Point p : points) {
+            System.out.println(p);
         }
     }
 }

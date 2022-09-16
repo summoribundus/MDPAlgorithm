@@ -1,12 +1,12 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
-import ntu.mdp.pathfinding.Algo.AStarResult;
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 import ntu.mdp.pathfinding.InputData;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.*;
 
@@ -30,7 +30,7 @@ public class ShortestPathAStar {
     private int[] endPosition;
 
 
-    private List<int[]> path = new ArrayList<>(); // list of points as the final path
+    private List<Point> path = new ArrayList<>(); // list of points as the final path
 
     private List<CarMove> moves = new ArrayList<CarMove>();  // the moves of the final path
 
@@ -70,8 +70,8 @@ public class ShortestPathAStar {
     public static void main (String[] args){
         Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles());
         ShortestPathAStar astar = new ShortestPathAStar(2, 2, 270, 7, 4, 2, arena);
-        AStarResult res = astar.planPath();
-        List<int[]> path = res.getPointPath();
+        ShortestPathAStarResult res = astar.planPath();
+        List<Point> path = res.getPointPath();
     }
 
     public void clear(){
@@ -100,7 +100,7 @@ public class ShortestPathAStar {
 
 
 
-    public AStarResult planPath(){
+    public ShortestPathAStarResult planPath(){
 
         if (0 > currentC || currentC >= SimulatorConstant.nColumnGrid || 0 > currentR || currentR >= SimulatorConstant.nRowGridGrid) {
             this.totalCost += 9999;
@@ -270,14 +270,14 @@ public class ShortestPathAStar {
 
         path = backtrack(goalNode);
 
-        return new AStarResult(moves, path, totalCost);
+        return new ShortestPathAStarResult(moves, path, totalCost);
 
     }
 
     // backtrack the map to get the path
-    private List<int[]> backtrack(int[] endNode){
+    private List<Point> backtrack(int[] endNode){
 
-        List<int[]> path = new ArrayList<>();
+        List<Point> path = new ArrayList<>();
         int[] curr,prev;
 
         curr = endNode;
@@ -297,7 +297,7 @@ public class ShortestPathAStar {
             int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if (prev == null) // if this is the starting node, handle the special case.
                 {
-                    path.add(new int[] {curr[4], curr[3]});
+                    path.add(new Point(curr[4], curr[3]));
                     break;
                 }
 
@@ -308,8 +308,7 @@ public class ShortestPathAStar {
 
             // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if (prev[5] == currDirInDegrees){
-
-                path.add(new int[] {curr[4], curr[3]});
+                path.add(new Point(curr[4], curr[3]));
                 int moveLength = 0;
                 switch (currDirInDegrees) { // check if reversing
                     case 0:
@@ -348,7 +347,7 @@ public class ShortestPathAStar {
                 int prevC = prev[3];
                 int prevR = prev[4];
 
-                List<int[]> pathSegments;
+                List<Point> pathSegments;
 
                 boolean isClockWise;
 
@@ -366,8 +365,7 @@ public class ShortestPathAStar {
                 }
                 moves.add(new CarMove(90, isClockWise, 0, true,0 ));
                 Collections.reverse(pathSegments);
-                for (int[] pt : pathSegments)
-                    path.add(pt);
+                path.addAll(pathSegments);
             }
             curr = prev;
         }
@@ -381,10 +379,10 @@ public class ShortestPathAStar {
 
     }
 
-    private List<int[]> getPathSegmentsForLeftTurning(int currentC, int currentR, int currentDirDegrees) {
+    private List<Point> getPathSegmentsForLeftTurning(int currentC, int currentR, int currentDirDegrees) {
         int[] leftPos;
         int[] circleCenter;
-        List<int[]> leftTurnPath;
+        List<Point> leftTurnPath;
 
         switch (currentDirDegrees) {
             case 0:
@@ -415,10 +413,10 @@ public class ShortestPathAStar {
         return leftTurnPath;
     }
 
-    private List<int[]> getPathSegmentsForRightTurning(int currentC, int currentR, int currentDirDegrees){
+    private List<Point> getPathSegmentsForRightTurning(int currentC, int currentR, int currentDirDegrees){
         int[] rightPos;
         int[] circleCenter;
-        List<int[]> rightTurnPath;
+        List<Point> rightTurnPath;
 
         switch (currentDirDegrees) {
             case 0 -> {
@@ -481,7 +479,7 @@ public class ShortestPathAStar {
     private int[] getLeftLocation(int currentC, int currentR, int currentDirDegrees) {
         int[] leftPos;
         int[] circleCenter;
-        List<int[]> leftTurnPath;
+        List<Point> leftTurnPath;
 
         switch (currentDirDegrees) {
             case 0 -> {
@@ -521,7 +519,7 @@ public class ShortestPathAStar {
     private int[] getRightLocation(int currentC, int currentR, int currentDirDegrees) {
         int[] rightPos;
         int[] circleCenter;
-        List<int[]> rightTurnPath;
+        List<Point> rightTurnPath;
 
         switch (currentDirDegrees) {
             case 0 -> {

@@ -16,15 +16,15 @@ public class SimulatorMock {
 
     public static Car getCarWithPath() {
         Car car = new Car(0, 1);
-        car.goTo(1, 1);
-        car.goTo(2, 1);
-        car.goTo(3, 1);
-        car.goTo(4, 1);
-        car.goTo(5, 1);
-        car.goTo(5, 2);
-        car.goTo(5, 3);
-        car.goTo(5, 4);
-        car.goTo(5, 5);
+//        car.goTo(1, 1);
+//        car.goTo(2, 1);
+//        car.goTo(3, 1);
+//        car.goTo(4, 1);
+//        car.goTo(5, 1);
+//        car.goTo(5, 2);
+//        car.goTo(5, 3);
+//        car.goTo(5, 4);
+//        car.goTo(5, 5);
         return car;
     }
 }

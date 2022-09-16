@@ -5,6 +5,7 @@ import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryCalculation;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryResult;
 import ntu.mdp.pathfinding.Obstacle;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
 
     @Override
     public ShortestPathTrajectoryResult call() throws Exception {
-        List<int[]> pathGrids = new ArrayList<>();
+        List<Point> pathGrids = new ArrayList<>();
         List<CarMove> carMoves = new ArrayList<>();
         Obstacle car = idxMap.get(path[0]);
         int carR = car.getR(), carC = car.getC(), theta = 270;
@@ -41,12 +42,13 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             cost += trajectoryResult.getTotalLength();
 
             carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
+            pathGrids.add(new Point(carR, carC, true));
             if (i == path.length-1) continue;
 
             Obstacle nextOb = idxMap.get(path[i+1]);
             int reversedR = carR, reversedC = carC;
             boolean found = false;
-            List<int[]> reversePath = new ArrayList<>();
+            List<Point> reversePath = new ArrayList<>();
             while (!arena.checkWithCorrespondingBlock(reversedR, reversedC)) {
                 trajectoryCalculation = new TrajectoryCalculation(nextOb.getTargetedC(), nextOb.getTargetedR(),
                         nextOb.getDir(), reversedC, reversedR, theta);
@@ -58,7 +60,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
                     break;
                 }
                 reversedR += ShortestPathTrajectory.dReverses[ob.getDir()][0]; reversedC += ShortestPathTrajectory.dReverses[ob.getDir()][1];
-                reversePath.add(new int[]{reversedR, reversedC});
+                reversePath.add(new Point(reversedR, reversedC));
             }
 
             if (!found) { pathValid = false; break;}

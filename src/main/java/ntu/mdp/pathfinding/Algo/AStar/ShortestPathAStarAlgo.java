@@ -1,6 +1,5 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
-import ntu.mdp.pathfinding.Algo.AStarResult;
 import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.ShortestPathBF;
 import ntu.mdp.pathfinding.Obstacle;
@@ -22,11 +21,11 @@ public class ShortestPathAStarAlgo {
         this.shortestPathBF = shortestPathBF;
     }
 
-    public AStarResult findBackupShortestPath() {
+    public ShortestPathAStarResult findBackupShortestPath() {
         shortestPathBF.refreshPath();
         int threadLimit = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(threadLimit);
-        AStarResult lastMinResult = null;
+        ShortestPathAStarResult lastMinResult = null;
         Map<Integer, Obstacle> idxMap = shortestPathBF.getIdxMapping();
 
         while (shortestPathBF.hasNextPath()) {
@@ -38,10 +37,10 @@ public class ShortestPathAStarAlgo {
             }
 
             try {
-                List<Future<AStarResult>> futures = service.invokeAll(tasks);
-                for (Future<AStarResult> future : futures) {
+                List<Future<ShortestPathAStarResult>> futures = service.invokeAll(tasks);
+                for (Future<ShortestPathAStarResult> future : futures) {
                     if (!future.isDone()) continue;
-                    AStarResult result = future.get();
+                    ShortestPathAStarResult result = future.get();
                     if (result == null) continue;
 
                     if (lastMinResult == null) lastMinResult = result;

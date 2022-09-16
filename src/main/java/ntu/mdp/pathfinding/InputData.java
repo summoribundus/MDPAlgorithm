@@ -5,7 +5,7 @@ public class InputData {
     private static final int startC = 2;
     private static final Obstacle[] obstacles = new Obstacle[]{
                 new Obstacle(5, 12, 3, 3, false),
-                new Obstacle(20, 20, 2, 8, false),
+                new Obstacle(20, 20, 1, 8, false),
                 new Obstacle(33, 17, 0, 13, false), // tricky point
                 new Obstacle(15, 32, 1, 19, false),
                 new Obstacle(27, 2, 2, 22, false),

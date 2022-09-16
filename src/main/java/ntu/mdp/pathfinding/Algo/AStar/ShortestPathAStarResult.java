@@ -1,23 +1,36 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
 import ntu.mdp.pathfinding.Algo.CarMove;
+import ntu.mdp.pathfinding.Point;
 
-public class ShortestPathAStarResult {
-    private CarMove carMove;
+import java.util.List;
 
-    public ShortestPathAStarResult(int[] pt1, int[] pt2) {
-        carMove = new CarMove(0, false, 0, false, lengthCompute(pt1, pt2));
+public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResult> {
+    private List<CarMove> carMoves;
+    private List<Point> pointPath;
+
+    private int cost;
+
+    public ShortestPathAStarResult(List<CarMove> carMoves, List<Point> pointPath, int cost){
+        this.carMoves = carMoves;
+        this.pointPath = pointPath;
+        this.cost = cost;
     }
 
-    public ShortestPathAStarResult(boolean isClockWiseTurn) {
-        carMove = new CarMove(90, isClockWiseTurn, 0, false, 0);
-    }
-    private int lengthCompute(int[] pt1, int[] pt2) {
-        if (pt1[0] == pt2[0])  return Math.abs(pt1[1] - pt2[1]);
-        else return Math.abs(pt1[0] - pt2[0]);
+    public List<CarMove> getCarMoves() {
+        return carMoves;
     }
 
-    public CarMove getCarMove() {
-        return carMove;
+    public List<Point> getPointPath() {
+        return pointPath;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int compareTo(ShortestPathAStarResult o) {
+        return Integer.compare(cost, o.cost);
     }
 }
