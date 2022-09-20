@@ -364,8 +364,9 @@ public class ShortestPathAStar {
                     pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
                 }
                 moves.add(new CarMove(90, isClockWise, 0, true,0 ));
+
                 Collections.reverse(pathSegments);
-                path.addAll(pathSegments);
+
             }
             curr = prev;
         }

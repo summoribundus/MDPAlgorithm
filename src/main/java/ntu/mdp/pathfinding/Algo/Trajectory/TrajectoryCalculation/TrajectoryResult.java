@@ -30,7 +30,7 @@ public class TrajectoryResult {
         this.totalLength = c1.getArcLen() + c2.getArcLen() + c3.getArcLen();
 
         this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(), c2.getTheta(), c2.isClockwiseTurn(),
-                c3.getTheta(), c3.isClockwiseTurn(), totalLength);
+                c3.getTheta(), c3.isClockwiseTurn());
     }
 
 
@@ -50,7 +50,7 @@ public class TrajectoryResult {
 //        System.out.println("c3 arclen: " + c3.getArcLen());
 
         this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(),
-                c3.getTheta(), c3.isClockwiseTurn(), totalLength);
+                c3.getTheta(), c3.isClockwiseTurn(), l2.getLength());
     }
 
     public int[] getPt1() {
