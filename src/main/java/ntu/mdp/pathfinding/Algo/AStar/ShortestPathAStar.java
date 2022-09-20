@@ -338,9 +338,9 @@ public class ShortestPathAStar {
                     default:
                 }
                 if (reversing)
-                    moves.add(new CarMove(0, true, 0, true, -1*moveLength));
+                    moves.add(new CarMove(-1*moveLength));
                 else
-                    moves.add(new CarMove(0, true, 0, true, moveLength));
+                    moves.add(new CarMove(moveLength));
             } else { // otherwise, only look for points where direction changes to construct the line segments
 
                 int prevDirInDegrees = prev[5];

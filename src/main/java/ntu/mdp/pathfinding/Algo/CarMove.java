@@ -25,9 +25,8 @@ public class CarMove {
             instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta1);
         else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta1);
 
-        if (moveLength >= 0)
-            instructionList.add(CarMoveInstructions.moveForwardPrefix + conversionToInstructionFormat(moveLength)); // goingStraight
-        else instructionList.add(CarMoveInstructions.moveBackwardPrefix + conversionToInstructionFormat(Math.abs(moveLength)));
+        instructionList.add((moveLength >= 0)? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix
+                + conversionToInstructionFormat(Math.abs(moveLength))); // goingStraight
 
         if (isClockwise2)
             instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta2);
@@ -61,14 +60,13 @@ public class CarMove {
         else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta3);
     }
 
-    // car move type of straightline only
+    // car move type of straight line only
     public CarMove(int moveLength){
+
         this.instructionList = new ArrayList<>();
 
-        if (moveLength >= 0)
-            instructionList.add(CarMoveInstructions.moveForwardPrefix + conversionToInstructionFormat(moveLength)); // goingStraight
-        else instructionList.add(CarMoveInstructions.moveBackwardPrefix + conversionToInstructionFormat(Math.abs(moveLength)));
-
+        instructionList.add((moveLength >= 0)? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix
+                + conversionToInstructionFormat(Math.abs(moveLength))); // goingStraight
 
     }
 
