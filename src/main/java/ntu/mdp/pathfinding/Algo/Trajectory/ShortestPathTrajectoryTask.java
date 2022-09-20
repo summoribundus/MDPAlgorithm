@@ -64,6 +64,8 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             }
 
             if (!found) { pathValid = false; break;}
+            int length = reversedR == carR ? Math.abs(reversedC - carC) * 5 : Math.abs(reversedR - carR) * 5;
+            carMoves.add(new CarMove(-length));
             pathGrids.addAll(reversePath);
             carR = reversedR; carC = reversedC;
         }

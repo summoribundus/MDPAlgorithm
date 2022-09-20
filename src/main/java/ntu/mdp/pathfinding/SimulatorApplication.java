@@ -48,18 +48,6 @@ class ShortestPathRunner implements Runnable {
             return;
         }
         System.out.println("No Backup Solution Found");
-
-//        ShortestPathTrajectory algo = new ShortestPathTrajectory(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
-//        algo.findShortestValidPath();
-//        System.out.println("Path checking done");
-//        List<int[]> points = algo.getPathGrids();
-//        if (points == null || points.isEmpty()) {
-//            System.out.println("No solution found");
-//            return;
-//        }
-//        for (int[] p : points) {
-//            car.goTo(p[0], p[1]);
-//        }
     }
 }
 
