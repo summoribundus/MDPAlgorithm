@@ -6,7 +6,7 @@ public class CarMove {
     private int turnTheta1, turnTheta2, turnTheta3;
     private boolean isClockwise1, isClockwise2, isClockwise3;
     private int moveLength;
-    private String[] instructionList;
+    private ArrayList<String> instructionList;
 
     // car move type of Curve-StraightLine-Curve.
     public CarMove(int turnTheta1, boolean isClockwise1,
@@ -17,21 +17,21 @@ public class CarMove {
         this.turnTheta2 = turnTheta2;
         this.isClockwise2 = isClockwise2;
         this.moveLength = moveLength;
-        this.instructionList = new String[3];
+        this.instructionList = new ArrayList<>();
 
         // adding instructions into the arraylist.
 
         if (isClockwise1) // first curve turning right
-            instructionList[0] = CarMoveInstructions.turnRightPrefix + turnTheta1;
-        else instructionList[0] = CarMoveInstructions.turnLeftPrefix + turnTheta1;
+            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta1);
+        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta1);
 
-        if (moveLength > 0)
-            instructionList[1] = CarMoveInstructions.moveForwardPrefix + conversionToInstructionFormat(moveLength); // goingStraight
-        else instructionList[1] = CarMoveInstructions.moveBackwardPrefix + conversionToInstructionFormat(Math.abs(moveLength));
+        if (moveLength >= 0)
+            instructionList.add(CarMoveInstructions.moveForwardPrefix + conversionToInstructionFormat(moveLength)); // goingStraight
+        else instructionList.add(CarMoveInstructions.moveBackwardPrefix + conversionToInstructionFormat(Math.abs(moveLength)));
 
         if (isClockwise2)
-            instructionList[2] = CarMoveInstructions.turnRightPrefix + turnTheta2;
-        else instructionList[2] = CarMoveInstructions.turnLeftPrefix + turnTheta2;
+            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta2);
+        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta2);
     }
 
     // car move type of Curve-Curve-CurveType.
@@ -44,21 +44,32 @@ public class CarMove {
         this.isClockwise2 = isClockwise2;
         this.turnTheta3 = turnTheta3;
         this.isClockwise3 = isClockwise3;
-        this.instructionList = new String[3];
+        this.instructionList = new ArrayList<>();
 
         // adding instructions into the arraylist
 
         if (isClockwise1)
-            instructionList[0] = CarMoveInstructions.turnRightPrefix + turnTheta1;
-        else instructionList[0] = CarMoveInstructions.turnLeftPrefix + turnTheta1;
+            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta1);
+        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta1);
 
         if (isClockwise2)
-            instructionList[1] = CarMoveInstructions.turnRightPrefix + turnTheta2;
-        else instructionList[1] = CarMoveInstructions.turnLeftPrefix + turnTheta2;
+            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta2);
+        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta2);
 
         if (isClockwise3)
-            instructionList[2] = CarMoveInstructions.turnRightPrefix + turnTheta3;
-        else instructionList[2] = CarMoveInstructions.turnLeftPrefix + turnTheta3;
+            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta3);
+        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta3);
+    }
+
+    // car move type of straightline only
+    public CarMove(int moveLength){
+        this.instructionList = new ArrayList<>();
+
+        if (moveLength >= 0)
+            instructionList.add(CarMoveInstructions.moveForwardPrefix + conversionToInstructionFormat(moveLength)); // goingStraight
+        else instructionList.add(CarMoveInstructions.moveBackwardPrefix + conversionToInstructionFormat(Math.abs(moveLength)));
+
+
     }
 
     private String conversionToInstructionFormat(int moveLength){
@@ -80,7 +91,7 @@ public class CarMove {
                 '}';
     }
 
-    public String[] getInstructions(){
+    public ArrayList<String> getInstructions(){
         return this.instructionList;
     }
 }
