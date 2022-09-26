@@ -1,16 +1,16 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.Instruction;
 
-import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.CarMoveInstructions;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.List;
 
 public class LineInstruction implements Instruction {
     private String command;
-    private List<Point> gridPath;
+    private String gridPath;
 
     public LineInstruction(int moveLength) {
-        command = (moveLength > 0 ? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix) + conversionToInstructionFormat(Math.abs(moveLength));
+        command = "STM:" + (moveLength > 0 ? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix) + conversionToInstructionFormat(Math.abs(moveLength));
     }
 
     private String conversionToInstructionFormat(int moveLength){
@@ -23,7 +23,10 @@ public class LineInstruction implements Instruction {
     }
 
     public void setGridPath(List<Point> gridPath) {
-        this.gridPath = gridPath;
+        StringBuilder sb = new StringBuilder().append("Android:");
+        for (Point point : gridPath)
+            sb.append(point).append(";");
+        this.gridPath = sb.toString();
     }
 
     @Override
@@ -32,7 +35,7 @@ public class LineInstruction implements Instruction {
     }
 
     @Override
-    public List<Point> gridPath() {
+    public String gridPath() {
         return gridPath;
     }
 }

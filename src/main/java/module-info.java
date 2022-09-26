@@ -8,4 +8,6 @@ module com.example.pathfinding {
     exports ntu.mdp.pathfinding;
     exports ntu.mdp.pathfinding.GUI;
     opens ntu.mdp.pathfinding.GUI to javafx.fxml;
+    exports ntu.mdp.pathfinding.Instruction;
+    opens ntu.mdp.pathfinding.Instruction to javafx.fxml;
 }

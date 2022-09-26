@@ -1,6 +1,6 @@
 package ntu.mdp.pathfinding.Algo.Trajectory;
 
-import ntu.mdp.pathfinding.Algo.CarMove;
+import ntu.mdp.pathfinding.Instruction.Instruction;
 import ntu.mdp.pathfinding.Point;
 
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.List;
 public class ShortestPathTrajectoryResult implements Comparable<ShortestPathTrajectoryResult> {
     private final List<Point> pathGrids;
     private final int pathCost;
-    private final List<CarMove> carMoves;
+    private final List<Instruction> instructions;
 
-    public ShortestPathTrajectoryResult(int cost, List<Point> pathGrids, List<CarMove> carMoves) {
-        this.carMoves = carMoves;
+    public ShortestPathTrajectoryResult(int cost, List<Point> pathGrids, List<Instruction> instructions) {
+        this.instructions = instructions;
         this.pathGrids = pathGrids;
         this.pathCost = cost;
     }
@@ -20,8 +20,8 @@ public class ShortestPathTrajectoryResult implements Comparable<ShortestPathTraj
         return pathGrids;
     }
 
-    public List<CarMove> getCarMoves() {
-        return carMoves;
+    public List<Instruction> getInstructions() {
+        return instructions;
     }
 
     public int getPathCost() {

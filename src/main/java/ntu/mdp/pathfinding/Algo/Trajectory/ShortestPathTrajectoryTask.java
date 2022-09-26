@@ -1,11 +1,12 @@
 package ntu.mdp.pathfinding.Algo.Trajectory;
 
+import ntu.mdp.pathfinding.*;
 import ntu.mdp.pathfinding.Algo.Arena;
-import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryCalculation;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryResult;
-import ntu.mdp.pathfinding.Obstacle;
-import ntu.mdp.pathfinding.Point;
+import ntu.mdp.pathfinding.Instruction.Instruction;
+import ntu.mdp.pathfinding.Instruction.LineInstruction;
+import ntu.mdp.pathfinding.Instruction.TakePictureInstruction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
     @Override
     public ShortestPathTrajectoryResult call() throws Exception {
         List<Point> pathGrids = new ArrayList<>();
-        List<CarMove> carMoves = new ArrayList<>();
+        List<Instruction> instructions = new ArrayList<>();
         Obstacle car = idxMap.get(path[0]);
         int carR = car.getR(), carC = car.getC(), theta = 270;
         boolean pathValid = true;
@@ -38,11 +39,12 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             TrajectoryResult trajectoryResult = trajectoryCalculation.trajectoryResult();
             if (trajectoryResult == null || !ShortestPathTrajectory.validatePath(trajectoryResult, carR, carC,
                     ob.getTargetedR(), ob.getTargetedC(), pathGrids, arena)) { pathValid = false; break; }
-            carMoves.add(trajectoryResult.getCarMove());
+            instructions.addAll(trajectoryResult.getInstructionList());
             cost += trajectoryResult.getTotalLength();
 
             carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
             pathGrids.add(new Point(carR, carC, true));
+            instructions.add(new TakePictureInstruction());
             if (i == path.length-1) continue;
 
             Obstacle nextOb = idxMap.get(path[i+1]);
@@ -65,11 +67,11 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
 
             if (!found) { pathValid = false; break;}
             int length = reversedR == carR ? Math.abs(reversedC - carC) * 5 : Math.abs(reversedR - carR) * 5;
-            carMoves.add(new CarMove(-length));
+            instructions.add(new LineInstruction(-length));
             pathGrids.addAll(reversePath);
             carR = reversedR; carC = reversedC;
         }
         if (!pathValid) return null;
-        return new ShortestPathTrajectoryResult(cost, pathGrids, carMoves);
+        return new ShortestPathTrajectoryResult(cost, pathGrids, instructions);
     }
 }

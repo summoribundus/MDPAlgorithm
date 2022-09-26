@@ -1,10 +1,9 @@
 package ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation;
 
-import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
-import ntu.mdp.pathfinding.CurveInstruction;
-import ntu.mdp.pathfinding.Instruction;
-import ntu.mdp.pathfinding.LineInstruction;
+import ntu.mdp.pathfinding.Instruction.CurveInstruction;
+import ntu.mdp.pathfinding.Instruction.Instruction;
+import ntu.mdp.pathfinding.Instruction.LineInstruction;
 import ntu.mdp.pathfinding.Point;
 
 import java.util.ArrayList;

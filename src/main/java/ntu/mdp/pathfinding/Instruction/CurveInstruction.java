@@ -1,15 +1,16 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.Instruction;
 
 import ntu.mdp.pathfinding.Algo.CarMoveInstructions;
+import ntu.mdp.pathfinding.Point;
 
 import java.util.List;
 
 public class CurveInstruction implements Instruction {
     private String command;
-    private List<Point> gridPath;
+    private String gridPath;
 
     public CurveInstruction(int theta, boolean isClockwise) {
-        command = (isClockwise? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + conversionToInstructionFormatTheta(theta);
+        command = "STM:" + (isClockwise? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + conversionToInstructionFormatTheta(theta);
     }
 
     private String conversionToInstructionFormatTheta(int theta){
@@ -19,7 +20,11 @@ public class CurveInstruction implements Instruction {
     }
 
     public void setGridPath(List<Point> gridPath) {
-        this.gridPath = gridPath;
+        StringBuilder sb = new StringBuilder().append("Android:");
+        for (Point point : gridPath) {
+            sb.append(point).append(";");
+        }
+        this.gridPath = sb.toString();
     }
 
     @Override
@@ -28,7 +33,7 @@ public class CurveInstruction implements Instruction {
     }
 
     @Override
-    public List<Point> gridPath() {
+    public String gridPath() {
         return gridPath;
     }
 }

@@ -38,5 +38,10 @@ public class Point {
     public int getMoveFlag() {
         return moveFlag;
     }
+
+    @Override
+    public String toString() {
+        return x + ":" + y;
+    }
 }
 

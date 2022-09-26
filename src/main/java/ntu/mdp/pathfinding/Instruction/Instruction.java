@@ -1,8 +1,8 @@
-package ntu.mdp.pathfinding;
+package ntu.mdp.pathfinding.Instruction;
 
 import java.util.List;
 
 public interface Instruction {
     public String command();
-    public List<Point> gridPath();
+    public String gridPath();
 }

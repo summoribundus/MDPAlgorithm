@@ -4,17 +4,16 @@ import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarAlgo;
 import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarResult;
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Arena;
-import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.ShortestPathBF;
 import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryAlgo;
 import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryResult;
+import ntu.mdp.pathfinding.Instruction.Instruction;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class RPIApplication {
@@ -57,51 +56,37 @@ public class RPIApplication {
 //
 //        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT));
 
-        Socket socket1 = new Socket(RPI, RPI_PORT);
-        PrintWriter out = new PrintWriter(socket1.getOutputStream(), true);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
+        socket = new Socket(RPI, RPI_PORT);
+        out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        out.println("Hello");
-        out.println("hellllllllo");
-        out.println("rpiiiiii");
-        System.out.println("Blocking");
-        System.out.println(in.readLine());
-        System.out.println("received");
+        String boardConfigStr = in.readLine();
+        String[] boardConfigStrSplit = boardConfigStr.split(",");
+        Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
+        String[] carConfig = boardConfigStrSplit[0].split(":");
 
-        System.out.println(in.readLine());
+        List<Instruction> instructions = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
+        if (instructions == null) {
+            System.out.println("No solution found. Not making movement");
+            closeConnection();
+            return;
+        }
 
-//        socket = new Socket(RPI, RPI_PORT);
-//        byte[] buffer = new byte[256];
-//        out = new PrintWriter(socket.getOutputStream(), true);
-//        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//
-//        String boardConfigStr = in.readLine();
-//        String[] boardConfigStrSplit = boardConfigStr.split(",");
-//        Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
-//        String[] carConfig = boardConfigStrSplit[0].split(":");
-//
-//        List<CarMove> carMoves = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
-//        if (carMoves == null) {
-//            System.out.println("No solution found. Not making movement");
-//            closeConnection();
-//            return;
-//        }
-//
-//        long startTime = System.currentTimeMillis();
-//        while (true) {
-//            for (CarMove carMove : carMoves) {
-//                for (String command : carMove.getInstructions()) {
-//                    out.println(command);
-//                    in.readLine();
-//                    if (System.currentTimeMillis() - startTime > 360000) {
-//                        System.out.println("6 minutes reached!");
-//                        out.println("00000"); // stop signal
-//                        closeConnection();
-//                        return;
-//                    }
-//                }
-//            }
-//        }
+        long startTime = System.currentTimeMillis();
+        while (true) {
+            for (Instruction ins : instructions) {
+                out.println(ins.command());
+                if (ins.gridPath() != null)
+                    out.println(ins.gridPath());
+                in.readLine();
+                if (System.currentTimeMillis() - startTime > 360000) {
+                    System.out.println("6 minutes reached!");
+                    out.println("00000"); // stop signal
+                    closeConnection();
+                    return;
+                }
+            }
+        }
     }
 
 //    private static void sendCommand(String command) throws IOException {
@@ -123,14 +108,14 @@ public class RPIApplication {
         }
         return obstacles;
     }
-    private static List<CarMove> findShortestPath(Obstacle[] obstacles, int r, int c) {
+    private static List<Instruction> findShortestPath(Obstacle[] obstacles, int r, int c) {
         ShortestPathBF shortestPathBF = new ShortestPathBF(obstacles, r, c);
         Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, obstacles);
         ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
         ShortestPathTrajectoryResult result = algo.findShortestPath();
         if (result != null) {
             System.out.println("Trajectory Solution Found");
-            return result.getCarMoves();
+            return result.getInstructions();
         }
 
         ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
@@ -138,7 +123,7 @@ public class RPIApplication {
         if (aStarResult != null) {
             System.out.println("Back Solution Found");
             aStarResult.computeCompressedCarMove();
-            return aStarResult.getCarMoves();
+            return aStarResult.getInstructions();
         }
         return null;
     }
