@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
 import ntu.mdp.pathfinding.Algo.CarMove;
+import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
 import ntu.mdp.pathfinding.Point;
 
 import java.nio.channels.Pipe;
@@ -40,7 +41,28 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
         while (i < len) {
             Point point = pointPath.get(i++);
             if (point.getMoveFlag() == lastDir) {
+                pathSegment.add(point);
+                continue;
+            }
 
+            if (st != null) {
+                int rLen = point.getX() - st.getX(), cLen = point.getY() - st.getY();
+                CarMove cm = new CarMove(rLen == 0 ? cLen : rLen);
+                List<List<Point>> path = new ArrayList<>();
+                path.add(pathSegment);
+                cm.setPath(path);
+                carMoves.add(new CarMove(rLen == 0 ? cLen : rLen));
+                st = null;
+            }
+
+            if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
+                Point endPoint = pathSegment.get(i++);
+                int rLen = endPoint.getX() - point.getX(), cLen = endPoint.getX() - point.getX();
+                int circleR = 0, circleC = 0;
+                if  (rLen == 0) {
+
+                }
+                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getX(), point.getY(), endPoint.getX(), endPoint.getY(), )
             }
         }
 
