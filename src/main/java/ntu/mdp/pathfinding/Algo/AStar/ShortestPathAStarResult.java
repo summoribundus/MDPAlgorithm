@@ -36,6 +36,14 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
 
         int lastDir = -1;
         Point st = null;
+        int i = 0, len = pointPath.size();
+        while (i < len) {
+            Point point = pointPath.get(i++);
+            if (point.getMoveFlag() == lastDir) {
+
+            }
+        }
+
         for (Point point : pointPath) {
             if (point.getMoveFlag() == lastDir) {
                 pathSegment.add(point);
@@ -53,9 +61,15 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             }
 
             pathSegment = new ArrayList<>();
+            if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
+
+            }
+
+
             if (point.getMoveFlag() == 2 || point.getMoveFlag() == 3) {
                 st = point;
             }
+
             if (lastDir == 0 || lastDir == 1) {
                 CarMove cm = new CarMove(90, point.getMoveFlag() == 1);
                 List<List<Point>> path = new ArrayList<>();
