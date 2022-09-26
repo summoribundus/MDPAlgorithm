@@ -23,7 +23,6 @@ public class CarMove {
         this.isClockwise2 = isClockwise2;
         this.moveLength = moveLength;
         this.instructionList = new ArrayList<>();
-        this.path = new ArrayList<>();
 
         // adding instructions into the arraylist.
         instructionList.add((isClockwise1? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + turnTheta1);
@@ -46,7 +45,6 @@ public class CarMove {
         this.turnTheta3 = turnTheta3;
         this.isClockwise3 = isClockwise3;
         this.instructionList = new ArrayList<>();
-        this.path = new ArrayList<>();
 
         // adding instructions into the arraylist
 
@@ -66,6 +64,11 @@ public class CarMove {
         instructionList.add((moveLength >= 0? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix)
                 + conversionToInstructionFormat(Math.abs(moveLength))); // goingStraight
 
+    }
+
+    public CarMove(int turnTheta, boolean isClockwise) {
+        this.instructionList = new ArrayList<>();
+        instructionList.add(isClockwise ? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix + turnTheta);
     }
 
     private String conversionToInstructionFormat(int moveLength){

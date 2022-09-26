@@ -32,7 +32,7 @@ public class ShortestPathAStar {
 
     private List<Point> path = new ArrayList<>(); // list of points as the final path
 
-    private List<CarMove> moves = new ArrayList<CarMove>();  // the moves of the final path
+//    private List<CarMove> moves = new ArrayList<CarMove>();  // the moves of the final path
 
     private int totalCost;
 
