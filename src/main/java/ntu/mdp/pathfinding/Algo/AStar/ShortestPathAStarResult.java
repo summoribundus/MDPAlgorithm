@@ -3,6 +3,7 @@ package ntu.mdp.pathfinding.Algo.AStar;
 import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResult> {
@@ -11,8 +12,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
 
     private int cost;
 
-    public ShortestPathAStarResult(List<CarMove> carMoves, List<Point> pointPath, int cost){
-        this.carMoves = carMoves;
+    public ShortestPathAStarResult(List<Point> pointPath, int cost){
         this.pointPath = pointPath;
         this.cost = cost;
     }
@@ -27,6 +27,17 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
 
     public int getCost() {
         return cost;
+    }
+
+    public void computeCompressedCarMove() {
+        carMoves = new ArrayList<>();
+
+        Integer lastDir = null;
+        for (Point point : pointPath) {
+            if (lastDir == null) {
+
+            }
+        }
     }
 
     @Override
