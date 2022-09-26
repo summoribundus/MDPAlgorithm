@@ -291,6 +291,7 @@ public class ShortestPathAStar {
 
         while (curr != null) {
 
+
             reversing = false;
             prev = predMap.get(curr); // get the previous node in the backtrack
 
@@ -307,8 +308,8 @@ public class ShortestPathAStar {
             lineEndR = curr[4];
 
             // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
-            if (prev[5] == currDirInDegrees){
-                path.add(new Point(curr[4], curr[3]));
+            if  (prev[5] == currDirInDegrees){
+
                 int moveLength = 0;
                 switch (currDirInDegrees) { // check if reversing
                     case 0:
@@ -337,10 +338,9 @@ public class ShortestPathAStar {
                         break;
                     default:
                 }
-                if (reversing)
-                    moves.add(new CarMove(-1*moveLength));
-                else
-                    moves.add(new CarMove(moveLength));
+                moves.add(new CarMove(reversing? -1*moveLength : moveLength));
+                path.add(new Point(curr[4], curr[3], reversing? 2: 1));
+
             } else { // otherwise, only look for points where direction changes to construct the line segments
 
                 int prevDirInDegrees = prev[5];
@@ -366,6 +366,7 @@ public class ShortestPathAStar {
                 moves.add(new CarMove(90, isClockWise, 0, true,0 ));
 
                 Collections.reverse(pathSegments);
+
 
             }
             curr = prev;

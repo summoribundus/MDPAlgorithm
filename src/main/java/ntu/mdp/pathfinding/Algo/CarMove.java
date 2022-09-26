@@ -1,12 +1,17 @@
 package ntu.mdp.pathfinding.Algo;
 
+import ntu.mdp.pathfinding.Point;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarMove {
     private int turnTheta1, turnTheta2, turnTheta3;
     private boolean isClockwise1, isClockwise2, isClockwise3;
     private int moveLength;
     private ArrayList<String> instructionList;
+
+    private List<List<Point>> path;
 
     // car move type of Curve-StraightLine-Curve.
     public CarMove(int turnTheta1, boolean isClockwise1,
@@ -18,19 +23,16 @@ public class CarMove {
         this.isClockwise2 = isClockwise2;
         this.moveLength = moveLength;
         this.instructionList = new ArrayList<>();
+        this.path = new ArrayList<>();
 
         // adding instructions into the arraylist.
-
-        if (isClockwise1) // first curve turning right
-            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta1);
-        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta1);
+        instructionList.add((isClockwise1? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + turnTheta1);
 
         instructionList.add((moveLength >= 0)? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix
                 + conversionToInstructionFormat(Math.abs(moveLength))); // goingStraight
 
-        if (isClockwise2)
-            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta2);
-        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta2);
+        instructionList.add((isClockwise2? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + turnTheta2);
+
     }
 
     // car move type of Curve-Curve-CurveType.
@@ -44,20 +46,16 @@ public class CarMove {
         this.turnTheta3 = turnTheta3;
         this.isClockwise3 = isClockwise3;
         this.instructionList = new ArrayList<>();
+        this.path = new ArrayList<>();
 
         // adding instructions into the arraylist
 
-        if (isClockwise1)
-            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta1);
-        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta1);
+        instructionList.add((isClockwise1? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + turnTheta1);
 
-        if (isClockwise2)
-            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta2);
-        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta2);
+        instructionList.add((isClockwise2? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + turnTheta2);
 
-        if (isClockwise3)
-            instructionList.add(CarMoveInstructions.turnRightPrefix + turnTheta3);
-        else instructionList.add(CarMoveInstructions.turnLeftPrefix + turnTheta3);
+        instructionList.add((isClockwise3? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + turnTheta3);
+
     }
 
     // car move type of straight line only
@@ -65,7 +63,7 @@ public class CarMove {
 
         this.instructionList = new ArrayList<>();
 
-        instructionList.add((moveLength >= 0)? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix
+        instructionList.add((moveLength >= 0? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix)
                 + conversionToInstructionFormat(Math.abs(moveLength))); // goingStraight
 
     }
@@ -89,7 +87,16 @@ public class CarMove {
                 '}';
     }
 
+    public void setPath(List<List<Point>> p){
+        this.path = p;
+    }
+
+    public List<List<Point>> getPath(){
+        return path;
+    }
+
     public ArrayList<String> getInstructions(){
         return this.instructionList;
     }
+    
 }
