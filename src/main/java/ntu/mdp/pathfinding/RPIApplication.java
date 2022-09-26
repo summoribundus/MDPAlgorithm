@@ -18,58 +18,70 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class RPIApplication {
-    private final static String RPI = "localhost";
-    private final static int RPI_PORT = 2223;
+    private final static String RPI = "192.168.17.17";
+    private final static int RPI_PORT = 4444;
     private final static String HOST = "10.27.182.66";
     private final static int Host_PORT = 2223;
     private static DatagramSocket socket;
 
     public static void main(String[] args) throws IOException {
-        DatagramSocket serverSocket = new DatagramSocket(Host_PORT);
-        byte[] obstacleBuf = new byte[128];
-        DatagramPacket packet = new DatagramPacket(obstacleBuf, obstacleBuf.length);
-        serverSocket.receive(packet);
-        serverSocket.close();
-
-        String boardConfigStr = new String(packet.getData(), 0, packet.getLength());
-        String[] boardConfigStrSplit = boardConfigStr.split(",");
-        Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
-        String[] carConfig = boardConfigStrSplit[0].split(":");
-
-        List<CarMove> carMoves = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
-        if (carMoves == null) {
-            System.out.println("No solution found. Not making movement");
-            closeConnection();
-            return;
-        }
+//        DatagramSocket serverSocket = new DatagramSocket(Host_PORT);
+//        byte[] obstacleBuf = new byte[128];
+//        DatagramPacket packet = new DatagramPacket(obstacleBuf, obstacleBuf.length);
+//        serverSocket.receive(packet);
+//        serverSocket.close();
+//
+//        String boardConfigStr = new String(packet.getData(), 0, packet.getLength());
+//        String[] boardConfigStrSplit = boardConfigStr.split(",");
+//        Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
+//        String[] carConfig = boardConfigStrSplit[0].split(":");
+//
+//        List<CarMove> carMoves = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
+//        if (carMoves == null) {
+//            System.out.println("No solution found. Not making movement");
+//            closeConnection();
+//            return;
+//        }
+//        socket = new DatagramSocket();
 //        String message = "Hello";
 //        byte[] buf = message.getBytes(StandardCharsets.UTF_8);
-//        byte[] buffer = new byte[512];
-//        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 //
-//        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(IP), port));
-//        socket.receive(packet);
-//        System.out.println(new String(packet.getData()));
+//        byte[] buffer = new byte[512];
+//        DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+//        System.out.println("Packet receive");
+//        socket.receive(receivePacket);
+//        System.out.println("Packet received");
+//        System.out.println(new String(receivePacket.getData()));
+//
+//        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT));
 
-        socket = new DatagramSocket();
-        byte[] buffer = new byte[256];
+        Socket socket1 = new Socket(RPI, RPI_PORT);
+        PrintWriter out = new PrintWriter(socket1.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
 
-        long startTime = System.currentTimeMillis();
-        while (true) {
-            for (CarMove carMove : carMoves) {
-                for (String command : carMove.getInstructions()) {
-                    sendCommand(command);
-                    DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-                    socket.receive(receivePacket);
-                    if (System.currentTimeMillis() - startTime > 360000) {
-                        System.out.println("6 minutes reached!");
-                        sendCommand("00000"); // stop signal
-                        closeConnection();
-                        return;
-                    }
-                }
-            }
-        }
+        out.println("Hello");
+        System.out.println(in.readLine());
+
+        System.out.println(in.readLine());
+//        socket = new DatagramSocket();
+//        byte[] buffer = new byte[256];
+//
+//        long startTime = System.currentTimeMillis();
+//        while (true) {
+//            for (CarMove carMove : carMoves) {
+//                for (String command : carMove.getInstructions()) {
+//                    sendCommand(command);
+//                    DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+//                    socket.receive(receivePacket);
+//                    if (System.currentTimeMillis() - startTime > 360000) {
+//                        System.out.println("6 minutes reached!");
+//                        sendCommand("00000"); // stop signal
+//                        closeConnection();
+//                        return;
+//                    }
+//                }
+//            }
+//        }
     }
 
     private static void sendCommand(String command) throws IOException {
