@@ -80,6 +80,12 @@ public class CarMove {
             return Integer.toString(moveLenInCM);
     }
 
+    private String conversionToInstructionFormatTheta(int theta){
+        if (theta / 100 ==0)
+            return "0" + Integer.toString(theta);
+        return Integer.toString(theta);
+    }
+
 
     @Override
     public String toString() {

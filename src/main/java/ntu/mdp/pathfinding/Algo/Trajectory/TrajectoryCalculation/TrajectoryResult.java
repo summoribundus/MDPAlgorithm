@@ -2,6 +2,9 @@ package ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation;
 
 import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
+import ntu.mdp.pathfinding.CurveInstruction;
+import ntu.mdp.pathfinding.Instruction;
+import ntu.mdp.pathfinding.LineInstruction;
 import ntu.mdp.pathfinding.Point;
 
 import java.util.ArrayList;
@@ -18,11 +21,11 @@ public class TrajectoryResult {
 
     private boolean isAllCurve;
 
-    private CarMove carMove;
 
     private int totalLength;
 
     private List<List<Point>> path = new ArrayList<>();
+    private List<Instruction> instructionList;
 
 
     // curve, curve, curve
@@ -38,21 +41,22 @@ public class TrajectoryResult {
 
         this.totalLength = c1.getArcLen() + c2.getArcLen() + c3.getArcLen();
 
-        this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(), c2.getTheta(), c2.isClockwiseTurn(),
-                c3.getTheta(), c3.isClockwiseTurn());
-        this.path = constructCCCPath(c1, c2, c3);
-        carMove.setPath(path);
+        // filling the instruction list.
+        this.instructionList = new ArrayList<>();
+        CurveInstruction c1ins = new CurveInstruction(c1.getTheta(), c1.isClockwiseTurn());
+        c1ins.setGridPath(recoverCurvePts(c1));
+        instructionList.add(c1ins);
+
+        CurveInstruction c2ins = new CurveInstruction(c2.getTheta(), c2.isClockwiseTurn());
+        c2ins.setGridPath(recoverCurvePts(c2));
+        instructionList.add(c2ins);
+
+        CurveInstruction c3ins = new CurveInstruction(c3.getTheta(), c3.isClockwiseTurn());
+        c3ins.setGridPath(recoverCurvePts(c3));
+        instructionList.add(c3ins);
+
     }
 
-    public List<List<Point>> constructCCCPath(TrajectoryCurve c1, TrajectoryCurve c2, TrajectoryCurve c3){
-        List<List<Point>> ans = new ArrayList<>();
-
-        ans.add(recoverCurvePts(c1));
-        ans.add(recoverCurvePts(c2));
-        ans.add(recoverCurvePts(c3));
-
-        return ans;
-    }
 
 
     // curve, straight line, curve
@@ -68,11 +72,20 @@ public class TrajectoryResult {
 
         this.totalLength = c1.getArcLen() + l2.getLength() + c3.getArcLen();
 
-        this.carMove = new CarMove(c1.getTheta(), c1.isClockwiseTurn(),
-                c3.getTheta(), c3.isClockwiseTurn(), l2.getLength());
+        // filling the instruction list.
+        this.instructionList = new ArrayList<>();
+        CurveInstruction c1ins = new CurveInstruction(c1.getTheta(), c1.isClockwiseTurn());
+        c1ins.setGridPath(recoverCurvePts(c1));
+        instructionList.add(c1ins);
 
-        this.path = constructCSCPath(c1, l2, c3);
-        carMove.setPath(path);
+        LineInstruction l2ins = new LineInstruction(l2.getLength());
+        l2ins.setGridPath(recoverStraightLinePts(l2));
+        instructionList.add(l2ins);
+
+        CurveInstruction c3ins = new CurveInstruction(c3.getTheta(), c3.isClockwiseTurn());
+        c3ins.setGridPath(recoverCurvePts(c3));
+        instructionList.add(c3ins);
+
     }
 
     private List<List<Point>> constructCSCPath(TrajectoryCurve c1, TrajectoryLine l2, TrajectoryCurve c3){
@@ -122,24 +135,11 @@ public class TrajectoryResult {
         return endCurve.getCenter();
     }
 
-    public int getStartTheta() { return startCurve.getTheta();}
-
-    public int getIntermediateTheta() {
-        if (!isAllCurve)
-            return -1;
-        return intermediateCurve.getTheta();
-    }
-
-    public int getEndTheta() { return endCurve.getTheta();}
 
     public int[] getCircleInter() {
         if (!isAllCurve)
             return null;
         return intermediateCurve.getCenter();
-    }
-
-    public CarMove getCarMove() {
-        return carMove;
     }
 
     public boolean isAllCurve() {
@@ -160,7 +160,7 @@ public class TrajectoryResult {
 
     public int getTotalLength() {return totalLength;}
 
-    public List<List<Point>> getPath(){
-        return this.path;
+    public List<Instruction> getInstructionList(){
+        return this.instructionList;
     }
 }
