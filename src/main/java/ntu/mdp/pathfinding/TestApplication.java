@@ -16,6 +16,7 @@ public class TestApplication {
         BufferedReader in = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
 
         out.println("STM:01050");
+        System.out.println("Pending read");
         System.out.println(in.readLine());
     }
 }
