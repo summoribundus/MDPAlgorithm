@@ -338,8 +338,8 @@ public class ShortestPathAStar {
                         break;
                     default:
                 }
-                moves.add(new CarMove(reversing? -1*moveLength : moveLength));
-                path.add(new Point(curr[4], curr[3], reversing? 2: 1));
+                //moves.add(new CarMove(reversing? -1*moveLength : moveLength));
+                path.add(new Point(curr[4], curr[3], reversing? 2: 3));
 
             } else { // otherwise, only look for points where direction changes to construct the line segments
 
@@ -363,7 +363,7 @@ public class ShortestPathAStar {
                 } else {
                     pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
                 }
-                moves.add(new CarMove(90, isClockWise, 0, true,0 ));
+                //moves.add(new CarMove(90, isClockWise, 0, true,0 ));
 
                 Collections.reverse(pathSegments);
 
@@ -374,7 +374,7 @@ public class ShortestPathAStar {
 
 
         Collections.reverse(path); // reverse the path and put it in the correct order
-        Collections.reverse(moves);
+        //Collections.reverse(moves);
         
         return path;
 
@@ -388,20 +388,20 @@ public class ShortestPathAStar {
 
         switch (currentDirDegrees) {
             case 0:
-                leftPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
-                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+                leftPos = new int[]{currentC + AlgoConstant.leftR, currentR - AlgoConstant.leftR, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.leftR};
                 break;
             case 90:
-                leftPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
-                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+                leftPos = new int[]{currentC - AlgoConstant.leftR, currentR - AlgoConstant.leftR, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.leftR, currentR};
                 break;
             case 180:
-                leftPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
-                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+                leftPos = new int[]{currentC - AlgoConstant.leftR, currentR + AlgoConstant.leftR, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.leftR};
                 break;
             case 270:
-                leftPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
-                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+                leftPos = new int[]{currentC + AlgoConstant.leftR, currentR + AlgoConstant.leftR, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.leftR, currentR};
                 break;
             default:
                 leftPos = null;
@@ -422,20 +422,20 @@ public class ShortestPathAStar {
 
         switch (currentDirDegrees) {
             case 0 -> {
-                rightPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
-                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+                rightPos = new int[]{currentC + AlgoConstant.rightR, currentR + AlgoConstant.rightR, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.rightR};
             }
             case 90 -> {
-                rightPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
-                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+                rightPos = new int[]{currentC + AlgoConstant.rightR, currentR - AlgoConstant.rightR, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.rightR, currentR};
             }
             case 180 -> {
-                rightPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
-                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+                rightPos = new int[]{currentC - AlgoConstant.rightR, currentR - AlgoConstant.rightR, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.rightR};
             }
             case 270 -> {
-                rightPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
-                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+                rightPos = new int[]{currentC - AlgoConstant.rightR, currentR + AlgoConstant.rightR, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.rightR, currentR};
             }
             default -> {
                 rightPos = null;
@@ -485,20 +485,20 @@ public class ShortestPathAStar {
 
         switch (currentDirDegrees) {
             case 0 -> {
-                leftPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 90};
-                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+                leftPos = new int[]{currentC + AlgoConstant.leftR, currentR - AlgoConstant.leftR, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.leftR};
             }
             case 90 -> {
-                leftPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 180};
-                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+                leftPos = new int[]{currentC - AlgoConstant.leftR, currentR - AlgoConstant.leftR, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.leftR, currentR};
             }
             case 180 -> {
-                leftPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 270};
-                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+                leftPos = new int[]{currentC - AlgoConstant.leftR, currentR + AlgoConstant.leftR, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.leftR};
             }
             case 270 -> {
-                leftPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 0};
-                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+                leftPos = new int[]{currentC + AlgoConstant.leftR, currentR + AlgoConstant.leftR, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.leftR, currentR};
             }
             default -> {
                 leftPos = null;
@@ -525,20 +525,20 @@ public class ShortestPathAStar {
 
         switch (currentDirDegrees) {
             case 0 -> {
-                rightPos = new int[]{currentC + AlgoConstant.R, currentR + AlgoConstant.R, 270};
-                circleCenter = new int[]{currentC, currentR + AlgoConstant.R};
+                rightPos = new int[]{currentC + AlgoConstant.rightR, currentR + AlgoConstant.rightR, 270};
+                circleCenter = new int[]{currentC, currentR + AlgoConstant.rightR};
             }
             case 90 -> {
-                rightPos = new int[]{currentC + AlgoConstant.R, currentR - AlgoConstant.R, 0};
-                circleCenter = new int[]{currentC + AlgoConstant.R, currentR};
+                rightPos = new int[]{currentC + AlgoConstant.rightR, currentR - AlgoConstant.rightR, 0};
+                circleCenter = new int[]{currentC + AlgoConstant.rightR, currentR};
             }
             case 180 -> {
-                rightPos = new int[]{currentC - AlgoConstant.R, currentR - AlgoConstant.R, 90};
-                circleCenter = new int[]{currentC, currentR - AlgoConstant.R};
+                rightPos = new int[]{currentC - AlgoConstant.rightR, currentR - AlgoConstant.rightR, 90};
+                circleCenter = new int[]{currentC, currentR - AlgoConstant.rightR};
             }
             case 270 -> {
-                rightPos = new int[]{currentC - AlgoConstant.R, currentR + AlgoConstant.R, 180};
-                circleCenter = new int[]{currentC - AlgoConstant.R, currentR};
+                rightPos = new int[]{currentC - AlgoConstant.rightR, currentR + AlgoConstant.rightR, 180};
+                circleCenter = new int[]{currentC - AlgoConstant.rightR, currentR};
             }
             default -> {
                 rightPos = null;

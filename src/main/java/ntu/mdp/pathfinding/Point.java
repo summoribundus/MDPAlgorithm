@@ -15,7 +15,7 @@ public class Point {
     public Point(int x, int y, int moveFlag){
         this.x = x;
         this.y = y;
-        this.moveFlag = moveFlag; // 0: turning, 1: straight; 2: reversing
+        this.moveFlag = moveFlag; // 0: turning left 90, 1: turning right 90; 2: reversing; 3: forwarding
     }
 
     public Point(int x, int y, boolean matchingPoint) {

@@ -97,7 +97,7 @@ public class TrajectoryToArenaGrid {
     public static List<Point> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise) {
         if (r1 == r2 && c1 == c2) {
             List<Point> res = new ArrayList<>();
-            res.add(new Point(r1, c1, 0));
+            res.add(new Point(r1, c1, isClockWise? 1: 0));
             return res;
         }
 
@@ -296,22 +296,22 @@ public class TrajectoryToArenaGrid {
                 edges.add(new Edge(yAxis2, c2, r2, c2));
             }
         }
-        return circleRecTanEdgeLooping(edges);
+        return circleRecTanEdgeLooping(edges, isClockWise);
     }
 
-    private static List<Point> circleRecTanEdgeLooping(List<Edge> edges) {
+    private static List<Point> circleRecTanEdgeLooping(List<Edge> edges, boolean isClockwise) {
         List<Point> pointsPassed = new ArrayList<>();
         for (Edge edge : edges) {
             int r = edge.getStR(), c = edge.getStC();
             if (edge.getDr() == 0) {
                 while (0 <= c && c < AlgoConstant.GridN && c != edge.getEdC()) {
-                    pointsPassed.add(new Point(r, c, 0));
+                    pointsPassed.add(new Point(r, c, isClockwise? 1: 0));
                     c += edge.getDc();
                 }
                 if (c != edge.getEdC()) return null;
             } else {
                 while (0 <= r && r < AlgoConstant.GridM && r != edge.getEdR()) {
-                    pointsPassed.add(new Point(r, c, 0));
+                    pointsPassed.add(new Point(r, c, isClockwise? 1: 0));
                     r += edge.getDr();
                 }
                 if (r != edge.getEdR()) return null;

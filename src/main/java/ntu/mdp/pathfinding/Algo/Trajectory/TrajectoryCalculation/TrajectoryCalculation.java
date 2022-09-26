@@ -101,20 +101,20 @@ public class TrajectoryCalculation {
         // turning right
         if (targetC > robotC) {
             if (obstacleDir == 1 || obstacleDir == 3)
-                return new int[]{targetC - AlgoConstant.R, targetR};
+                return new int[]{targetC - AlgoConstant.rightR, targetR};
             else if (targetR > robotR) // lower right
-                return new int[]{targetC, targetR - AlgoConstant.R};
+                return new int[]{targetC, targetR - AlgoConstant.rightR};
             else
-                return new int[]{targetC, targetR + AlgoConstant.R};
+                return new int[]{targetC, targetR + AlgoConstant.rightR};
         }
         // turning left
         else {
             if (obstacleDir == 1 || obstacleDir == 3)
-                return new int[]{targetC + AlgoConstant.R, targetR};
+                return new int[]{targetC + AlgoConstant.leftR, targetR};
             else if (targetR > robotR) // lower left
-                return new int[]{targetC, targetR - AlgoConstant.R};
+                return new int[]{targetC, targetR - AlgoConstant.leftR};
             else
-                return new int[]{targetC, targetR + AlgoConstant.R};
+                return new int[]{targetC, targetR + AlgoConstant.leftR};
         }
     }
 
@@ -123,8 +123,10 @@ public class TrajectoryCalculation {
         int secondIndex = obsRelativeDir;
         int thirdIndex = (int)(robotTheta % 360) /90;
 
-        int obsCircleC = targetC + relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][0] * AlgoConstant.R;
-        int obsCircleR = targetR + relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][1] * AlgoConstant.R;
+        int r = (quadrant == 1 || quadrant == 4)? AlgoConstant.rightR : AlgoConstant.leftR;
+
+        int obsCircleC = targetC + relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][0] * r;
+        int obsCircleR = targetR + relativeObsCircleMapping[firstIndexQua][secondIndex][thirdIndex][1] * r;
 
         return new int[]{obsCircleC, obsCircleR};
 
@@ -134,28 +136,28 @@ public class TrajectoryCalculation {
 
         if (robotTheta == 0){
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC, robotR + AlgoConstant.R};
+                return new int[] {robotC, robotR + AlgoConstant.rightR};
             else
-                return new int[] {robotC, robotR - AlgoConstant.R};
+                return new int[] {robotC, robotR - AlgoConstant.leftR};
         }
         else if (robotTheta == 90){
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC + AlgoConstant.R, robotR};
+                return new int[] {robotC + AlgoConstant.rightR, robotR};
             else
-                return new int[] {robotC - AlgoConstant.R, robotR};
+                return new int[] {robotC - AlgoConstant.leftR, robotR};
         }
         else if (robotTheta == 180){
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC, robotR - AlgoConstant.R};
+                return new int[] {robotC, robotR - AlgoConstant.rightR};
             else
-                return new int[] {robotC, robotR + AlgoConstant.R};
+                return new int[] {robotC, robotR + AlgoConstant.leftR};
         }
         else // robotTheta = 270
         {
             if (quadrant == 1 || quadrant == 4)
-                return new int[] {robotC - AlgoConstant.R, robotR};
+                return new int[] {robotC - AlgoConstant.rightR, robotR};
             else
-                return new int[] {robotC + AlgoConstant.R, robotR};
+                return new int[] {robotC + AlgoConstant.leftR, robotR};
         }
     }
 
@@ -243,13 +245,11 @@ public class TrajectoryCalculation {
 
         int relativeObsDir = selectObsRelativeDir(obstacleDir, Math.round((float)robotTheta));
 
-        //if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
-            // null;
+
         double centerDist = calculateEuclideanDistance(robotC, robotR, targetC, targetR);
-        boolean isSmallerThan4R = (centerDist <= 4*AlgoConstant.R)? true: false;
-//
-//        if (borderClash(robotCircleC, robotCircleR, obsCircleC, obsCircleR))
-//            return null;
+        int r = (quadrant == 1 || quadrant == 4)? AlgoConstant.rightR:AlgoConstant.leftR;
+        boolean isSmallerThan4R = (centerDist <= 4*r)? true: false;
+
 
         if (isSmallerThan4R) {
 
@@ -380,8 +380,8 @@ public class TrajectoryCalculation {
         double v2R = - v1C;
 
         // get the intermidiate pt1 position
-        double pt1C = robotCircleC + (v2C * AlgoConstant.R/l);
-        double pt1R = robotCircleR + (v2R * AlgoConstant.R/l);
+        double pt1C = robotCircleC + (v2C * AlgoConstant.rightR/l);
+        double pt1R = robotCircleR + (v2R * AlgoConstant.rightR/l);
 
         // get the intermidiate pt2 position
         double pt2C = pt1C + v1C;
@@ -430,8 +430,8 @@ public class TrajectoryCalculation {
         double v2R = v1C;
 
         // get the intermidiate pt1 position
-        double pt1C = robotCircleC + (v2C * AlgoConstant.R/l);
-        double pt1R = robotCircleR + (v2R * AlgoConstant.R/l);
+        double pt1C = robotCircleC + (v2C * AlgoConstant.leftR/l);
+        double pt1R = robotCircleR + (v2R * AlgoConstant.leftR/l);
 
         // get the intermidiate pt2 position
         double pt2C = pt1C + v1C;
@@ -468,9 +468,9 @@ public class TrajectoryCalculation {
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR) {
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
-        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(AlgoConstant.R, 2));
+        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(AlgoConstant.leftR, 2));
 
-        double theta_radius = Math.acos(2*AlgoConstant.R/d); // return a value from 0 to pi
+        double theta_radius = Math.acos(2*AlgoConstant.leftR/d); // return a value from 0 to pi
 
 
 
@@ -487,16 +487,16 @@ public class TrajectoryCalculation {
 
 
         // point pt1
-        double pt1C = robotCircleC + (AlgoConstant.R/d) * v2C;
-        double pt1R = robotCircleR + (AlgoConstant.R/d) * v2R;
+        double pt1C = robotCircleC + (AlgoConstant.leftR/d) * v2C;
+        double pt1R = robotCircleR + (AlgoConstant.leftR/d) * v2R;
 
         // reversing the direction of v2 to get v3.
         double v3C = -v2C;
         double v3R = -v2R;
 
         // point pt2
-        double pt2C = obsCircleC + AlgoConstant.R/d * v3C;
-        double pt2R = obsCircleR + AlgoConstant.R/d * v3R;
+        double pt2C = obsCircleC + AlgoConstant.leftR/d * v3C;
+        double pt2R = obsCircleR + AlgoConstant.leftR/d * v3R;
 
         // calculate the 2 arcs
         double p1pC = robotC - robotCircleC;
@@ -536,9 +536,9 @@ public class TrajectoryCalculation {
                                          int robotCircleC, int robotCircleR,
                                          int obsCircleC, int obsCircleR) {
         double d = calculateEuclideanDistance(robotCircleC, robotCircleR, obsCircleC, obsCircleR);
-        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(AlgoConstant.R, 2));
+        double l = Math.sqrt(Math.pow(d, 2) - 4*Math.pow(AlgoConstant.rightR, 2));
 
-        double theta = Math.acos(2*AlgoConstant.R/d); // return a value from 0 to pi
+        double theta = Math.acos(2*AlgoConstant.rightR/d); // return a value from 0 to pi
 
         // the vector from p1 to p2
         double v1C = obsCircleC - robotCircleC;
@@ -552,8 +552,8 @@ public class TrajectoryCalculation {
         v2R = ( - v1C * Math.sin(theta) + v1R * Math.cos(theta));
 
         // point pt1
-        double pt1C = robotCircleC + (AlgoConstant.R/d) * v2C;
-        double pt1R = robotCircleR + (AlgoConstant.R/d) * v2R;
+        double pt1C = robotCircleC + (AlgoConstant.rightR/d) * v2C;
+        double pt1R = robotCircleR + (AlgoConstant.rightR/d) * v2R;
 
 
         // reversing the direction of v2 to get v3.
@@ -561,8 +561,8 @@ public class TrajectoryCalculation {
         double v3R = -v2R;
 
         // point pt2
-        double pt2C = obsCircleC + AlgoConstant.R/d * v3C;
-        double pt2R = obsCircleR + AlgoConstant.R/d * v3R;
+        double pt2C = obsCircleC + AlgoConstant.rightR/d * v3C;
+        double pt2R = obsCircleR + AlgoConstant.rightR/d * v3R;
 
         // calculate the 2 arcs
         double p1pC = robotC - robotCircleC;
@@ -620,7 +620,7 @@ public class TrajectoryCalculation {
         }
 
         // the distance from p3 to q is:
-        double d1 = Math.sqrt(4*Math.pow(AlgoConstant.R, 2) - 0.25*Math.pow(d, 2));
+        double d1 = Math.sqrt(4*Math.pow(AlgoConstant.rightR, 2) - 0.25*Math.pow(d, 2));
 
         // the point p3 is (0, 0) to the mid-point q plus d1*
         double p3C = qC + d1/d*v2C;
@@ -715,7 +715,7 @@ public class TrajectoryCalculation {
 //        System.out.println("v2R: " + v2R);
 
         // the distance from p3 to q is:
-        double d1 = Math.sqrt(4*Math.pow(AlgoConstant.R, 2) - 0.25*Math.pow(d, 2));
+        double d1 = Math.sqrt(4*Math.pow(AlgoConstant.rightR, 2) - 0.25*Math.pow(d, 2));
 
         // the point p3 is (0, 0) to the mid-point q plus d1*
         double p3C = qC + d1/d*v2C;
@@ -742,7 +742,7 @@ public class TrajectoryCalculation {
         double alpha1 = Math.abs(Math.atan2(p1pt1R, p1pt1C) - Math.atan2(p1pR, p1pC));
 
 //        System.out.println("alpha1 in degrees: "+ toDegrees(alpha1));
-        double arc1 = alpha1 * AlgoConstant.R;
+        double arc1 = alpha1 * AlgoConstant.rightR;
 
         // arc 2:
         double p3pt2C = pt2C - p3C;
@@ -778,26 +778,5 @@ public class TrajectoryCalculation {
         return Math.round((float)(inRadius*360/(2*Math.PI)));
     }
 
-    // public int boundary check
-//    private boolean possibleBorderClash(double robotC, double robotR,
-//                                double robotCircleC, double robotCircleR,
-//                                double targetC, double targetR,
-//                                double obsCircleC, double obsCircleR){
-//
-//        // if the robot is too close to c = 0 or R = 0;
-//
-//        if (robotC < AlgoConstant.R)
-//            if (robotCircleC < 0)
-//                return true;
-//        if (robotR < AlgoConstant.R)
-//            if (robotCircleR < 0)
-//                \
-//
-//
-//        if ((circle1R >= 0 && circle1C >= 0 && circle1C < AlgoConstant.GridN && circle1R <= AlgoConstant.GridM)
-//         && (circle2R >= 0 && circle2C >= 0 && circle2C <= AlgoConstant.GridN && circle2R <= AlgoConstant.GridM))
-//            return true;// no clash
-//        else return false;
-//    }
 
 }
