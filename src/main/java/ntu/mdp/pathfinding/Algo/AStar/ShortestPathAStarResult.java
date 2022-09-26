@@ -57,51 +57,21 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
 
             if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
                 Point endPoint = pathSegment.get(i++);
-                int rLen = endPoint.getX() - point.getX(), cLen = endPoint.getX() - point.getX();
-                int circleR = 0, circleC = 0;
-                if  (rLen == 0) {
-
+                int rLen = endPoint.getX() - point.getX(), cLen = endPoint.getY() - point.getY();
+                if (point.getMoveFlag() == 0) {
+                    rLen *= -1; cLen *= -1;
                 }
-                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getX(), point.getY(), endPoint.getX(), endPoint.getY(), )
-            }
-        }
+                int circleR = cLen > 0 ? Math.min(point.getX(), endPoint.getX()) : Math.max(point.getX(), endPoint.getX());
+                int circleC = rLen > 0 ? Math.max(point.getY(), endPoint.getY()) : Math.min(point.getY(), endPoint.getY());
+                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getX(), point.getY(), endPoint.getX(), endPoint.getY(), circleR, circleC, point.getMoveFlag() == 1);
 
-        for (Point point : pointPath) {
-            if (point.getMoveFlag() == lastDir) {
-                pathSegment.add(point);
-                continue;
-            }
-
-            if (st != null) {
-                int rLen = point.getX() - st.getX(), cLen = point.getY() - st.getY();
-                CarMove cm = new CarMove(rLen == 0 ? cLen : rLen);
-                List<List<Point>> path = new ArrayList<>();
-                path.add(pathSegment);
-                cm.setPath(path);
-                carMoves.add(new CarMove(rLen == 0 ? cLen : rLen));
-                st = null;
-            }
-
-            pathSegment = new ArrayList<>();
-            if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
-
-            }
-
-
-            if (point.getMoveFlag() == 2 || point.getMoveFlag() == 3) {
-                st = point;
-            }
-
-            if (lastDir == 0 || lastDir == 1) {
+                List<List<Point>> paths = new ArrayList<>();
+                paths.add(segment);
                 CarMove cm = new CarMove(90, point.getMoveFlag() == 1);
-                List<List<Point>> path = new ArrayList<>();
-                path.add(pathSegment);
-
-            }
-            if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
-                carMoves.add(new CarMove(90, point.getMoveFlag() == 1));
+                cm.setPath(paths);
             } else {
                 st = point;
+                pathSegment = new ArrayList<>();
             }
 
             lastDir = point.getMoveFlag();
