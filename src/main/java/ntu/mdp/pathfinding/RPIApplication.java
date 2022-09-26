@@ -137,6 +137,7 @@ public class RPIApplication {
         ShortestPathAStarResult aStarResult = aStarAlgo.findBackupShortestPath();
         if (aStarResult != null) {
             System.out.println("Back Solution Found");
+            aStarResult.computeCompressedCarMove();
             return aStarResult.getCarMoves();
         }
         return null;

@@ -34,5 +34,9 @@ public class Point {
     public boolean isMatchingPoint() {
         return matchingPoint;
     }
+
+    public int getMoveFlag() {
+        return moveFlag;
+    }
 }
 

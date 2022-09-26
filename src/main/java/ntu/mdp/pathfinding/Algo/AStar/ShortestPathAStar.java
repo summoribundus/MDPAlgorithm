@@ -32,7 +32,7 @@ public class ShortestPathAStar {
 
     private List<Point> path = new ArrayList<>(); // list of points as the final path
 
-    private List<CarMove> moves = new ArrayList<CarMove>();  // the moves of the final path
+//    private List<CarMove> moves = new ArrayList<CarMove>();  // the moves of the final path
 
     private int totalCost;
 
@@ -270,7 +270,7 @@ public class ShortestPathAStar {
 
         path = backtrack(goalNode);
 
-        return new ShortestPathAStarResult(moves, path, totalCost);
+        return new ShortestPathAStarResult(path, totalCost);
 
     }
 
@@ -338,7 +338,7 @@ public class ShortestPathAStar {
                         break;
                     default:
                 }
-                moves.add(new CarMove(reversing? -1*moveLength : moveLength));
+//                moves.add(new CarMove(reversing? -1*moveLength : moveLength));
                 path.add(new Point(curr[4], curr[3], reversing? 2: 1));
 
             } else { // otherwise, only look for points where direction changes to construct the line segments
@@ -363,7 +363,7 @@ public class ShortestPathAStar {
                 } else {
                     pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
                 }
-                moves.add(new CarMove(90, isClockWise, 0, true,0 ));
+//                moves.add(new CarMove(90, isClockWise, 0, true,0 ));
 
                 Collections.reverse(pathSegments);
 
@@ -374,7 +374,7 @@ public class ShortestPathAStar {
 
 
         Collections.reverse(path); // reverse the path and put it in the correct order
-        Collections.reverse(moves);
+//        Collections.reverse(moves);
         
         return path;
 
