@@ -270,7 +270,7 @@ public class ShortestPathAStar {
 
         path = backtrack(goalNode);
 
-        return new ShortestPathAStarResult(moves, path, totalCost);
+        return new ShortestPathAStarResult(path, totalCost);
 
     }
 
@@ -310,34 +310,34 @@ public class ShortestPathAStar {
             // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if  (prev[5] == currDirInDegrees){
 
-                int moveLength = 0;
-                switch (currDirInDegrees) { // check if reversing
-                    case 0:
-                        if (lineEndC < lineStartC) {
-                            reversing = true;
-                        }
-                        moveLength = Math.abs(lineEndC - lineStartC);
-                        break;
-                    case 90:
-                        if (lineEndR > lineStartR) {
-                            reversing = true;
-                        }
-                        moveLength = Math.abs(lineStartR - lineEndR);
-                        break;
-                    case 180:
-                        if (lineEndC > lineStartC) {
-                            reversing = true;
-                        }
-                        moveLength = Math.abs(lineStartC - lineEndC);
-                        break;
-                    case 270:
-                        if (lineEndR < lineStartR) {
-                            reversing = true;
-                        }
-                        moveLength = Math.abs(lineEndR - lineStartR);
-                        break;
-                    default:
-                }
+//                int moveLength = 0;
+//                switch (currDirInDegrees) { // check if reversing
+//                    case 0:
+//                        if (lineEndC < lineStartC) {
+//                            reversing = true;
+//                        }
+//                        moveLength = Math.abs(lineEndC - lineStartC);
+//                        break;
+//                    case 90:
+//                        if (lineEndR > lineStartR) {
+//                            reversing = true;
+//                        }
+//                        moveLength = Math.abs(lineStartR - lineEndR);
+//                        break;
+//                    case 180:
+//                        if (lineEndC > lineStartC) {
+//                            reversing = true;
+//                        }
+//                        moveLength = Math.abs(lineStartC - lineEndC);
+//                        break;
+//                    case 270:
+//                        if (lineEndR < lineStartR) {
+//                            reversing = true;
+//                        }
+//                        moveLength = Math.abs(lineEndR - lineStartR);
+//                        break;
+//                    default:
+//                }
                 //moves.add(new CarMove(reversing? -1*moveLength : moveLength));
                 path.add(new Point(curr[4], curr[3], reversing? 2: 3));
 
@@ -347,7 +347,7 @@ public class ShortestPathAStar {
                 int prevC = prev[3];
                 int prevR = prev[4];
 
-                List<Point> pathSegments;
+                //List<Point> pathSegments;
 
                 boolean isClockWise;
 
@@ -358,14 +358,16 @@ public class ShortestPathAStar {
                     turnLeft = false;
                     isClockWise = true;
                 }
-                if (turnLeft){
-                    pathSegments = getPathSegmentsForLeftTurning(prevC, prevR, prevDirInDegrees);
-                } else {
-                    pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
-                }
-                //moves.add(new CarMove(90, isClockWise, 0, true,0 ));
 
-                Collections.reverse(pathSegments);
+//                if (turnLeft){
+//                    pathSegments = getPathSegmentsForLeftTurning(prevC, prevR, prevDirInDegrees);
+//                } else {
+//                    pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
+//                }
+                //moves.add(new CarMove(90, isClockWise, 0, true,0 ));
+                //pathSegments = new ArrayList<>();
+                path.add(new Point(curr[4], curr[3], turnLeft? 0: 1));
+                path.add(new Point(prevR, prevC, turnLeft? 0: 1));
 
 
             }
