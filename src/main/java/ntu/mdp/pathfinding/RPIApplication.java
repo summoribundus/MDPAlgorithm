@@ -25,11 +25,12 @@ public class RPIApplication {
     private static DatagramSocket socket;
 
     public static void main(String[] args) throws IOException {
-//        DatagramSocket serverSocket = new DatagramSocket(Host_PORT);
-//        byte[] obstacleBuf = new byte[128];
-//        DatagramPacket packet = new DatagramPacket(obstacleBuf, obstacleBuf.length);
-//        serverSocket.receive(packet);
-//        serverSocket.close();
+        DatagramSocket serverSocket = new DatagramSocket(Host_PORT);
+        byte[] obstacleBuf = new byte[128];
+        DatagramPacket packet = new DatagramPacket(obstacleBuf, obstacleBuf.length);
+        serverSocket.receive(packet);
+        System.out.println(new String(packet.getData(), 0, packet.getLength()));
+        serverSocket.close();
 //
 //        String boardConfigStr = new String(packet.getData(), 0, packet.getLength());
 //        String[] boardConfigStrSplit = boardConfigStr.split(",");
@@ -55,14 +56,14 @@ public class RPIApplication {
 //
 //        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT));
 
-        Socket socket1 = new Socket(RPI, RPI_PORT);
-        PrintWriter out = new PrintWriter(socket1.getOutputStream(), true);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
-
-        out.println("Hello");
-        System.out.println(in.readLine());
-
-        System.out.println(in.readLine());
+//        Socket socket1 = new Socket(RPI, RPI_PORT);
+//        PrintWriter out = new PrintWriter(socket1.getOutputStream(), true);
+//        BufferedReader in = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
+//
+//        out.println("Hello");
+//        System.out.println(in.readLine());
+//
+//        System.out.println(in.readLine());
 //        socket = new DatagramSocket();
 //        byte[] buffer = new byte[256];
 //
