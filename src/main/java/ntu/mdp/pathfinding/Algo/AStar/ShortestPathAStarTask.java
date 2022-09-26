@@ -25,7 +25,6 @@ public class ShortestPathAStarTask implements Callable<ShortestPathAStarResult> 
     @Override
     public ShortestPathAStarResult call() throws Exception {
         List<Point> pathGrids = new ArrayList<>();
-        List<CarMove> carMoves = new ArrayList<>();
 
         int cost = 0;
         Obstacle car = idxMap.get(path[0]);
@@ -38,12 +37,11 @@ public class ShortestPathAStarTask implements Callable<ShortestPathAStarResult> 
             ShortestPathAStarResult shortestPathAStarResult = shortestPathAStar.planPath();
             if (shortestPathAStarResult == null) { pathValid = false; break; }
             pathGrids.addAll(shortestPathAStarResult.getPointPath());
-            carMoves.addAll(shortestPathAStarResult.getCarMoves());
             carC = ob.getTargetedC(); carR = ob.getTargetedR(); theta = ob.getTargetedDegree(); cost += shortestPathAStarResult.getCost();
             pathGrids.add(new Point(carR, carC, true));
         }
 
         if (!pathValid) return null;
-        return new ShortestPathAStarResult(carMoves, pathGrids, cost);
+        return new ShortestPathAStarResult(pathGrids, cost);
     }
 }
