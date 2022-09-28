@@ -56,14 +56,16 @@ public class RPIApplication {
 //
 //        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT));
 
+
         socket = new Socket(RPI, RPI_PORT);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         String boardConfigStr = in.readLine();
+        //String boardConfigStr = "1-1,10-10-0;15-13-3"; //"1-1,10-10-0;15-13-3;17-3-2"
         String[] boardConfigStrSplit = boardConfigStr.split(",");
         Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
-        String[] carConfig = boardConfigStrSplit[0].split(":");
+        String[] carConfig = boardConfigStrSplit[0].split("-");
 
         List<Instruction> instructions = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
         if (instructions == null) {
@@ -98,13 +100,17 @@ public class RPIApplication {
 
     private static Obstacle[] constructObstacleFromString(String obstacleStrs) {
         String[] obstacleStrsSplit = obstacleStrs.split(";");
-        Obstacle[] obstacles = new Obstacle[obstacleStrs.length()];
+        System.out.println("length is : " +  obstacleStrsSplit.length);
+        Obstacle[] obstacles = new Obstacle[obstacleStrsSplit.length];
         int cnt = 0;
         for (String obstacleStr : obstacleStrsSplit) {
-            String[] obstacleIdx = obstacleStr.split(":");
-            obstacles[cnt++] = new Obstacle(Integer.parseInt(obstacleIdx[1]) * 2,
+            String[] obstacleIdx = obstacleStr.split("-");
+            System.out.println("obstacle position: " + obstacleIdx[0] + ", " +  obstacleIdx[1] + ", " + obstacleIdx[2]);
+            obstacles[cnt] = new Obstacle(Integer.parseInt(obstacleIdx[1]) * 2,
                     Integer.parseInt(obstacleIdx[0]) * 2,
-                    Integer.parseInt(obstacleIdx[2]) * 2, 1, false);
+                    Integer.parseInt(obstacleIdx[2]), cnt, 1, false);
+            cnt++;
+            System.out.println("obstacles of number " + cnt + ", is :" + obstacles[cnt-1].toString());
         }
         return obstacles;
     }

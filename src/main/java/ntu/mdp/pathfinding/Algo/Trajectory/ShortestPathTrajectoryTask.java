@@ -43,8 +43,8 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             cost += trajectoryResult.getTotalLength();
 
             carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
-            pathGrids.add(new Point(carR, carC, true));
-            instructions.add(new TakePictureInstruction());
+            pathGrids.add(new Point(carR, carC,true, ob.getObstacleID()));
+            instructions.add(new TakePictureInstruction(ob.getObstacleID()));
             if (i == path.length-1) continue;
 
             Obstacle nextOb = idxMap.get(path[i+1]);

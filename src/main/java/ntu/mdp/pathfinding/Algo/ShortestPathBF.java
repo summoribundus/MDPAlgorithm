@@ -18,7 +18,7 @@ public class ShortestPathBF {
         n = obstacles.length;
         idxMapping = new HashMap<>();
         pq = new PriorityBlockingQueue<>();
-        idxMapping.put(0, new Obstacle(x, y, 0, 0, true));
+        idxMapping.put(0, new Obstacle(x, y, 0, 0,0, true));
         for (int i = 0; i < n; i++) {
             idxMapping.put(i+1, obstacles[i]);
         }

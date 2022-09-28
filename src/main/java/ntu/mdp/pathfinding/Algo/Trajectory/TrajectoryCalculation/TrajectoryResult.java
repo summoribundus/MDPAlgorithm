@@ -57,7 +57,6 @@ public class TrajectoryResult {
     }
 
 
-
     // curve, straight line, curve
     public TrajectoryResult(TrajectoryCurve c1, TrajectoryLine l2, TrajectoryCurve c3){
         this.startCurve = c1;
@@ -87,25 +86,14 @@ public class TrajectoryResult {
 
     }
 
-    private List<List<Point>> constructCSCPath(TrajectoryCurve c1, TrajectoryLine l2, TrajectoryCurve c3){
-
-        List<List<Point>> ans = new ArrayList<>();
-
-        ans.add(recoverCurvePts(c1));
-        ans.add(recoverStraightLinePts(l2));
-        ans.add(recoverCurvePts(c3));
-
-        return ans;
-    }
-
 
     private List<Point> recoverCurvePts(TrajectoryCurve c){
 
         int[] cStartPt = c.getStartPt();
         int[] cEndPt = c.getEndPt();
         int[] cCenterPt = c.getCenter();
-        return TrajectoryToArenaGrid.findGridCirclePath(cStartPt[1], cStartPt[0], cEndPt[1], cEndPt[0], cCenterPt[1], cCenterPt[0], c.isClockwiseTurn());// c, r to r, c
-
+        List<Point> res = TrajectoryToArenaGrid.findGridCirclePath(cStartPt[1], cStartPt[0], cEndPt[1], cEndPt[0], cCenterPt[1], cCenterPt[0], c.isClockwiseTurn());// c, r to r, c
+        return res;
     }
 
     private List<Point> recoverStraightLinePts(TrajectoryLine l){

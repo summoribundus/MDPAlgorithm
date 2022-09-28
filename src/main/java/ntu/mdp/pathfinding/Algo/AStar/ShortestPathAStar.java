@@ -2,7 +2,6 @@ package ntu.mdp.pathfinding.Algo.AStar;
 
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Arena;
-import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 import ntu.mdp.pathfinding.InputData;

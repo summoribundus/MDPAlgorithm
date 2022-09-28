@@ -43,7 +43,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
         while (i < len) {
             Point point = pointPath.get(i++);
             if (point.isMatchingPoint())
-                instructions.add(new TakePictureInstruction());
+                instructions.add(new TakePictureInstruction(point.getMatchingObstacleID()));
 
             if (point.getMoveFlag() == lastDir) {
                 pathSegment.add(point);

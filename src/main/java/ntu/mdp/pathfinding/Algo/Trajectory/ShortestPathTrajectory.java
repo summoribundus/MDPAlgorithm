@@ -1,7 +1,6 @@
 package ntu.mdp.pathfinding.Algo.Trajectory;
 
 import ntu.mdp.pathfinding.Algo.Arena;
-import ntu.mdp.pathfinding.Algo.CarMove;
 import ntu.mdp.pathfinding.Algo.ShortestPathBF;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryCalculation;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryCalculation.TrajectoryResult;
@@ -17,7 +16,7 @@ public class ShortestPathTrajectory {
     private final ShortestPathBF shortestPathBF;
     public final static int[][] dReverses = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
 
-    private List<CarMove> carMoves;
+    //private List<CarMove> carMoves;
     private List<Point> pathGrids;
 
     public ShortestPathTrajectory(Arena arena, ShortestPathBF shortestPathBF) {
@@ -25,66 +24,66 @@ public class ShortestPathTrajectory {
         this.shortestPathBF = shortestPathBF;
     }
 
-    public List<CarMove> fakeShortestValidPathForTesting() {
-        shortestPathBF.findPath();
-        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
-        int[] path = shortestPathBF.getNextPath();
-        pathGrids = new ArrayList<>();
-        int startR = idxMapping.get(path[0]).getR(), startC = idxMapping.get(path[0]).getC(), rStep, cStep;
-        for (int i = 1; i < path.length; i++) {
-            Obstacle ob = idxMapping.get(path[i]);
-            rStep = ob.getTargetedR() > startR ? 1 : -1;
-            cStep = ob.getTargetedC() > startC ? 1 : -1;
-            for (int r = startR; r != ob.getTargetedR(); r += rStep) {
-                pathGrids.add(new Point(r, startC));
-            }
-            for (int c = startC; c != ob.getTargetedC(); c += cStep) {
-                pathGrids.add(new Point(ob.getTargetedR(), c));
-            }
-            pathGrids.add(new Point(ob.getTargetedR(), ob.getTargetedC()));
-            startR = ob.getTargetedR(); startC = ob.getTargetedC();
-        }
-        return new ArrayList<>();
-    }
+//    public List<CarMove> fakeShortestValidPathForTesting() {
+//        shortestPathBF.findPath();
+//        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
+//        int[] path = shortestPathBF.getNextPath();
+//        pathGrids = new ArrayList<>();
+//        int startR = idxMapping.get(path[0]).getR(), startC = idxMapping.get(path[0]).getC(), rStep, cStep;
+//        for (int i = 1; i < path.length; i++) {
+//            Obstacle ob = idxMapping.get(path[i]);
+//            rStep = ob.getTargetedR() > startR ? 1 : -1;
+//            cStep = ob.getTargetedC() > startC ? 1 : -1;
+//            for (int r = startR; r != ob.getTargetedR(); r += rStep) {
+//                pathGrids.add(new Point(r, startC));
+//            }
+//            for (int c = startC; c != ob.getTargetedC(); c += cStep) {
+//                pathGrids.add(new Point(ob.getTargetedR(), c));
+//            }
+//            pathGrids.add(new Point(ob.getTargetedR(), ob.getTargetedC()));
+//            startR = ob.getTargetedR(); startC = ob.getTargetedC();
+//        }
+//        return new ArrayList<>();
+//    }
 
-    public List<CarMove> findShortestValidPath() {
-        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
-        while (shortestPathBF.hasNextPath()) {
-            carMoves = new ArrayList<>();
-            pathGrids = new ArrayList<>();
-            int[] path = shortestPathBF.getNextPath();
-            boolean pathValid = true;
-            Obstacle car = idxMapping.get(path[0]);
-            int carR = car.getR(), carC = car.getC(), theta = 270;
-            for (int i = 1; i < path.length; i++) {
-                Obstacle ob = idxMapping.get(path[i]);
-                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getTargetedC(), ob.getTargetedR(), ob.getDir(), carC, carR, theta);
-                TrajectoryResult trajectoryResult = trajectoryCalculation.trajectoryResult();
-                if (trajectoryResult == null) { pathValid = false; break; }
-                if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC(), pathGrids, arena)) { pathValid = false; break; }
-                carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
-                if (i != path.length-1) {
-                    Obstacle nextOb = idxMapping.get(path[i+1]);
-                    int reversedR = carR, reversedC = carC;
-                    boolean found = false;
-                    List<Point> reversePath = new ArrayList<>();
-                    while (!arena.checkWithCorrespondingBlock(reversedR, reversedC)) {
-                        trajectoryCalculation = new TrajectoryCalculation(nextOb.getTargetedC(), nextOb.getTargetedR(), nextOb.getDir(), reversedC, reversedR, theta);
-                        trajectoryResult = trajectoryCalculation.trajectoryResult();
-                        if (trajectoryResult != null && validatePath(trajectoryResult, reversedR, reversedC, nextOb.getTargetedR(), nextOb.getTargetedC(), null, arena)) {found = true; break;}
-                        reversedR += dReverses[ob.getDir()][0]; reversedC += dReverses[ob.getDir()][1];
-                        reversePath.add(new Point(reversedR, reversedC));
-                    }
-                    if (!found) { pathValid = false; break;}
-                    pathGrids.addAll(reversePath);
-                    carR = reversedR; carC = reversedC;
-                }
-            }
-            if (pathValid) return carMoves;
-
-        }
-        return null;
-    }
+//    public List<CarMove> findShortestValidPath() {
+//        Map<Integer, Obstacle> idxMapping = shortestPathBF.getIdxMapping();
+//        while (shortestPathBF.hasNextPath()) {
+//            carMoves = new ArrayList<>();
+//            pathGrids = new ArrayList<>();
+//            int[] path = shortestPathBF.getNextPath();
+//            boolean pathValid = true;
+//            Obstacle car = idxMapping.get(path[0]);
+//            int carR = car.getR(), carC = car.getC(), theta = 270;
+//            for (int i = 1; i < path.length; i++) {
+//                Obstacle ob = idxMapping.get(path[i]);
+//                TrajectoryCalculation trajectoryCalculation = new TrajectoryCalculation(ob.getTargetedC(), ob.getTargetedR(), ob.getDir(), carC, carR, theta);
+//                TrajectoryResult trajectoryResult = trajectoryCalculation.trajectoryResult();
+//                if (trajectoryResult == null) { pathValid = false; break; }
+//                if (!validatePath(trajectoryResult, carR, carC, ob.getTargetedR(), ob.getTargetedC(), pathGrids, arena)) { pathValid = false; break; }
+//                carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
+//                if (i != path.length-1) {
+//                    Obstacle nextOb = idxMapping.get(path[i+1]);
+//                    int reversedR = carR, reversedC = carC;
+//                    boolean found = false;
+//                    List<Point> reversePath = new ArrayList<>();
+//                    while (!arena.checkWithCorrespondingBlock(reversedR, reversedC)) {
+//                        trajectoryCalculation = new TrajectoryCalculation(nextOb.getTargetedC(), nextOb.getTargetedR(), nextOb.getDir(), reversedC, reversedR, theta);
+//                        trajectoryResult = trajectoryCalculation.trajectoryResult();
+//                        if (trajectoryResult != null && validatePath(trajectoryResult, reversedR, reversedC, nextOb.getTargetedR(), nextOb.getTargetedC(), null, arena)) {found = true; break;}
+//                        reversedR += dReverses[ob.getDir()][0]; reversedC += dReverses[ob.getDir()][1];
+//                        reversePath.add(new Point(reversedR, reversedC));
+//                    }
+//                    if (!found) { pathValid = false; break;}
+//                    pathGrids.addAll(reversePath);
+//                    carR = reversedR; carC = reversedC;
+//                }
+//            }
+//            if (pathValid) return carMoves;
+//
+//        }
+//        return null;
+//    }
 
     public static boolean validatePath(TrajectoryResult trajectoryResult, int startR, int startC, int endR, int endC,
                                        List<Point> gridCollector, Arena arena) {
@@ -117,11 +116,4 @@ public class ShortestPathTrajectory {
         return true;
     }
 
-    public List<CarMove> getCarMoves() {
-        return carMoves;
-    }
-
-    public List<Point> getPathGrids() {
-        return pathGrids;
-    }
 }
