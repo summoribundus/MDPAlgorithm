@@ -26,6 +26,14 @@ public class Point {
         this.matchingObstacleID = matchingObstacleID;
         this.matchingPoint = matchingPoint;
     }
+
+    public Point(int r, int c, boolean matchingPoint, int matchingObstacleID, int moveFlag) {
+        this.r = r;
+        this.c = c;
+        this.moveFlag = moveFlag;
+        this.matchingObstacleID = matchingObstacleID;
+        this.matchingPoint = matchingPoint;
+    }
     public int getR() {
         return r;
     }

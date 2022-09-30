@@ -14,12 +14,13 @@ public class LineInstruction implements Instruction {
     }
 
     private String conversionToInstructionFormat(int moveLength){
-        int moveLenInCM = moveLength * 5; // one grid is 5 cm
-
-        if (moveLenInCM / 100 == 0) // 2 digit number
-            return "0" + moveLenInCM;
-        else
-            return Integer.toString(moveLenInCM);
+        String moveLen = Integer.toString(moveLength * 5); // one grid is 5 cm
+        int toPrepend = 3 - moveLen.length();
+        StringBuilder sb = new StringBuilder();
+        while (toPrepend-- > 0)
+            sb.append('0');
+        sb.append(moveLen);
+        return sb.toString();
     }
 
     public void setGridPath(List<Point> gridPath) {

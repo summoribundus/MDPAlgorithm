@@ -37,7 +37,7 @@ public class ShortestPathAStarTask implements Callable<ShortestPathAStarResult> 
             if (shortestPathAStarResult == null) { pathValid = false; break; }
             pathGrids.addAll(shortestPathAStarResult.getPointPath());
             carC = ob.getTargetedC(); carR = ob.getTargetedR(); theta = ob.getTargetedDegree(); cost += shortestPathAStarResult.getCost();
-            pathGrids.add(new Point(carR, carC, true, ob.getObstacleID()));
+            pathGrids.add(new Point(carR, carC, true, ob.getObstacleID(), 5));
         }
 
         if (!pathValid) return null;

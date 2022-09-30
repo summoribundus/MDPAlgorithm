@@ -38,12 +38,11 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
         List<Point> pathSegment = new ArrayList<>();
 
         int lastDir = -1;
-        Point st = null;
+        Point st = null, point = null;
+        System.out.println(pointPath);
         int i = 0, len = pointPath.size();
         while (i < len) {
-            Point point = pointPath.get(i++);
-            if (point.isMatchingPoint())
-                instructions.add(new TakePictureInstruction(point.getMatchingObstacleID()));
+            point = pointPath.get(i++);
 
             if (point.getMoveFlag() == lastDir) {
                 pathSegment.add(point);
@@ -57,6 +56,9 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
                 instructions.add(li);
                 st = null;
             }
+
+            if (point.isMatchingPoint())
+                instructions.add(new TakePictureInstruction(point.getMatchingObstacleID()));
 
             if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
                 Point endPoint = pointPath.get(i++);
@@ -74,6 +76,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             } else {
                 st = point;
                 pathSegment = new ArrayList<>();
+                pathSegment.add(st);
             }
 
             lastDir = point.getMoveFlag();

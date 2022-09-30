@@ -14,9 +14,13 @@ public class CurveInstruction implements Instruction {
     }
 
     private String conversionToInstructionFormatTheta(int theta){
-        if (theta / 100 ==0)
-            return "0" + Integer.toString(theta);
-        return Integer.toString(theta);
+        String thetaStr = Integer.toString(theta); // one grid is 5 cm
+        int toPrepend = 3 - thetaStr.length();
+        StringBuilder sb = new StringBuilder();
+        while (toPrepend-- > 0)
+            sb.append('0');
+        sb.append(thetaStr);
+        return sb.toString();
     }
 
     public void setGridPath(List<Point> gridPath) {
