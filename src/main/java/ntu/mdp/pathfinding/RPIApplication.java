@@ -62,7 +62,7 @@ public class RPIApplication {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         String boardConfigStr = in.readLine();
-        //String boardConfigStr = "1-1,10-10-0;15-13-3"; //"1-1,10-10-0;15-13-3;17-3-2"
+        //String boardConfigStr = "1-1,10-10-0;15-13-3;17-3-3"; //"1-1,10-10-0;15-13-3;17-3-2"
         String[] boardConfigStrSplit = boardConfigStr.split(",");
         Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
         String[] carConfig = boardConfigStrSplit[0].split("-");

@@ -23,6 +23,7 @@ public class LineInstruction implements Instruction {
     }
 
     public void setGridPath(List<Point> gridPath) {
+        if (gridPath == null) return;
         StringBuilder sb = new StringBuilder().append("Android:");
         for (Point point : gridPath)
             sb.append(point).append(";");

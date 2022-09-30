@@ -308,13 +308,19 @@ public class TrajectoryToArenaGrid {
                     pointsPassed.add(new Point(r, c, isClockwise? 1: 0));
                     c += edge.getDc();
                 }
-                if (c != edge.getEdC()) return null;
+                if (c != edge.getEdC()) {
+                    System.out.println("Invalid path c");
+                    return null;
+                }
             } else {
                 while (0 <= r && r < AlgoConstant.GridM && r != edge.getEdR()) {
                     pointsPassed.add(new Point(r, c, isClockwise? 1: 0));
                     r += edge.getDr();
                 }
-                if (r != edge.getEdR()) return null;
+                if (r != edge.getEdR()) {
+                    System.out.println("Invalid path r");
+                    return null;
+                }
             }
         }
         Edge last = edges.get(edges.size()-1);

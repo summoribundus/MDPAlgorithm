@@ -20,6 +20,7 @@ public class CurveInstruction implements Instruction {
     }
 
     public void setGridPath(List<Point> gridPath) {
+        if (gridPath == null) return;
         StringBuilder sb = new StringBuilder().append("Android:");
 //        System.out.println("the command of this is:" + this.command);
 //        for (Point p : gridPath)
