@@ -3,6 +3,7 @@ package ntu.mdp.pathfinding.Algo.AStar;
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
+import ntu.mdp.pathfinding.CarMoveFlag;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 import ntu.mdp.pathfinding.InputData;
 import ntu.mdp.pathfinding.Point;
@@ -277,7 +278,7 @@ public class ShortestPathAStar {
                             reversing = true;
                         }
                 }
-                path.add(new Point(curr[4], curr[3], reversing? 2: 3));
+                path.add(new Point(curr[4], curr[3], reversing? CarMoveFlag.MoveBackward: CarMoveFlag.MoveForward));
 
             } else { // otherwise, only look for points where direction changes to construct the line segments
                 int prevDirInDegrees = prev[5];
@@ -286,10 +287,10 @@ public class ShortestPathAStar {
 
                 turnLeft = (prevDirInDegrees + 90) % 360 == currDirInDegrees;
 
-                int newFlag = turnLeft? 0: 1;
+                CarMoveFlag newFlag = turnLeft? CarMoveFlag.TurnLeft: CarMoveFlag.TurnRight;
                 if (path.size() >= 1) {
                     Point nowStart = path.get(path.size() - 1);
-                    if (nowStart.getMoveFlag() == 2 || nowStart.getMoveFlag() == 3) {
+                    if (nowStart.getMoveFlag() == CarMoveFlag.MoveForward || nowStart.getMoveFlag() == CarMoveFlag.MoveBackward) {
                         path.add(new Point(curr[4], curr[3], nowStart.getMoveFlag()));
                    }
                 }

@@ -43,7 +43,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             cost += trajectoryResult.getTotalLength();
 
             carR = ob.getTargetedR(); carC = ob.getTargetedC(); theta = ob.getTargetedDegree();
-            pathGrids.add(new Point(carR, carC,true, ob.getObstacleID()));
+            pathGrids.add(new Point(carR, carC,true, ob.getObstacleID(), CarMoveFlag.TakePicture));
             instructions.add(new TakePictureInstruction(ob.getObstacleID()));
             if (i == path.length-1) continue;
 
@@ -52,6 +52,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             boolean found = false;
             List<Point> reversePath = new ArrayList<>();
             while (!arena.checkWithCorrespondingBlock(reversedR, reversedC)) {
+                reversePath.add(new Point(reversedR, reversedC));
                 trajectoryCalculation = new TrajectoryCalculation(nextOb.getTargetedC(), nextOb.getTargetedR(),
                         nextOb.getDir(), reversedC, reversedR, theta);
                 trajectoryResult = trajectoryCalculation.trajectoryResult();
@@ -62,12 +63,13 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
                     break;
                 }
                 reversedR += ShortestPathTrajectory.dReverses[ob.getDir()][0]; reversedC += ShortestPathTrajectory.dReverses[ob.getDir()][1];
-                reversePath.add(new Point(reversedR, reversedC));
             }
 
             if (!found) { pathValid = false; break;}
-            int length = reversedR == carR ? Math.abs(reversedC - carC) * 5 : Math.abs(reversedR - carR) * 5;
-            instructions.add(new LineInstruction(-length));
+            int length = reversedR == carR ? Math.abs(reversedC - carC) : Math.abs(reversedR - carR);
+            LineInstruction li = new LineInstruction(-length);
+            li.setGridPath(new ArrayList<>(reversePath));
+            instructions.add(li);
             pathGrids.addAll(reversePath);
             carR = reversedR; carC = reversedC;
         }

@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
 import ntu.mdp.pathfinding.Algo.Arena;
+import ntu.mdp.pathfinding.CarMoveFlag;
 import ntu.mdp.pathfinding.Obstacle;
 import ntu.mdp.pathfinding.Point;
 
@@ -37,7 +38,7 @@ public class ShortestPathAStarTask implements Callable<ShortestPathAStarResult> 
             if (shortestPathAStarResult == null) { pathValid = false; break; }
             pathGrids.addAll(shortestPathAStarResult.getPointPath());
             carC = ob.getTargetedC(); carR = ob.getTargetedR(); theta = ob.getTargetedDegree(); cost += shortestPathAStarResult.getCost();
-            pathGrids.add(new Point(carR, carC, true, ob.getObstacleID(), 5));
+            pathGrids.add(new Point(carR, carC, true, ob.getObstacleID(), CarMoveFlag.TakePicture));
         }
 
         if (!pathValid) return null;

@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo.Trajectory;
 
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
+import ntu.mdp.pathfinding.CarMoveFlag;
 import ntu.mdp.pathfinding.Point;
 
 import java.util.*;
@@ -81,7 +82,7 @@ public class TrajectoryToArenaGrid {
     public static List<Point> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise) {
         if (r1 == r2 && c1 == c2) {
             List<Point> res = new ArrayList<>();
-            res.add(new Point(r1, c1, isClockWise? 1: 0));
+            res.add(new Point(r1, c1, isClockWise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft));
             return res;
         }
 
@@ -289,20 +290,20 @@ public class TrajectoryToArenaGrid {
             int r = edge.getStR(), c = edge.getStC();
             if (edge.getDr() == 0) {
                 while (0 <= c && c < AlgoConstant.GridN && c != edge.getEdC()) {
-                    pointsPassed.add(new Point(r, c, isClockwise? 1: 0));
+                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft));
                     c += edge.getDc();
                 }
                 if (c != edge.getEdC()) return null;
             } else {
                 while (0 <= r && r < AlgoConstant.GridM && r != edge.getEdR()) {
-                    pointsPassed.add(new Point(r, c, isClockwise? 1: 0));
+                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft));
                     r += edge.getDr();
                 }
                 if (r != edge.getEdR()) return null;
             }
         }
         Edge last = edges.get(edges.size()-1);
-        pointsPassed.add(new Point(last.getEdR(), last.getEdC(), 0));
+        pointsPassed.add(new Point(last.getEdR(), last.getEdC(), isClockwise ? CarMoveFlag.TurnRight : CarMoveFlag.TurnLeft));
         return pointsPassed;
     }
 

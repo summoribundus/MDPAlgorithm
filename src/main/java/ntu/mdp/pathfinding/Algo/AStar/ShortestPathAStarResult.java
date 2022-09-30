@@ -37,12 +37,18 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
         instructions = new ArrayList<>();
         List<Point> pathSegment = new ArrayList<>();
 
-        int lastDir = -1;
-        Point st = null, point = null;
         System.out.println(pointPath);
+        CarMoveFlag lastDir = CarMoveFlag.NotInitialized;
+        Point st = null, point = null;
         int i = 0, len = pointPath.size();
         while (i < len) {
             point = pointPath.get(i++);
+
+            if (lastDir == CarMoveFlag.TakePicture) {
+                pathSegment.add(point);
+                lastDir = point.getMoveFlag();
+                continue;
+            }
 
             if (point.getMoveFlag() == lastDir) {
                 pathSegment.add(point);
@@ -51,26 +57,26 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
 
             if (st != null) {
                 int rLen = point.getR() - st.getR(), cLen = point.getC() - st.getC();
-                LineInstruction li = new LineInstruction(rLen == 0 ? cLen : rLen);
+                LineInstruction li = new LineInstruction(rLen == 0 ? cLen : rLen, lastDir);
                 li.setGridPath(pathSegment);
                 instructions.add(li);
                 st = null;
             }
 
-            if (point.isMatchingPoint())
-                instructions.add(new TakePictureInstruction(point.getMatchingObstacleID()));
+            if (point.isMatchingPoint()) instructions.add(new TakePictureInstruction(point.getMatchingObstacleID()));
 
-            if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
+            if (point.getMoveFlag() == CarMoveFlag.TurnLeft || point.getMoveFlag() == CarMoveFlag.TurnRight) {
                 Point endPoint = pointPath.get(i++);
                 int rLen = endPoint.getR() - point.getR(), cLen = endPoint.getC() - point.getC();
-                if (point.getMoveFlag() == 0) {
+                if (point.getMoveFlag() == CarMoveFlag.TurnLeft) {
                     rLen *= -1; cLen *= -1;
                 }
                 int circleR = cLen < 0 ? Math.min(point.getR(), endPoint.getR()) : Math.max(point.getR(), endPoint.getR());
                 int circleC = rLen < 0 ? Math.max(point.getC(), endPoint.getC()) : Math.min(point.getC(), endPoint.getC());
-                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(), endPoint.getC(), circleR, circleC, point.getMoveFlag() == 1);
+                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(),
+                        endPoint.getC(), circleR, circleC, point.getMoveFlag() == CarMoveFlag.TurnRight);
 
-                CurveInstruction ci = new CurveInstruction(90, point.getMoveFlag() == 1);
+                CurveInstruction ci = new CurveInstruction(90, point.getMoveFlag() == CarMoveFlag.TurnRight);
                 ci.setGridPath(segment);
                 instructions.add(ci);
             } else {

@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Instruction;
 
 import ntu.mdp.pathfinding.Algo.CarMoveInstructions;
+import ntu.mdp.pathfinding.CarMoveFlag;
 import ntu.mdp.pathfinding.Point;
 
 import java.util.List;
@@ -13,6 +14,9 @@ public class LineInstruction implements Instruction {
         command = "STM:" + (moveLength > 0 ? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix) + conversionToInstructionFormat(Math.abs(moveLength));
     }
 
+    public LineInstruction(int moveLength, CarMoveFlag moveDir) {
+        command = "STM:" + (moveDir == CarMoveFlag.MoveForward ? CarMoveInstructions.moveForwardPrefix : CarMoveInstructions.moveBackwardPrefix) + conversionToInstructionFormat(Math.abs(moveLength));
+    }
     private String conversionToInstructionFormat(int moveLength){
         String moveLen = Integer.toString(moveLength * 5); // one grid is 5 cm
         int toPrepend = 3 - moveLen.length();
