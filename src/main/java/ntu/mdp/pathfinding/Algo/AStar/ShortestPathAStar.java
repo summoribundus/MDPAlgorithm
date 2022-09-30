@@ -296,10 +296,10 @@ public class ShortestPathAStar {
 
             int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if (prev == null) // if this is the starting node, handle the special case.
-                {
-                    path.add(new Point(curr[4], curr[3]));
+//                {
+//                    path.add(new Point(curr[4], curr[3]));
                     break;
-                }
+//                }
 
             lineStartC = prev[3];
             lineStartR = prev[4];
@@ -310,34 +310,25 @@ public class ShortestPathAStar {
             if  (prev[5] == currDirInDegrees){
 
 //                int moveLength = 0;
-//                switch (currDirInDegrees) { // check if reversing
-//                    case 0:
-//                        if (lineEndC < lineStartC) {
-//                            reversing = true;
-//                        }
+                switch (currDirInDegrees) { // check if reversing
+                    case 0:
+                        if (lineEndC < lineStartC) {
+                            reversing = true;
+                        }
 //                        moveLength = Math.abs(lineEndC - lineStartC);
-//                        break;
-//                    case 90:
-//                        if (lineEndR > lineStartR) {
-//                            reversing = true;
-//                        }
+                        break;
+                    case 90:
+                        if (lineEndR > lineStartR) {
+                            reversing = true;
+                        }
 //                        moveLength = Math.abs(lineStartR - lineEndR);
-//                        break;
-//                    case 180:
-//                        if (lineEndC > lineStartC) {
-//                            reversing = true;
-//                        }
-//                        moveLength = Math.abs(lineStartC - lineEndC);
-//                        break;
-//                    case 270:
-//                        if (lineEndR < lineStartR) {
-//                            reversing = true;
-//                        }
-//                        moveLength = Math.abs(lineEndR - lineStartR);
-//                        break;
-//                    default:
-//                }
-                //moves.add(new CarMove(reversing? -1*moveLength : moveLength));
+                        break;
+                    case 180:
+                        if (lineEndC > lineStartC) {
+                            reversing = true;
+                        }
+                }
+
                 path.add(new Point(curr[4], curr[3], reversing? 2: 3));
 
             } else { // otherwise, only look for points where direction changes to construct the line segments
@@ -365,6 +356,9 @@ public class ShortestPathAStar {
 //                }
                 //moves.add(new CarMove(90, isClockWise, 0, true,0 ));
                 //pathSegments = new ArrayList<>();
+//                System.out.println("turning left?" + turnLeft);
+//                System.out.println("current c = " + curr[3] + ", r = " +  curr[4]);
+//                System.out.println("prev c = " + prevC + ", r = " + prevR);
                 path.add(new Point(curr[4], curr[3], turnLeft? 0: 1));
                 path.add(new Point(prevR, prevC, turnLeft? 0: 1));
 
@@ -376,7 +370,9 @@ public class ShortestPathAStar {
 
         Collections.reverse(path); // reverse the path and put it in the correct order
         //Collections.reverse(moves);
-        
+        System.out.println("====printing path : ===");
+        for (Point p : path)
+            System.out.println(p.toString() + ", " + p.getMoveFlag());
         return path;
 
 

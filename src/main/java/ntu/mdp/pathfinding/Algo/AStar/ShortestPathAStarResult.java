@@ -51,7 +51,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             }
 
             if (st != null) {
-                int rLen = point.getX() - st.getX(), cLen = point.getY() - st.getY();
+                int rLen = point.getR() - st.getR(), cLen = point.getC() - st.getC();
                 LineInstruction li = new LineInstruction(rLen == 0 ? cLen : rLen);
                 li.setGridPath(pathSegment);
                 instructions.add(li);
@@ -59,14 +59,14 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             }
 
             if (point.getMoveFlag() == 0 || point.getMoveFlag() == 1) {
-                Point endPoint = pathSegment.get(i++);
-                int rLen = endPoint.getX() - point.getX(), cLen = endPoint.getY() - point.getY();
+                Point endPoint = pointPath.get(i++);
+                int rLen = endPoint.getR() - point.getR(), cLen = endPoint.getC() - point.getC();
                 if (point.getMoveFlag() == 0) {
                     rLen *= -1; cLen *= -1;
                 }
-                int circleR = cLen > 0 ? Math.min(point.getX(), endPoint.getX()) : Math.max(point.getX(), endPoint.getX());
-                int circleC = rLen > 0 ? Math.max(point.getY(), endPoint.getY()) : Math.min(point.getY(), endPoint.getY());
-                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getX(), point.getY(), endPoint.getX(), endPoint.getY(), circleR, circleC, point.getMoveFlag() == 1);
+                int circleR = cLen < 0 ? Math.min(point.getR(), endPoint.getR()) : Math.max(point.getR(), endPoint.getR());
+                int circleC = rLen < 0 ? Math.max(point.getC(), endPoint.getC()) : Math.min(point.getC(), endPoint.getC());
+                List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(), endPoint.getC(), circleR, circleC, point.getMoveFlag() == 1);
 
                 CurveInstruction ci = new CurveInstruction(90, point.getMoveFlag() == 1);
                 ci.setGridPath(segment);

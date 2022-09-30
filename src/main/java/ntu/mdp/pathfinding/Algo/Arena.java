@@ -48,7 +48,7 @@ public class Arena {
 
     public boolean validatePoint(List<Point> points) {
         for (Point p : points) {
-            if (checkWithCorrespondingBlock(p.getX(), p.getY())) return false;
+            if (checkWithCorrespondingBlock(p.getR(), p.getC())) return false;
         }
         return true;
     }

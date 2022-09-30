@@ -14,7 +14,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Grid extends Pane {
     private int m, n;
@@ -122,10 +121,10 @@ public class Grid extends Pane {
                 actionEvent -> {
                     Point point = path.poll();
                     if (point == null) return;
-                    int x = curPoint.getX(), y = curPoint.getY();
+                    int x = curPoint.getR(), y = curPoint.getC();
                     cells[x][y].carPassHighlight();
-                    cells[point.getX()][point.getY()].carHighlight();
-                    String pointStr = point.getX()+":"+point.getY();
+                    cells[point.getR()][point.getC()].carHighlight();
+                    String pointStr = point.getR()+":"+point.getC();
                     if (point.isMatchingPoint() && imageMap.containsKey(pointStr)) {
                         imgRecPane.recognize(imageMap.get(pointStr));
                     }
