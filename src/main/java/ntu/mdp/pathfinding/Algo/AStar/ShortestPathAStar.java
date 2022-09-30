@@ -295,11 +295,8 @@ public class ShortestPathAStar {
             prev = predMap.get(curr); // get the previous node in the backtrack
 
             int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
-            if (prev == null) // if this is the starting node, handle the special case.
-//                {
-//                    path.add(new Point(curr[4], curr[3]));
-                    break;
-//                }
+            if (prev == null) break; // if this is the starting node, handle the special case.
+
 
             lineStartC = prev[3];
             lineStartR = prev[4];
@@ -309,19 +306,16 @@ public class ShortestPathAStar {
             // int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if  (prev[5] == currDirInDegrees){
 
-//                int moveLength = 0;
                 switch (currDirInDegrees) { // check if reversing
                     case 0:
                         if (lineEndC < lineStartC) {
                             reversing = true;
                         }
-//                        moveLength = Math.abs(lineEndC - lineStartC);
                         break;
                     case 90:
                         if (lineEndR > lineStartR) {
                             reversing = true;
                         }
-//                        moveLength = Math.abs(lineStartR - lineEndR);
                         break;
                     case 180:
                         if (lineEndC > lineStartC) {
@@ -337,40 +331,30 @@ public class ShortestPathAStar {
                 int prevC = prev[3];
                 int prevR = prev[4];
 
-                //List<Point> pathSegments;
-
-                boolean isClockWise;
-
                 if ((prevDirInDegrees + 90) % 360 == currDirInDegrees) {
                     turnLeft = true;
-                    isClockWise = false;
                 } else {
                     turnLeft = false;
-                    isClockWise = true;
                 }
 
-//                if (turnLeft){
-//                    pathSegments = getPathSegmentsForLeftTurning(prevC, prevR, prevDirInDegrees);
-//                } else {
-//                    pathSegments = getPathSegmentsForRightTurning(prevC, prevR, prevDirInDegrees);
-//                }
-                //moves.add(new CarMove(90, isClockWise, 0, true,0 ));
-                //pathSegments = new ArrayList<>();
-//                System.out.println("turning left?" + turnLeft);
-//                System.out.println("current c = " + curr[3] + ", r = " +  curr[4]);
-//                System.out.println("prev c = " + prevC + ", r = " + prevR);
-                path.add(new Point(curr[4], curr[3], turnLeft? 0: 1));
-                path.add(new Point(prevR, prevC, turnLeft? 0: 1));
+                int newFlag = turnLeft? 0: 1;
+                if (path.size() >= 1) {
+                    Point nowStart = path.get(path.size() - 1);
+                    if (nowStart.getMoveFlag() == 2 || nowStart.getMoveFlag() == 3) {
+                        path.add(new Point(curr[4], curr[3], nowStart.getMoveFlag()));
+                   }
+                }
 
+                path.add(new Point(curr[4], curr[3], newFlag));
+                path.add(new Point(prevR, prevC, newFlag));
 
             }
             curr = prev;
         }
 
-
         Collections.reverse(path); // reverse the path and put it in the correct order
-        //Collections.reverse(moves);
-        System.out.println("====printing path : ===");
+
+        System.out.println("=== printing path  ===");
         for (Point p : path)
             System.out.println(p.toString() + ", " + p.getMoveFlag());
         return path;
@@ -378,74 +362,7 @@ public class ShortestPathAStar {
 
     }
 
-    private List<Point> getPathSegmentsForLeftTurning(int currentC, int currentR, int currentDirDegrees) {
-        int[] leftPos;
-        int[] circleCenter;
-        List<Point> leftTurnPath;
 
-        switch (currentDirDegrees) {
-            case 0:
-                leftPos = new int[]{currentC + AlgoConstant.leftR, currentR - AlgoConstant.leftR, 90};
-                circleCenter = new int[]{currentC, currentR - AlgoConstant.leftR};
-                break;
-            case 90:
-                leftPos = new int[]{currentC - AlgoConstant.leftR, currentR - AlgoConstant.leftR, 180};
-                circleCenter = new int[]{currentC - AlgoConstant.leftR, currentR};
-                break;
-            case 180:
-                leftPos = new int[]{currentC - AlgoConstant.leftR, currentR + AlgoConstant.leftR, 270};
-                circleCenter = new int[]{currentC, currentR + AlgoConstant.leftR};
-                break;
-            case 270:
-                leftPos = new int[]{currentC + AlgoConstant.leftR, currentR + AlgoConstant.leftR, 0};
-                circleCenter = new int[]{currentC + AlgoConstant.leftR, currentR};
-                break;
-            default:
-                leftPos = null;
-                circleCenter = null;
-                break;
-        }
-
-        leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
-                leftPos[1], leftPos[0], circleCenter[1], circleCenter[0], false);
-
-        return leftTurnPath;
-    }
-
-    private List<Point> getPathSegmentsForRightTurning(int currentC, int currentR, int currentDirDegrees){
-        int[] rightPos;
-        int[] circleCenter;
-        List<Point> rightTurnPath;
-
-        switch (currentDirDegrees) {
-            case 0 -> {
-                rightPos = new int[]{currentC + AlgoConstant.rightR, currentR + AlgoConstant.rightR, 270};
-                circleCenter = new int[]{currentC, currentR + AlgoConstant.rightR};
-            }
-            case 90 -> {
-                rightPos = new int[]{currentC + AlgoConstant.rightR, currentR - AlgoConstant.rightR, 0};
-                circleCenter = new int[]{currentC + AlgoConstant.rightR, currentR};
-            }
-            case 180 -> {
-                rightPos = new int[]{currentC - AlgoConstant.rightR, currentR - AlgoConstant.rightR, 90};
-                circleCenter = new int[]{currentC, currentR - AlgoConstant.rightR};
-            }
-            case 270 -> {
-                rightPos = new int[]{currentC - AlgoConstant.rightR, currentR + AlgoConstant.rightR, 180};
-                circleCenter = new int[]{currentC - AlgoConstant.rightR, currentR};
-            }
-            default -> {
-                rightPos = null;
-                circleCenter = null;
-            }
-        }
-
-        rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
-                    rightPos[1], rightPos[0], circleCenter[1], circleCenter[0], true);
-
-
-        return rightTurnPath;
-    }
 
     private int[] getForwardLocation(int currentC, int currentR, int currentDirDegrees){
         int[] forwardPosition = switch (currentDirDegrees) {

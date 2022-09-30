@@ -6,7 +6,7 @@ public class Point {
 
     private int matchingObstacleID;
 
-    private int moveFlag; // 0: turning, 1: straight; 2: reversing
+    private int moveFlag; // 0: turning left 90, 1: turning right 90; 2: reversing; 3: forwarding
 
     public Point(int r, int c) {
         this.r = r;
