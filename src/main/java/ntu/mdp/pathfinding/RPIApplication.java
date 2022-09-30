@@ -67,7 +67,7 @@ public class RPIApplication {
         Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
         String[] carConfig = boardConfigStrSplit[0].split("-");
 
-        List<Instruction> instructions = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
+        List<Instruction> instructions = findShortestPath(obstacles, Integer.parseInt(carConfig[1]) * 2, Integer.parseInt(carConfig[0]) * 2);
         if (instructions == null) {
             System.out.println("No solution found. Not making movement");
             closeConnection();

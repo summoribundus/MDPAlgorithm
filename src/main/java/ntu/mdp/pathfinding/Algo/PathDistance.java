@@ -30,8 +30,12 @@ public class PathDistance implements Runnable {
         int cost = 0;
         for (int i = 0; i < n-1; i++) {
             Obstacle ob1 = map.get(paths[i]), ob2 = map.get(paths[i+1]);
-            cost += NodeCost.distanceOfObstacles(ob1.getTargetedR(), ob1.getTargetedC(), ob2.getTargetedR(), ob2.getTargetedC());
+            cost += distanceOfObstacles(ob1.getTargetedR(), ob1.getTargetedC(), ob2.getTargetedR(), ob2.getTargetedC());
         }
         this.pq.add(new PathDistanceResult(paths, cost));
+    }
+
+    public int distanceOfObstacles(int x1, int y1, int x2, int y2) {
+        return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
     }
 }

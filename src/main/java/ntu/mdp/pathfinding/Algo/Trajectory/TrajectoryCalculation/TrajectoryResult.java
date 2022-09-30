@@ -20,7 +20,6 @@ public class TrajectoryResult {
 
     private boolean isAllCurve;
 
-
     private int totalLength;
 
     private List<List<Point>> path = new ArrayList<>();
@@ -53,9 +52,7 @@ public class TrajectoryResult {
         CurveInstruction c3ins = new CurveInstruction(c3.getTheta(), c3.isClockwiseTurn());
         c3ins.setGridPath(recoverCurvePts(c3));
         instructionList.add(c3ins);
-
     }
-
 
     // curve, straight line, curve
     public TrajectoryResult(TrajectoryCurve c1, TrajectoryLine l2, TrajectoryCurve c3){
@@ -83,12 +80,9 @@ public class TrajectoryResult {
         CurveInstruction c3ins = new CurveInstruction(c3.getTheta(), c3.isClockwiseTurn());
         c3ins.setGridPath(recoverCurvePts(c3));
         instructionList.add(c3ins);
-
     }
 
-
     private List<Point> recoverCurvePts(TrajectoryCurve c){
-
         int[] cStartPt = c.getStartPt();
         int[] cEndPt = c.getEndPt();
         int[] cCenterPt = c.getCenter();
@@ -96,14 +90,11 @@ public class TrajectoryResult {
     }
 
     private List<Point> recoverStraightLinePts(TrajectoryLine l){
-
         int[] lStartPt = l.getStartPt();
         int[] lEndPt = l.getEndPt();
 
         return TrajectoryToArenaGrid.findGirdLinePath(lStartPt[1], lStartPt[0], lEndPt[1], lEndPt[0]);
     }
-
-
 
     public int[] getPt1() {
         return this.pt1;
@@ -120,7 +111,6 @@ public class TrajectoryResult {
     public int[] getCircle2() {
         return endCurve.getCenter();
     }
-
 
     public int[] getCircleInter() {
         if (!isAllCurve)

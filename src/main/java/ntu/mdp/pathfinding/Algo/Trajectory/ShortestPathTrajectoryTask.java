@@ -71,6 +71,7 @@ public class ShortestPathTrajectoryTask implements Callable<ShortestPathTrajecto
             pathGrids.addAll(reversePath);
             carR = reversedR; carC = reversedC;
         }
+
         if (!pathValid) return null;
         return new ShortestPathTrajectoryResult(cost, pathGrids, instructions);
     }

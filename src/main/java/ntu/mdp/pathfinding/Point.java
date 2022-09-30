@@ -56,7 +56,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return r + "-" + c;
+        return c / 2 + "-" + r / 2;
     } // colon separator cannot work
 }
 

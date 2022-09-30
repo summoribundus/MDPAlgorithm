@@ -60,22 +60,6 @@ public class TrajectoryToArenaGrid {
     private static final int[] quadrantReverse = {0, 3, 4, 1, 2};
     private static final int[] quadrantSameYSide = {0, 4, 3, 2, 1};
     private static final int[] quadrantSameXSide = {0, 2, 1, 4, 3};
-    private static final int[][][] dEdgeLooping = {{{-1, 0}, {0, 1}, {1, 0}, {0, -1}}, {{1, 0}, {0, -1}, {-1, 0}, {0, 1}}};
-
-    public static List<int[]> findReversePath(int r1, int c1, int r2, int c2, int[] dReverse) {
-        List<int[]> pointsPassed = new ArrayList<>();
-        if (dReverse[0] == 0) {
-            for (int i = c1; i != c2; i += dReverse[1]) {
-                pointsPassed.add(new int[]{r1, i});
-            }
-        } else {
-            for (int i = r1; i != r2; i += dReverse[0]) {
-                pointsPassed.add(new int[]{i, c1});
-            }
-        }
-        pointsPassed.add(new int[]{r2, c2});
-        return pointsPassed;
-    }
 
     public static List<Point> findGirdLinePath(int r1, int c1, int r2, int c2) {
         List<Point> pointsPassed = new ArrayList<>();
