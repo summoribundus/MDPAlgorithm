@@ -277,6 +277,10 @@ public class ShortestPathAStar {
                         if (lineEndC > lineStartC) {
                             reversing = true;
                         }
+                    case 270:
+                        if (lineEndR < lineStartR) {
+                            reversing = true;
+                        }
                 }
                 path.add(new Point(curr[4], curr[3], reversing? CarMoveFlag.MoveBackward: CarMoveFlag.MoveForward));
 

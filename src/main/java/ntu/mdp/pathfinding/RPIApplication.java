@@ -62,7 +62,7 @@ public class RPIApplication {
 //        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 //        String boardConfigStr = in.readLine();
-        String boardConfigStr = "1-1,10-10-0;17-3-3;15-13-3";
+        String boardConfigStr = "1-1,5-13-1;18-16-0";
         String[] boardConfigStrSplit = boardConfigStr.split(",");
         Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
         String[] carConfig = boardConfigStrSplit[0].split("-");
@@ -101,7 +101,7 @@ public class RPIApplication {
 //        socket.send(packet);
 //    }
 
-    private static Obstacle[] constructObstacleFromString(String obstacleStrs) {
+    public static Obstacle[] constructObstacleFromString(String obstacleStrs) {
         String[] obstacleStrsSplit = obstacleStrs.split(";");
         Obstacle[] obstacles = new Obstacle[obstacleStrsSplit.length];
         int cnt = 0;
@@ -114,15 +114,15 @@ public class RPIApplication {
         }
         return obstacles;
     }
-    private static List<Instruction> findShortestPath(Obstacle[] obstacles, int r, int c) {
+    public static List<Instruction> findShortestPath(Obstacle[] obstacles, int r, int c) {
         ShortestPathBF shortestPathBF = new ShortestPathBF(obstacles, r, c);
         Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, obstacles);
-        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
-        ShortestPathTrajectoryResult result = algo.findShortestPath();
-        if (result != null) {
-            System.out.println("Trajectory Solution Found");
-            return result.getInstructions();
-        }
+//        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
+//        ShortestPathTrajectoryResult result = algo.findShortestPath();
+//        if (result != null) {
+//            System.out.println("Trajectory Solution Found");
+//            return result.getInstructions();
+//        }
 
         ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
         ShortestPathAStarResult aStarResult = aStarAlgo.findBackupShortestPath();
