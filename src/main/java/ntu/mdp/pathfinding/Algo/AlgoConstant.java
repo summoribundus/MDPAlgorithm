@@ -1,9 +1,9 @@
 package ntu.mdp.pathfinding.Algo;
 
 public class AlgoConstant {
-    public final static int R = 4;
-    public final static int leftR = 4;
-    public final static int rightR = 4;
+    public final static int R = 6;
+    public final static int leftR = 6;
+    public final static int rightR = 6;
     public final static int turnHorizontalLeftDist = 6;
     public final static int turnVerticalLeftDist = 3;
     public final static int maxTurnLeftDist = 6;

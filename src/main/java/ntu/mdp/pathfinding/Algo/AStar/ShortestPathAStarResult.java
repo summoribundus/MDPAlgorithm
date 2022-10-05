@@ -52,9 +52,30 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             pointPath.add(point);
 
             if (lastDir == CarMoveFlag.TakePicture) {
-                pathSegment.get(pathSegment.size()-1).setFacingDir(point.getFacingDir());
-                pathSegment.add(point);
-                lastDir = point.getMoveFlag();
+                if (point.getMoveFlag() == CarMoveFlag.MoveBackward || point.getMoveFlag() == CarMoveFlag.MoveForward) {
+                    pathSegment.get(pathSegment.size()-1).setFacingDir(point.getFacingDir());
+                    pathSegment.add(point);
+                    lastDir = point.getMoveFlag();
+                } else {
+                    Point endPoint = rawPointPath.get(i++);
+                    int rLen = endPoint.getR() - point.getR(), cLen = endPoint.getC() - point.getC();
+                    int r = AlgoConstant.maxTurnRightDist;
+                    if (point.getMoveFlag() == CarMoveFlag.TurnLeft) {
+                        rLen *= -1; cLen *= -1;
+                        r = AlgoConstant.maxTurnLeftDist;
+                    }
+                    int circleR = cLen > 0 ? Math.min(point.getR(), endPoint.getR()) + r : Math.max(point.getR(), endPoint.getR()) - r;
+                    int circleC = rLen < 0 ? Math.min(point.getC(), endPoint.getC()) + r : Math.max(point.getC(), endPoint.getC()) - r;
+                    List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(),
+                            endPoint.getC(), circleR, circleC, point.getMoveFlag() == CarMoveFlag.TurnRight, point.getFacingDir());
+
+                    pointPath.addAll(segment);
+                    CurveInstruction ci = new CurveInstruction(90, point.getMoveFlag() == CarMoveFlag.TurnRight);
+                    ci.setGridPath(segment);
+                    instructions.add(ci);
+                    lastDir = CarMoveFlag.NotInitialized;
+                    st = null;
+                }
                 continue;
             }
 
