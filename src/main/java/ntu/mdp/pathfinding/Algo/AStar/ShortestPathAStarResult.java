@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo.AStar;
 
 import ntu.mdp.pathfinding.*;
+import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
 import ntu.mdp.pathfinding.Instruction.CurveInstruction;
 import ntu.mdp.pathfinding.Instruction.Instruction;
@@ -41,6 +42,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
     public void computeCompressedCarMove() {
         instructions = new ArrayList<>();
         List<Point> pathSegment = new ArrayList<>();
+        System.out.println(rawPointPath);
 
         CarMoveFlag lastDir = CarMoveFlag.NotInitialized;
         Point st = null, point = null;
@@ -77,8 +79,8 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
                 if (point.getMoveFlag() == CarMoveFlag.TurnLeft) {
                     rLen *= -1; cLen *= -1;
                 }
-                int circleR = cLen < 0 ? Math.min(point.getR(), endPoint.getR()) : Math.max(point.getR(), endPoint.getR());
-                int circleC = rLen < 0 ? Math.max(point.getC(), endPoint.getC()) : Math.min(point.getC(), endPoint.getC());
+                int circleR = cLen > 0 ? Math.min(point.getR(), endPoint.getR()) + AlgoConstant.R : Math.max(point.getR(), endPoint.getR()) - AlgoConstant.R;
+                int circleC = rLen < 0 ? Math.min(point.getC(), endPoint.getC()) + AlgoConstant.R : Math.max(point.getC(), endPoint.getC()) - AlgoConstant.R;
                 List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(),
                         endPoint.getC(), circleR, circleC, point.getMoveFlag() == CarMoveFlag.TurnRight, point.getFacingDir());
 
