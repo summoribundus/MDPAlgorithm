@@ -1,8 +1,8 @@
 package ntu.mdp.pathfinding;
 
 public class InputData {
-    private static final int startR = 1;
-    private static final int startC = 1;
+    private static final int startR = 2;
+    private static final int startC = 2;
     private static final Obstacle[] obstacles = new Obstacle[]{
                 new Obstacle(10, 18, 0, 1, 3, false),
                 new Obstacle(14, 28, 1, 2, 8, false),

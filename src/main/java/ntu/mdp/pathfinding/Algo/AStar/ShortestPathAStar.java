@@ -392,7 +392,7 @@ public class ShortestPathAStar {
         int circleCenterC = rLen > 0 ? Math.min(leftPos[0], currentC) + AlgoConstant.maxTurnLeftDist : Math.max(leftPos[0], currentC) - AlgoConstant.maxTurnLeftDist ;
         int circleCenterR = cLen < 0? Math.min(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist: Math.max(leftPos[1], currentR) - AlgoConstant.maxTurnLeftDist;
         // check if the grid is satisfiable.
-        if (isSafePosition(center[1], center[0])) {
+        if (isSafePosition(center[0], center[1])) {
             leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     leftPos[1], leftPos[0],
                     center[1], center[0],
