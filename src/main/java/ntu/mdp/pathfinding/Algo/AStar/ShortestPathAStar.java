@@ -300,8 +300,8 @@ public class ShortestPathAStar {
                    }
                 }
 
-                path.add(new Point(curr[4], curr[3], newFlag, CarFacingDir.getDirFromDegree(prevDirInDegrees)));
-                path.add(new Point(prevR, prevC, newFlag, CarFacingDir.getDirFromDegree(currDirInDegrees)));
+                path.add(new Point(curr[4], curr[3], newFlag, CarFacingDir.getDirFromDegree(currDirInDegrees)));
+                path.add(new Point(prevR, prevC, newFlag, CarFacingDir.getDirFromDegree(prevDirInDegrees)));
 
             }
             curr = prev;

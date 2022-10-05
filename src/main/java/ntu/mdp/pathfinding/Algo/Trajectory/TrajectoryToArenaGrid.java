@@ -287,27 +287,32 @@ public class TrajectoryToArenaGrid {
 
     private static List<Point> circleRecTanEdgeLooping(List<Edge> edges, boolean isClockwise, CarFacingDir carFacingDir) {
         List<Point> pointsPassed = new ArrayList<>();
-        CarFacingDir currentDir = carFacingDir;
+        CarFacingDir currentDir = carFacingDir, prevDir = carFacingDir;
         for (Edge edge : edges) {
             int r = edge.getStR(), c = edge.getStC();
+            boolean walk = false;
             if (edge.getDr() == 0) {
                 while (0 <= c && c < AlgoConstant.GridN && c != edge.getEdC()) {
-                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft, carFacingDir));
+                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft, currentDir));
                     c += edge.getDc();
+                    walk = true;
                 }
                 if (c != edge.getEdC()) return null;
             } else {
                 while (0 <= r && r < AlgoConstant.GridM && r != edge.getEdR()) {
-                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft, carFacingDir));
+                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft, currentDir));
                     r += edge.getDr();
+                    walk = true;
                 }
                 if (r != edge.getEdR()) return null;
             }
-            if (currentDir != null)
+            if (currentDir != null && walk) {
+                prevDir = currentDir;
                 currentDir = CarFacingDir.getNextDir(currentDir, isClockwise);
+            }
         }
         Edge last = edges.get(edges.size()-1);
-        pointsPassed.add(new Point(last.getEdR(), last.getEdC(), isClockwise ? CarMoveFlag.TurnRight : CarMoveFlag.TurnLeft, carFacingDir));
+        pointsPassed.add(new Point(last.getEdR(), last.getEdC(), isClockwise ? CarMoveFlag.TurnRight : CarMoveFlag.TurnLeft, prevDir));
         return pointsPassed;
     }
 
