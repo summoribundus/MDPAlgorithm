@@ -41,8 +41,8 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
     public void computeCompressedCarMove() {
         instructions = new ArrayList<>();
         List<Point> pathSegment = new ArrayList<>();
-
         System.out.println(rawPointPath);
+
         CarMoveFlag lastDir = CarMoveFlag.NotInitialized;
         Point st = null, point = null;
         int i = 0, len = rawPointPath.size();
