@@ -76,11 +76,13 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             if (point.getMoveFlag() == CarMoveFlag.TurnLeft || point.getMoveFlag() == CarMoveFlag.TurnRight) {
                 Point endPoint = rawPointPath.get(i++);
                 int rLen = endPoint.getR() - point.getR(), cLen = endPoint.getC() - point.getC();
+                int r = AlgoConstant.maxTurnRightDist;
                 if (point.getMoveFlag() == CarMoveFlag.TurnLeft) {
                     rLen *= -1; cLen *= -1;
+                    r = AlgoConstant.maxTurnLeftDist;
                 }
-                int circleR = cLen > 0 ? Math.min(point.getR(), endPoint.getR()) + AlgoConstant.R : Math.max(point.getR(), endPoint.getR()) - AlgoConstant.R;
-                int circleC = rLen < 0 ? Math.min(point.getC(), endPoint.getC()) + AlgoConstant.R : Math.max(point.getC(), endPoint.getC()) - AlgoConstant.R;
+                int circleR = cLen > 0 ? Math.min(point.getR(), endPoint.getR()) + r : Math.max(point.getR(), endPoint.getR()) - r;
+                int circleC = rLen < 0 ? Math.min(point.getC(), endPoint.getC()) + r : Math.max(point.getC(), endPoint.getC()) - r;
                 List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(),
                         endPoint.getC(), circleR, circleC, point.getMoveFlag() == CarMoveFlag.TurnRight, point.getFacingDir());
 

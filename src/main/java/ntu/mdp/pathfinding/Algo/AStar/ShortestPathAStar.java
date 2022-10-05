@@ -376,12 +376,13 @@ public class ShortestPathAStar {
                 leftPos = null;
             }
         }
+        if (leftPos == null) return null;
         int cLen = leftPos[0] - currentC;
         int rLen = leftPos[1] - currentR;
         int circleCenterC = rLen > 0 ? Math.min(leftPos[0], currentC) + AlgoConstant.maxTurnLeftDist : Math.max(leftPos[0], currentC) - AlgoConstant.maxTurnLeftDist ;
-        int circleCenterR = cLen < 0? Math.min(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist: Math.max(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist;
+        int circleCenterR = cLen < 0? Math.min(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist: Math.max(leftPos[1], currentR) - AlgoConstant.maxTurnLeftDist;
         // check if the grid is satisfiable.
-        if (leftPos != null && isSafePosition(circleCenterC, circleCenterR)) {
+        if (isSafePosition(circleCenterC, circleCenterR)) {
             leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     leftPos[1], leftPos[0],
                     circleCenterR, circleCenterC,
@@ -414,12 +415,14 @@ public class ShortestPathAStar {
                 rightPos = null;
             }
         }
+
+        if (rightPos == null) return null;
         int cLen = rightPos[0] - currentC;
         int rLen = rightPos[1] - currentR;
-        int circleCenterC = rLen < 0 ? Math.min(rightPos[0], currentC) + AlgoConstant.maxTurnLeftDist : Math.max(rightPos[0], currentC) - AlgoConstant.maxTurnLeftDist ;
-        int circleCenterR = cLen > 0? Math.min(rightPos[1], currentR) + AlgoConstant.maxTurnLeftDist: Math.max(rightPos[1], currentR) + AlgoConstant.maxTurnLeftDist;
+        int circleCenterC = rLen < 0 ? Math.min(rightPos[0], currentC) + AlgoConstant.maxTurnRightDist : Math.max(rightPos[0], currentC) - AlgoConstant.maxTurnRightDist ;
+        int circleCenterR = cLen > 0? Math.min(rightPos[1], currentR) + AlgoConstant.maxTurnRightDist: Math.max(rightPos[1], currentR) - AlgoConstant.maxTurnRightDist;
 
-        if (rightPos != null && isSafePosition(circleCenterC, circleCenterR) ){
+        if (isSafePosition(circleCenterC, circleCenterR) ){
             rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     rightPos[1], rightPos[0],
                     circleCenterR, circleCenterC,
