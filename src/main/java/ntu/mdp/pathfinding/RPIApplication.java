@@ -26,37 +26,6 @@ public class RPIApplication {
     private static BufferedReader in;
 
     public static void main(String[] args) throws IOException {
-//        DatagramSocket serverSocket = new DatagramSocket(Host_PORT);
-//        byte[] obstacleBuf = new byte[128];
-//        DatagramPacket packet = new DatagramPacket(obstacleBuf, obstacleBuf.length);
-//        serverSocket.receive(packet);
-//        serverSocket.close();
-//
-//        String boardConfigStr = new String(packet.getData(), 0, packet.getLength());
-//        String[] boardConfigStrSplit = boardConfigStr.split(",");
-//        Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
-//        String[] carConfig = boardConfigStrSplit[0].split(":");
-//
-//        List<CarMove> carMoves = findShortestPath(obstacles, Integer.parseInt(carConfig[1]), Integer.parseInt(carConfig[0]));
-//        if (carMoves == null) {
-//            System.out.println("No solution found. Not making movement");
-//            closeConnection();
-//            return;
-//        }
-//        socket = new DatagramSocket();
-//        String message = "Hello";
-//        byte[] buf = message.getBytes(StandardCharsets.UTF_8);
-//
-//        byte[] buffer = new byte[512];
-//        DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-//        System.out.println("Packet receive");
-//        socket.receive(receivePacket);
-//        System.out.println("Packet received");
-//        System.out.println(new String(receivePacket.getData()));
-//
-//        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT));
-
-
 //        socket = new Socket(RPI, RPI_PORT);
 //        out = new PrintWriter(socket.getOutputStream(), true);
 //        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -93,13 +62,6 @@ public class RPIApplication {
             }
 //        }
     }
-
-//    private static void sendCommand(String command) throws IOException {
-//        out.println(command);
-//        byte[] buf = command.getBytes(StandardCharsets.UTF_8);
-//        DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT);
-//        socket.send(packet);
-//    }
 
     public static Obstacle[] constructObstacleFromString(String obstacleStrs) {
         String[] obstacleStrsSplit = obstacleStrs.split(";");

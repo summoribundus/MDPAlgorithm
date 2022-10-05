@@ -87,13 +87,13 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
                 CurveInstruction ci = new CurveInstruction(90, point.getMoveFlag() == CarMoveFlag.TurnRight);
                 ci.setGridPath(segment);
                 instructions.add(ci);
+                lastDir = CarMoveFlag.NotInitialized;
             } else {
                 st = point;
                 pathSegment = new ArrayList<>();
                 pathSegment.add(st);
+                lastDir = point.getMoveFlag();
             }
-
-            lastDir = point.getMoveFlag();
         }
     }
 
