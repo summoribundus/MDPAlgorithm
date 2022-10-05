@@ -258,7 +258,10 @@ public class ShortestPathAStar {
 
             int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
             if (prev == null) {
-                path.add(new Point(curr[4], curr[3], memoMoveFlag));
+                if (memoMoveFlag != CarMoveFlag.TurnLeft && memoMoveFlag != CarMoveFlag.TurnRight ) {
+                   // System.out.println("the first next flag is " + memoMoveFlag);
+                    path.add(new Point(curr[4], curr[3], memoMoveFlag, CarFacingDir.SOUTH));
+                }
                 break;
             } // if this is the starting node, handle the special case.
 
