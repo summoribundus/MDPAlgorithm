@@ -56,6 +56,10 @@ public class Point {
         return facingDir;
     }
 
+    public void setFacingDir(CarFacingDir facingDir) {
+        this.facingDir = facingDir;
+    }
+
     public int getMatchingObstacleID(){
         return this.matchingObstacleID;
     }

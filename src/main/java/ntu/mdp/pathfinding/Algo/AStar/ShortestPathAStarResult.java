@@ -51,6 +51,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             pointPath.add(point);
 
             if (lastDir == CarMoveFlag.TakePicture) {
+                pathSegment.get(pathSegment.size()-1).setFacingDir(point.getFacingDir());
                 pathSegment.add(point);
                 lastDir = point.getMoveFlag();
                 continue;
