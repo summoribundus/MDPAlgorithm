@@ -357,35 +357,45 @@ public class ShortestPathAStar {
 
     private int[] getLeftLocation(int currentC, int currentR, int currentDirDegrees) {
         int[] leftPos;
+        int[] center;
         List<Point> leftTurnPath;
 
         switch (currentDirDegrees) {
             case 0 -> {
                 leftPos = new int[]{currentC + AlgoConstant.turnVerticalLeftDist, currentR - AlgoConstant.turnHorizontalLeftDist, 90};
+                center = new int[]{leftPos[0] - AlgoConstant.maxTurnLeftDist, leftPos[1]};
             }
             case 90 -> {
                 leftPos = new int[]{currentC - AlgoConstant.turnHorizontalLeftDist, currentR - AlgoConstant.turnVerticalLeftDist, 180};
+                center = new int[]{leftPos[0], leftPos[1] + AlgoConstant.maxTurnLeftDist};
             }
             case 180 -> {
                 leftPos = new int[]{currentC - AlgoConstant.turnVerticalLeftDist, currentR + AlgoConstant.turnHorizontalLeftDist, 270};
+                center = new int[]{leftPos[0] + AlgoConstant.maxTurnLeftDist, leftPos[1]};
             }
             case 270 -> {
                 leftPos = new int[]{currentC + AlgoConstant.turnHorizontalLeftDist, currentR + AlgoConstant.turnVerticalLeftDist, 0};
+                center = new int[]{leftPos[0], leftPos[1] - AlgoConstant.maxTurnLeftDist};
             }
             default -> {
                 leftPos = null;
+                center = null;
             }
         }
+//        int cLen = leftPos[0] - currentC;
+//        int rLen = leftPos[1] - currentR;
+//        int circleCenterC = rLen > 0 ? Math.min(leftPos[0], currentC) + AlgoConstant.maxTurnLeftDist : Math.max(leftPos[0], currentC) - AlgoConstant.maxTurnLeftDist ;
+//        int circleCenterR = cLen < 0? Math.min(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist: Math.max(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist;
         if (leftPos == null) return null;
         int cLen = leftPos[0] - currentC;
         int rLen = leftPos[1] - currentR;
         int circleCenterC = rLen > 0 ? Math.min(leftPos[0], currentC) + AlgoConstant.maxTurnLeftDist : Math.max(leftPos[0], currentC) - AlgoConstant.maxTurnLeftDist ;
         int circleCenterR = cLen < 0? Math.min(leftPos[1], currentR) + AlgoConstant.maxTurnLeftDist: Math.max(leftPos[1], currentR) - AlgoConstant.maxTurnLeftDist;
         // check if the grid is satisfiable.
-        if (isSafePosition(circleCenterC, circleCenterR)) {
+        if (isSafePosition(center[1], center[0])) {
             leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     leftPos[1], leftPos[0],
-                    circleCenterR, circleCenterC,
+                    center[1], center[0],
                     false, CarFacingDir.getDirFromDegree(currentDirDegrees));
             if (leftTurnPath != null && arena.validatePoint(leftTurnPath))
                 return leftPos;
@@ -396,36 +406,42 @@ public class ShortestPathAStar {
 
     private int[] getRightLocation(int currentC, int currentR, int currentDirDegrees) {
         int[] rightPos;
+        int[] center;
         List<Point> rightTurnPath;
 
         switch (currentDirDegrees) {
             case 0 -> {
                 rightPos = new int[]{currentC + AlgoConstant.turnVerticalRightDist, currentR + AlgoConstant.turnHorizontalRightDist, 270};
+                center = new int[]{rightPos[0] - AlgoConstant.maxTurnRightDist, rightPos[1]};
             }
             case 90 -> {
                 rightPos = new int[]{currentC + AlgoConstant.turnHorizontalRightDist, currentR - AlgoConstant.turnVerticalRightDist, 0};
+                center = new int[]{rightPos[0], rightPos[1] + AlgoConstant.maxTurnRightDist};
             }
             case 180 -> {
                 rightPos = new int[]{currentC - AlgoConstant.turnVerticalRightDist, currentR - AlgoConstant.turnHorizontalRightDist, 90};
+                center = new int[]{rightPos[0] + AlgoConstant.maxTurnRightDist, rightPos[1]};
             }
             case 270 -> {
                 rightPos = new int[]{currentC - AlgoConstant.turnHorizontalRightDist, currentR + AlgoConstant.turnVerticalRightDist, 180};
+                center = new int[]{rightPos[0], rightPos[1] - AlgoConstant.maxTurnRightDist};
             }
             default -> {
                 rightPos = null;
+                center = null;
             }
         }
 
         if (rightPos == null) return null;
-        int cLen = rightPos[0] - currentC;
-        int rLen = rightPos[1] - currentR;
-        int circleCenterC = rLen < 0 ? Math.min(rightPos[0], currentC) + AlgoConstant.maxTurnRightDist : Math.max(rightPos[0], currentC) - AlgoConstant.maxTurnRightDist ;
-        int circleCenterR = cLen > 0? Math.min(rightPos[1], currentR) + AlgoConstant.maxTurnRightDist: Math.max(rightPos[1], currentR) - AlgoConstant.maxTurnRightDist;
+//        int cLen = rightPos[0] - currentC;
+//        int rLen = rightPos[1] - currentR;
+//        int circleCenterC = rLen < 0 ? Math.min(rightPos[0], currentC) + AlgoConstant.maxTurnRightDist : Math.max(rightPos[0], currentC) - AlgoConstant.maxTurnRightDist ;
+//        int circleCenterR = cLen > 0? Math.min(rightPos[1], currentR) + AlgoConstant.maxTurnRightDist: Math.max(rightPos[1], currentR) - AlgoConstant.maxTurnRightDist;
 
-        if (isSafePosition(circleCenterC, circleCenterR) ){
+        if (isSafePosition(center[0], center[1]) ){
             rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     rightPos[1], rightPos[0],
-                    circleCenterR, circleCenterC,
+                    center[1], center[0],
                     true, CarFacingDir.getDirFromDegree(currentDirDegrees));
             if (rightTurnPath != null && arena.validatePoint(rightTurnPath))
                 return rightPos;
