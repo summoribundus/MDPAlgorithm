@@ -9,7 +9,7 @@ public class Obstacle {
 
     private int obstacleID;
 
-    public static int[][] imgDirToTargetMapping = new int[][]{{0, -5}, {-5, 0}, {0, 6}, {6, 0}};
+    public static int[][] imgDirToTargetMapping = new int[][]{{0, -7}, {-7, 0}, {0, 8}, {8, 0}};//{0, -5}, {-5, 0}, {0, 6}, {6, 0}
     private static int[] imgDirToTargetDegree = new int[]{0, 270, 180, 90};
 
     // 10 based r and c

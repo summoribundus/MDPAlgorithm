@@ -6,5 +6,6 @@ public class AlgoConstant {
     public final static int rightR = 5;
     public final static int GridM = 40;
     public final static int GridN = 40;
-    public final static int VirtualBlock = 4;
+    public final static int VirtualBlock = 4; //4
+
 }
