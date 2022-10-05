@@ -22,7 +22,7 @@ public class ShortestPathTrajectory {
         int circle1R = trajectoryResult.getCircle1()[1], circle1C = trajectoryResult.getCircle1()[0];
         int circle2R = trajectoryResult.getCircle2()[1], circle2C = trajectoryResult.getCircle2()[0];
 
-        List<Point> points1 = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, trajectoryResult.isClockwiseTurnStart());
+        List<Point> points1 = TrajectoryToArenaGrid.findGridCirclePath(startR, startC, r1, c1, circle1R, circle1C, trajectoryResult.isClockwiseTurnStart(), null);
         if (points1 == null || !arena.validatePoint(points1)) return false;
 
         List<Point> points2;
@@ -30,11 +30,11 @@ public class ShortestPathTrajectory {
             points2 = TrajectoryToArenaGrid.findGirdLinePath(r1, c1, r2, c2);
         } else {
             int circleInterR = trajectoryResult.getCircleInter()[1], circleInterC = trajectoryResult.getCircleInter()[0];
-            points2 = TrajectoryToArenaGrid.findGridCirclePath(r1, c1, r2, c2, circleInterR, circleInterC, trajectoryResult.isClockwiseTurnIntermediate());
+            points2 = TrajectoryToArenaGrid.findGridCirclePath(r1, c1, r2, c2, circleInterR, circleInterC, trajectoryResult.isClockwiseTurnIntermediate(), null);
         }
         if (points2 == null || !arena.validatePoint(points2)) return false;
 
-        List<Point> points3 = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, trajectoryResult.isClockwiseTurnEnd());
+        List<Point> points3 = TrajectoryToArenaGrid.findGridCirclePath(r2, c2, endR, endC, circle2R, circle2C, trajectoryResult.isClockwiseTurnEnd(), null);
         if(points3 == null || !arena.validatePoint(points3)) return false;
 
         if (gridCollector != null) {

@@ -8,6 +8,8 @@ public class Point {
 
     private CarMoveFlag moveFlag; // 0: turning left 90, 1: turning right 90; 2: reversing; 3: forwarding
 
+    private CarFacingDir facingDir;
+
     public Point(int r, int c) {
         this.r = r;
         this.c = c;
@@ -19,6 +21,14 @@ public class Point {
         this.c = c;
         this.moveFlag = moveFlag; // 0: turning left 90, 1: turning right 90; 2: reversing; 3: forwarding
     }
+
+    public Point(int r, int c, CarMoveFlag moveFlag, CarFacingDir carFacingDir) {
+        this.r = r;
+        this.c = c;
+        this.moveFlag = moveFlag;
+        this.facingDir = carFacingDir;
+    }
+
     public Point(int r, int c, boolean matchingPoint, int matchingObstacleID, CarMoveFlag moveFlag) {
         this.r = r;
         this.c = c;
@@ -42,13 +52,17 @@ public class Point {
         return moveFlag;
     }
 
+    public CarFacingDir getFacingDir() {
+        return facingDir;
+    }
+
     public int getMatchingObstacleID(){
         return this.matchingObstacleID;
     }
 
     @Override
     public String toString() {
-        return r + "-" + c;
+        return r + "-" + c + "-" + facingDir;
     } // colon separator cannot work
 }
 

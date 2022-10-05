@@ -7,8 +7,6 @@ import javafx.stage.Stage;
 import ntu.mdp.pathfinding.Algo.*;
 import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarAlgo;
 import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarResult;
-import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryAlgo;
-import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryResult;
 import ntu.mdp.pathfinding.GUI.Grid;
 import ntu.mdp.pathfinding.GUI.GridControlPane;
 import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
@@ -41,6 +39,7 @@ class ShortestPathRunner implements Runnable {
         ShortestPathAStarResult starResult = aStarAlgo.findBackupShortestPath();
         if (starResult != null) {
             System.out.println("Backup Solution Found");
+            starResult.computeCompressedCarMove();
             List<Point> path = starResult.getPointPath();
             for (Point p : path) {
                 car.goTo(p);

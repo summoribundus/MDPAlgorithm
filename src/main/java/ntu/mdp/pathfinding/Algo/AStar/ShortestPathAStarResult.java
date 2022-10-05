@@ -12,12 +12,13 @@ import java.util.List;
 
 public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResult> {
     private List<Instruction> instructions;
+    private List<Point> rawPointPath;
     private List<Point> pointPath;
-
     private int cost;
 
     public ShortestPathAStarResult(List<Point> pointPath, int cost){
-        this.pointPath = pointPath;
+        this.rawPointPath = pointPath;
+        this.pointPath = new ArrayList<>();
         this.cost = cost;
     }
 
@@ -29,6 +30,10 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
         return pointPath;
     }
 
+    public List<Point> getRawPointPath() {
+        return rawPointPath;
+    }
+
     public int getCost() {
         return cost;
     }
@@ -37,12 +42,13 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
         instructions = new ArrayList<>();
         List<Point> pathSegment = new ArrayList<>();
 
-        System.out.println(pointPath);
+        System.out.println(rawPointPath);
         CarMoveFlag lastDir = CarMoveFlag.NotInitialized;
         Point st = null, point = null;
-        int i = 0, len = pointPath.size();
+        int i = 0, len = rawPointPath.size();
         while (i < len) {
-            point = pointPath.get(i++);
+            point = rawPointPath.get(i++);
+            pointPath.add(point);
 
             if (lastDir == CarMoveFlag.TakePicture) {
                 pathSegment.add(point);
@@ -66,7 +72,7 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
             if (point.isMatchingPoint()) instructions.add(new TakePictureInstruction(point.getMatchingObstacleID()));
 
             if (point.getMoveFlag() == CarMoveFlag.TurnLeft || point.getMoveFlag() == CarMoveFlag.TurnRight) {
-                Point endPoint = pointPath.get(i++);
+                Point endPoint = rawPointPath.get(i++);
                 int rLen = endPoint.getR() - point.getR(), cLen = endPoint.getC() - point.getC();
                 if (point.getMoveFlag() == CarMoveFlag.TurnLeft) {
                     rLen *= -1; cLen *= -1;
@@ -74,8 +80,9 @@ public class ShortestPathAStarResult implements Comparable<ShortestPathAStarResu
                 int circleR = cLen < 0 ? Math.min(point.getR(), endPoint.getR()) : Math.max(point.getR(), endPoint.getR());
                 int circleC = rLen < 0 ? Math.max(point.getC(), endPoint.getC()) : Math.min(point.getC(), endPoint.getC());
                 List<Point> segment = TrajectoryToArenaGrid.findGridCirclePath(point.getR(), point.getC(), endPoint.getR(),
-                        endPoint.getC(), circleR, circleC, point.getMoveFlag() == CarMoveFlag.TurnRight);
+                        endPoint.getC(), circleR, circleC, point.getMoveFlag() == CarMoveFlag.TurnRight, point.getFacingDir());
 
+                pointPath.addAll(segment);
                 CurveInstruction ci = new CurveInstruction(90, point.getMoveFlag() == CarMoveFlag.TurnRight);
                 ci.setGridPath(segment);
                 instructions.add(ci);

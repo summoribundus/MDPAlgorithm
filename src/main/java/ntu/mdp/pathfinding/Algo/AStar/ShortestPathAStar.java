@@ -3,6 +3,7 @@ package ntu.mdp.pathfinding.Algo.AStar;
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
 import ntu.mdp.pathfinding.Algo.Arena;
 import ntu.mdp.pathfinding.Algo.Trajectory.TrajectoryToArenaGrid;
+import ntu.mdp.pathfinding.CarFacingDir;
 import ntu.mdp.pathfinding.CarMoveFlag;
 import ntu.mdp.pathfinding.GUI.SimulatorConstant;
 import ntu.mdp.pathfinding.InputData;
@@ -282,7 +283,7 @@ public class ShortestPathAStar {
                             reversing = true;
                         }
                 }
-                path.add(new Point(curr[4], curr[3], reversing? CarMoveFlag.MoveBackward: CarMoveFlag.MoveForward));
+                path.add(new Point(curr[4], curr[3], reversing? CarMoveFlag.MoveBackward: CarMoveFlag.MoveForward, CarFacingDir.getDirFromDegree(currDirInDegrees)));
 
             } else { // otherwise, only look for points where direction changes to construct the line segments
                 int prevDirInDegrees = prev[5];
@@ -295,12 +296,12 @@ public class ShortestPathAStar {
                 if (path.size() >= 1) {
                     Point nowStart = path.get(path.size() - 1);
                     if (nowStart.getMoveFlag() == CarMoveFlag.MoveForward || nowStart.getMoveFlag() == CarMoveFlag.MoveBackward) {
-                        path.add(new Point(curr[4], curr[3], nowStart.getMoveFlag()));
+                        path.add(new Point(curr[4], curr[3], nowStart.getMoveFlag(), nowStart.getFacingDir()));
                    }
                 }
 
-                path.add(new Point(curr[4], curr[3], newFlag));
-                path.add(new Point(prevR, prevC, newFlag));
+                path.add(new Point(curr[4], curr[3], newFlag, CarFacingDir.getDirFromDegree(prevDirInDegrees)));
+                path.add(new Point(prevR, prevC, newFlag, CarFacingDir.getDirFromDegree(currDirInDegrees)));
 
             }
             curr = prev;
@@ -370,7 +371,7 @@ public class ShortestPathAStar {
             leftTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     leftPos[1], leftPos[0],
                     circleCenter[1], circleCenter[0],
-                    false);
+                    false, CarFacingDir.getDirFromDegree(currentDirDegrees));
             if (leftTurnPath != null && arena.validatePoint(leftTurnPath))
                 return leftPos;
         }
@@ -409,7 +410,7 @@ public class ShortestPathAStar {
             rightTurnPath = TrajectoryToArenaGrid.findGridCirclePath(currentR, currentC,
                     rightPos[1], rightPos[0],
                     circleCenter[1], circleCenter[0],
-                    true);
+                    true, CarFacingDir.getDirFromDegree(currentDirDegrees));
             if (rightTurnPath != null && arena.validatePoint(rightTurnPath))
                 return rightPos;
         }

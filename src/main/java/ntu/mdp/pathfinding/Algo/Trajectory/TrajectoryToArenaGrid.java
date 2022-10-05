@@ -1,6 +1,7 @@
 package ntu.mdp.pathfinding.Algo.Trajectory;
 
 import ntu.mdp.pathfinding.Algo.AlgoConstant;
+import ntu.mdp.pathfinding.CarFacingDir;
 import ntu.mdp.pathfinding.CarMoveFlag;
 import ntu.mdp.pathfinding.Point;
 
@@ -79,7 +80,7 @@ public class TrajectoryToArenaGrid {
         return pointsPassed;
     }
 
-    public static List<Point> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise) {
+    public static List<Point> findGridCirclePath(int r1, int c1, int r2, int c2, int circleR, int circleC, boolean isClockWise, CarFacingDir currentDir) {
         if (r1 == r2 && c1 == c2) {
             List<Point> res = new ArrayList<>();
             res.add(new Point(r1, c1, isClockWise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft));
@@ -281,29 +282,32 @@ public class TrajectoryToArenaGrid {
                 edges.add(new Edge(yAxis2, c2, r2, c2));
             }
         }
-        return circleRecTanEdgeLooping(edges, isClockWise);
+        return circleRecTanEdgeLooping(edges, isClockWise, currentDir);
     }
 
-    private static List<Point> circleRecTanEdgeLooping(List<Edge> edges, boolean isClockwise) {
+    private static List<Point> circleRecTanEdgeLooping(List<Edge> edges, boolean isClockwise, CarFacingDir carFacingDir) {
         List<Point> pointsPassed = new ArrayList<>();
+        CarFacingDir currentDir = carFacingDir;
         for (Edge edge : edges) {
             int r = edge.getStR(), c = edge.getStC();
             if (edge.getDr() == 0) {
                 while (0 <= c && c < AlgoConstant.GridN && c != edge.getEdC()) {
-                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft));
+                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft, carFacingDir));
                     c += edge.getDc();
                 }
                 if (c != edge.getEdC()) return null;
             } else {
                 while (0 <= r && r < AlgoConstant.GridM && r != edge.getEdR()) {
-                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft));
+                    pointsPassed.add(new Point(r, c, isClockwise? CarMoveFlag.TurnRight: CarMoveFlag.TurnLeft, carFacingDir));
                     r += edge.getDr();
                 }
                 if (r != edge.getEdR()) return null;
             }
+            if (currentDir != null)
+                currentDir = CarFacingDir.getNextDir(currentDir, isClockwise);
         }
         Edge last = edges.get(edges.size()-1);
-        pointsPassed.add(new Point(last.getEdR(), last.getEdC(), isClockwise ? CarMoveFlag.TurnRight : CarMoveFlag.TurnLeft));
+        pointsPassed.add(new Point(last.getEdR(), last.getEdC(), isClockwise ? CarMoveFlag.TurnRight : CarMoveFlag.TurnLeft, carFacingDir));
         return pointsPassed;
     }
 
@@ -328,7 +332,7 @@ public class TrajectoryToArenaGrid {
     }
 
     public static void main(String[] args){
-        List<Point> points = findGridCirclePath(5, 10, 3, 2, 7, 5, true);
+        List<Point> points = findGridCirclePath(5, 10, 3, 2, 7, 5, true, CarFacingDir.SOUTH);
 //        List<int[]> points = findGirdLinePath();
 //        List<int[]> points = findReversePath(15, 8, 15, 3, new int[]{0, -1});
         for (Point p : points) {

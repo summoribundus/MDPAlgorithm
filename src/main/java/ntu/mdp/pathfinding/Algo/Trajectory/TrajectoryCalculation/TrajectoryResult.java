@@ -86,7 +86,7 @@ public class TrajectoryResult {
         int[] cStartPt = c.getStartPt();
         int[] cEndPt = c.getEndPt();
         int[] cCenterPt = c.getCenter();
-        return TrajectoryToArenaGrid.findGridCirclePath(cStartPt[1], cStartPt[0], cEndPt[1], cEndPt[0], cCenterPt[1], cCenterPt[0], c.isClockwiseTurn());
+        return TrajectoryToArenaGrid.findGridCirclePath(cStartPt[1], cStartPt[0], cEndPt[1], cEndPt[0], cCenterPt[1], cCenterPt[0], c.isClockwiseTurn(), null);
     }
 
     private List<Point> recoverStraightLinePts(TrajectoryLine l){
