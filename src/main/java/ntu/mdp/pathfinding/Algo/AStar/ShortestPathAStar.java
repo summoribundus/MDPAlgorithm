@@ -49,6 +49,8 @@ public class ShortestPathAStar {
     //int[][]
 
     public ShortestPathAStar(int currentC, int currentR, int currentDirDegrees, int targetC, int targetR, int obstacleDir, Arena arena){
+//        System.out.println("planning new path: ");
+//        System.out.println("current c = " + currentC + ", current r = " + currentR);
         this.arena = arena;
         this.grid = new int[AlgoConstant.GridM][AlgoConstant.GridN][4][7];
         this.currentC = currentC;
@@ -249,12 +251,16 @@ public class ShortestPathAStar {
         boolean reversing;
         int lineStartC, lineStartR;
         int lineEndC, lineEndR;
+        CarMoveFlag memoMoveFlag = null;
         while (curr != null) {
             reversing = false;
             prev = predMap.get(curr); // get the previous node in the backtrack
 
             int currDirInDegrees = curr[5];// int[] - 0: totalCost, 1: gCost, 2: hCost, 3: c, 4: r, 5: direction, 6: has been visited(0: false, 1: true)
-            if (prev == null) break; // if this is the starting node, handle the special case.
+            if (prev == null) {
+                path.add(new Point(curr[4], curr[3], memoMoveFlag));
+                break;
+            } // if this is the starting node, handle the special case.
 
             lineStartC = prev[3];
             lineStartR = prev[4];
@@ -284,6 +290,7 @@ public class ShortestPathAStar {
                         }
                 }
                 path.add(new Point(curr[4], curr[3], reversing? CarMoveFlag.MoveBackward: CarMoveFlag.MoveForward, CarFacingDir.getDirFromDegree(currDirInDegrees)));
+                memoMoveFlag = reversing? CarMoveFlag.MoveBackward: CarMoveFlag.MoveForward;
 
             } else { // otherwise, only look for points where direction changes to construct the line segments
                 int prevDirInDegrees = prev[5];
@@ -303,11 +310,17 @@ public class ShortestPathAStar {
                 path.add(new Point(curr[4], curr[3], newFlag, CarFacingDir.getDirFromDegree(currDirInDegrees)));
                 path.add(new Point(prevR, prevC, newFlag, CarFacingDir.getDirFromDegree(prevDirInDegrees)));
 
+                memoMoveFlag = newFlag;
+
             }
             curr = prev;
         }
 
         Collections.reverse(path); // reverse the path and put it in the correct order
+//
+//        for (Point p : path)
+//            System.out.println(p);
+
         return path;
     }
 
