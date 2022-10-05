@@ -57,12 +57,12 @@ public class RPIApplication {
 //        socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(RPI), RPI_PORT));
 
 
-//        socket = new Socket(RPI, RPI_PORT);
-//        out = new PrintWriter(socket.getOutputStream(), true);
-//        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        socket = new Socket(RPI, RPI_PORT);
+        out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-//        String boardConfigStr = in.readLine();
-        String boardConfigStr = "1-1,5-13-1;18-16-0";
+        String boardConfigStr = in.readLine();
+//        String boardConfigStr = "1-1,9-5-0,14-7-1;9-12-3;15-15-0;4-15-1";
         String[] boardConfigStrSplit = boardConfigStr.split(",");
         Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
         String[] carConfig = boardConfigStrSplit[0].split("-");
@@ -77,19 +77,19 @@ public class RPIApplication {
         long startTime = System.currentTimeMillis();
 //        while (true) {
             for (Instruction ins : instructions) {
-                System.out.println("New ins:");
-                System.out.println(ins.command());
-                System.out.println(ins.gridPath());
-//                out.println(ins.command());
-//                if (ins.gridPath() != null)
-//                    out.println(ins.gridPath());
-//                in.readLine();
-//                if (System.currentTimeMillis() - startTime > 360000) {
-//                    System.out.println("6 minutes reached!");
-//                    out.println("00000"); // stop signal
-//                    closeConnection();
-//                    return;
-//                }
+//                System.out.println("New ins:");
+//                System.out.println(ins.command());
+//                System.out.println(ins.gridPath());
+                out.println(ins.command());
+                if (ins.gridPath() != null)
+                    out.println(ins.gridPath());
+                in.readLine();
+                if (System.currentTimeMillis() - startTime > 360000) {
+                    System.out.println("6 minutes reached!");
+                    out.println("00000"); // stop signal
+                    closeConnection();
+                    return;
+                }
             }
 //        }
     }
