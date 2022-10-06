@@ -66,7 +66,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return r + "-" + c + "-" + moveFlag;
+        return r + "-" + c + "-" + facingDir;
     } // colon separator cannot work
 }
 

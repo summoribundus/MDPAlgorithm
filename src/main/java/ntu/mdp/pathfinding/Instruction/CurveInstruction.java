@@ -11,6 +11,7 @@ public class CurveInstruction implements Instruction {
 
     public CurveInstruction(int theta, boolean isClockwise) {
         command = "STM:" + (isClockwise? CarMoveInstructions.turnRightPrefix : CarMoveInstructions.turnLeftPrefix) + conversionToInstructionFormatTheta(theta);
+//        command = "STM:" +
     }
 
     private String conversionToInstructionFormatTheta(int theta){
@@ -25,7 +26,7 @@ public class CurveInstruction implements Instruction {
 
     public void setGridPath(List<Point> gridPath) {
         if (gridPath == null) return;
-        StringBuilder sb = new StringBuilder().append("Android:");
+        StringBuilder sb = new StringBuilder().append("AND:");
 //        System.out.println("the command of this is:" + this.command);
 //        for (Point p : gridPath)
 //            System.out.println("point in grid path is " + p.toString());

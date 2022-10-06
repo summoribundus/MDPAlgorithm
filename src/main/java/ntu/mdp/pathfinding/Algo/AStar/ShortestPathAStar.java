@@ -41,7 +41,6 @@ public class ShortestPathAStar {
     }};
 
     private int[] obstacleTargetDirMapping = new int[] {2, 3, 0, 1};
-
     final int movePenalty = 10;
     final int reversePenalty = 10;
     final int turnPenalty = 60;
