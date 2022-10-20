@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import ntu.mdp.pathfinding.Algo.*;
 import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarAlgo;
 import ntu.mdp.pathfinding.Algo.AStar.ShortestPathAStarResult;
+import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryAlgo;
+import ntu.mdp.pathfinding.Algo.Trajectory.ShortestPathTrajectoryResult;
 import ntu.mdp.pathfinding.GUI.Grid;
 import ntu.mdp.pathfinding.GUI.GridControlPane;
 import ntu.mdp.pathfinding.GUI.ImageRecognizePane;
@@ -24,17 +26,17 @@ class ShortestPathRunner implements Runnable {
         Car car = InputData.getCar();
         ShortestPathBF shortestPathBF = new ShortestPathBF(InputData.getObstacles(), InputData.getStartR(), InputData.getStartC());
         Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, InputData.getObstacles());
-//        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
-//        ShortestPathTrajectoryResult result = algo.findShortestPath();
-//        if (result != null) {
-//            System.out.println("Trajectory Solution Found");
-//            List<Point> path = result.getPathGrids();
-//            for (Point p : path) {
-//                car.goTo(p);
-//            }
-//            return;
-//        }
-//        System.out.println("No Trajectory Solution Found");
+        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
+        ShortestPathTrajectoryResult result = algo.findShortestPath();
+        if (result != null) {
+            System.out.println("Trajectory Solution Found");
+            List<Point> path = result.getPathGrids();
+            for (Point p : path) {
+                car.goTo(p);
+            }
+            return;
+        }
+        System.out.println("No Trajectory Solution Found");
         ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
         ShortestPathAStarResult starResult = aStarAlgo.findBackupShortestPath();
         if (starResult != null) {

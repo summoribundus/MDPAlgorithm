@@ -19,8 +19,6 @@ import java.util.List;
 public class RPIApplication {
     private final static String RPI = "192.168.17.17";
     private final static int RPI_PORT = 4444;
-    private final static String HOST = "10.27.182.66";
-    private final static int Host_PORT = 2223;
     private static Socket socket;
     private static PrintWriter out;
     private static BufferedReader in;
@@ -29,10 +27,9 @@ public class RPIApplication {
         socket = new Socket(RPI, RPI_PORT);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//
+
         String boardConfigStr = in.readLine();
         System.out.println(boardConfigStr);
-//        String boardConfigStr = "1-1,11-0-3;17-5-1;6-7-2;11-10-1;0-14-2;14-15-1;7-16-1";
         String[] boardConfigStrSplit = boardConfigStr.split(",");
         Obstacle[] obstacles = constructObstacleFromString(boardConfigStrSplit[1]);
         String[] carConfig = boardConfigStrSplit[0].split("-");
@@ -45,9 +42,7 @@ public class RPIApplication {
         }
 
         long startTime = System.currentTimeMillis();
-//        while (true) {
             for (Instruction ins : instructions) {
-//                System.out.println("New ins:");
                 System.out.println(ins.command());
                 System.out.println(ins.gridPath());
                 out.println(ins.command());
@@ -80,19 +75,19 @@ public class RPIApplication {
     public static List<Instruction> findShortestPath(Obstacle[] obstacles, int r, int c) {
         ShortestPathBF shortestPathBF = new ShortestPathBF(obstacles, r, c);
         Arena arena = new Arena(AlgoConstant.GridM, AlgoConstant.GridN, obstacles);
-//        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
-//        ShortestPathTrajectoryResult result = algo.findShortestPath();
-//        if (result != null) {
-//            System.out.println("Trajectory Solution Found");
-//            return result.getInstructions();
-//        }
-
         ShortestPathAStarAlgo aStarAlgo = new ShortestPathAStarAlgo(arena, shortestPathBF);
         ShortestPathAStarResult aStarResult = aStarAlgo.findBackupShortestPath();
         if (aStarResult != null) {
             System.out.println("Back Solution Found");
             aStarResult.computeCompressedCarMove();
             return aStarResult.getInstructions();
+        }
+
+        ShortestPathTrajectoryAlgo algo = new ShortestPathTrajectoryAlgo(arena, shortestPathBF);
+        ShortestPathTrajectoryResult result = algo.findShortestPath();
+        if (result != null) {
+            System.out.println("Trajectory Solution Found");
+            return result.getInstructions();
         }
         return null;
     }
